@@ -1,42 +1,167 @@
-import type { Metadata } from 'next'
+'use client'
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import { getLevelFromXP, getXPToNextLevel, PLANT_STAGES } from '@/lib/gamification'
 
-export const metadata: Metadata = {
-  title: 'bloom focus App — Coming Soon',
-  description: 'The bloom focus ADHD toolkit app is coming soon. Task manager, brain dump, habit tracker and more — synced across all your devices.',
-  robots: { index: false, follow: false },
-}
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
-export default function AppPage() {
+export default function AppDashboard() {
+  const [data, setData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [greeting, setGreeting] = useState('')
+
+  useEffect(() => {
+    const hour = new Date().getHours()
+    if (hour < 12) setGreeting('Good morning')
+    else if (hour < 17) setGreeting('Good afternoon')
+    else setGreeting('Good evening')
+    loadData()
+  }, [])
+
+  async function loadData() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const [profile, xp, plant, achievements] = await Promise.all([
+      supabase.from('profiles').select('display_name, avatar_emoji, is_pro').eq('id', user.id).single(),
+      supabase.from('user_xp').select('total_xp, level, gems, streak_days').eq('user_id', user.id).single(),
+      supabase.from('user_plant').select('stage, health, plant_name').eq('user_id', user.id).single(),
+      supabase.from('user_achievements').select('achievement_id, achievements(title, emoji)').eq('user_id', user.id).order('earned_at', { ascending: false }).limit(3),
+    ])
+
+    const today = new Date().toISOString().split('T')[0]
+    const [habitsToday, tasksToday] = await Promise.all([
+      supabase.from('habit_completions').select('id', { count: 'exact' }).eq('user_id', user.id).eq('completed_date', today),
+      supabase.from('tasks').select('id', { count: 'exact' }).eq('user_id', user.id).eq('status', 'done').gte('completed_at', today),
+    ])
+
+    setData({
+      profile: profile.data,
+      xp: xp.data,
+      plant: plant.data,
+      achievements: achievements.data || [],
+      todayHabits: habitsToday.count || 0,
+      todayTasks: tasksToday.count || 0,
+    })
+    setLoading(false)
+  }
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 32 }}>🌱</div>
+  if (!data) return null
+
+  const xpProgress = getXPToNextLevel(data.xp?.total_xp || 0)
+  const level = getLevelFromXP(data.xp?.total_xp || 0)
+  const plantStage = PLANT_STAGES[(data.plant?.stage || 1) as keyof typeof PLANT_STAGES] || PLANT_STAGES[1]
+
   return (
-    <div style={{ background: 'var(--cream)', minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 24px' }}>
-      <div style={{ textAlign: 'center', maxWidth: 500 }}>
-        <div style={{ fontSize: 64, marginBottom: 24 }}>🌸</div>
-        <div style={{ background: '#D4C5F9', border: '1.5px solid #B8A4E8', borderRadius: 100, padding: '5px 16px', fontSize: 11, letterSpacing: '0.18em', color: '#7B5FCC', fontWeight: 700, textTransform: 'uppercase', display: 'inline-block', marginBottom: 24 }}>
-          Coming soon
-        </div>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 36, color: '#2D2926', lineHeight: 1.2, marginBottom: 16 }}>
-          The bloom focus <em style={{ color: '#B8A4E8' }}>app</em>
-        </h1>
-        <p style={{ fontSize: 15, color: '#6B5F58', lineHeight: 1.7, marginBottom: 32 }}>
-          A full ADHD toolkit on your phone and laptop — synced, personal, and designed for your brain. Task manager, brain dump, habit tracker, dopamine menu, focus timer and more.
-        </p>
-        <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '20px 24px', marginBottom: 32, textAlign: 'left' }}>
-          <div style={{ fontSize: 12, color: '#9B8F88', marginBottom: 12, letterSpacing: '0.1em', textTransform: 'uppercase' }}>What's coming</div>
-          {['Task decomposer with micro-steps', 'Brain dump → task transfer', 'Habit tracker with streaks', 'Dopamine menu (customizable)', 'Pomodoro & focus timer', 'Body doubling mode', 'Progress tracking across sessions'].map((f, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, fontSize: 14, color: '#2D2926' }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#B8A4E8', flexShrink: 0 }} />
-              {f}
-            </div>
-          ))}
-        </div>
-        <Link href="/shop" style={{
-          textDecoration: 'none', background: '#B8A4E8', color: 'white',
-          padding: '13px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block',
-        }}>
-          Browse the shop while you wait ✨
-        </Link>
+    <div>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 4 }}>{greeting} 👋</div>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926' }}>{data.profile?.display_name || 'Friend'}</div>
       </div>
+
+      {/* PLANT */}
+      <div style={{ background: 'linear-gradient(135deg, #E8DEFF 0%, #FFD6C4 100%)', borderRadius: 24, padding: '28px 24px', marginBottom: 16, textAlign: 'center', border: '1.5px solid #D4C5F9', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', pointerEvents: 'none' }} />
+        <div style={{ fontSize: 80, marginBottom: 8, lineHeight: 1 }}>{plantStage.emoji}</div>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 4 }}>{data.plant?.plant_name || 'My Brain Plant'}</div>
+        <div style={{ fontSize: 12, color: '#6B5F58', marginBottom: 16 }}>Stage: <strong>{plantStage.name}</strong></div>
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#6B5F58', marginBottom: 4 }}>
+            <span>Plant health</span><span>{data.plant?.health || 100}%</span>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${data.plant?.health || 100}%`, background: '#5BA85B', borderRadius: 100 }} />
+          </div>
+        </div>
+        <div style={{ fontSize: 11, color: '#6B5F58', fontStyle: 'italic' }}>Complete tasks to water your plant 💧</div>
+      </div>
+
+      {/* XP + LEVEL */}
+      <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '20px', marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div>
+            <div style={{ fontSize: 11, color: '#9B8F88', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Level</div>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 28, color: '#2D2926', lineHeight: 1 }}>{level} <span style={{ fontSize: 14, color: '#9B8F88' }}>ADHD Brain</span></div>
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 20, marginBottom: 2 }}>🔥</div>
+              <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926' }}>{data.xp?.streak_days || 0}</div>
+              <div style={{ fontSize: 9, color: '#9B8F88' }}>streak</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 20, marginBottom: 2 }}>💎</div>
+              <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926' }}>{data.xp?.gems || 0}</div>
+              <div style={{ fontSize: 9, color: '#9B8F88' }}>gems</div>
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#9B8F88', marginBottom: 4 }}>
+          <span>{data.xp?.total_xp || 0} XP total</span>
+          <span>{xpProgress.current} / {xpProgress.needed} to next level</span>
+        </div>
+        <div style={{ background: '#E8DEFF', borderRadius: 100, height: 8, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${xpProgress.progress}%`, background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8)', borderRadius: 100, transition: 'width 0.5s' }} />
+        </div>
+      </div>
+
+      {/* TODAY STATS */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+        {[
+          { label: 'Tasks done today', value: data.todayTasks, emoji: '✅', color: '#D4E8D4', href: '/app/tasks' },
+          { label: 'Habits done today', value: data.todayHabits, emoji: '🌱', color: '#D4EEFF', href: '/app/habits' },
+        ].map((stat, i) => (
+          <Link key={i} href={stat.href} style={{ textDecoration: 'none' }}>
+            <div style={{ background: stat.color, borderRadius: 16, padding: '16px', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, marginBottom: 4 }}>{stat.emoji}</div>
+              <div style={{ fontFamily: 'Georgia, serif', fontSize: 28, color: '#2D2926', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 11, color: '#6B5F58', marginTop: 4 }}>{stat.label}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* QUICK ACTIONS */}
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>Quick start</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {[
+          { href: '/app/tasks', emoji: '✅', label: 'Add or complete a task', desc: '+50 XP · waters your plant', color: '#E8DEFF' },
+          { href: '/app/habits', emoji: '🌱', label: 'Check your habits', desc: '+30 XP each habit', color: '#D4E8D4' },
+          { href: '/app/timer', emoji: '🍅', label: 'Start a focus session', desc: '+40 XP per pomodoro', color: '#FFD6C4' },
+          { href: '/app/dump', emoji: '🧠', label: 'Brain dump', desc: '+20 XP · clear your head', color: '#D4EEFF' },
+          { href: '/app/dopamine', emoji: '🍬', label: 'Pick a reward', desc: 'You deserve it', color: '#FFE8E8' },
+        ].map((action, i) => (
+          <Link key={i} href={action.href} style={{ textDecoration: 'none' }}>
+            <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: action.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{action.emoji}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, color: '#2D2926', fontWeight: 500 }}>{action.label}</div>
+                <div style={{ fontSize: 11, color: '#9B8F88', marginTop: 2 }}>{action.desc}</div>
+              </div>
+              <div style={{ fontSize: 16, color: '#D4C5F9' }}>→</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {data.achievements?.length > 0 && (
+        <div style={{ marginTop: 20 }}>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>Recent achievements</div>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {data.achievements.map((a: any, i: number) => (
+              <div key={i} style={{ background: '#FFF8F0', border: '1px solid #E8E0D8', borderRadius: 12, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 18 }}>{a.achievements?.emoji}</span>
+                <span style={{ fontSize: 12, color: '#6B5F58' }}>{a.achievements?.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
