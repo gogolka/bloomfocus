@@ -2,7 +2,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+const supabase = (() => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return null as any
+  return createClient(url, key)
+})()
 const MODES = { focus: 25 * 60, short: 5 * 60, long: 15 * 60, micro: 10 * 60 }
 const CIRCUMFERENCE = 2 * Math.PI * 88
 

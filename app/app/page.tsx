@@ -4,10 +4,13 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { getLevelFromXP, getXPToNextLevel, PLANT_STAGES } from '@/lib/gamification'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+const supabase = (() => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return null as any
+  const { createClient: cc } = require('@supabase/supabase-js')
+  return cc(url, key)
+})()
 
 export default function AppDashboard() {
   const [data, setData] = useState<any>(null)
