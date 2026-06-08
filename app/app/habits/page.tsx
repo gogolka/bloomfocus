@@ -21,7 +21,7 @@ export default function HabitsPage() {
   const today = new Date().toISOString().split('T')[0]
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: any) => {
       if (user) { setUserId(user.id); loadHabits(user.id) }
     })
   }, [])

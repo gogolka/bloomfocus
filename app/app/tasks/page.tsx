@@ -18,7 +18,7 @@ export default function TasksPage() {
   const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: any) => {
       if (user) { setUserId(user.id); loadTasks(user.id) }
     })
   }, [])
