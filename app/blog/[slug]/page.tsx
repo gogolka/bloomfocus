@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { articles } from '../page'
+import { articles } from '@/lib/articles'
 
 const articleContent: Record<string, string[]> = {
   'why-adhd-brains-struggle-with-planning': [

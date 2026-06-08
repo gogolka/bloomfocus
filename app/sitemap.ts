@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { articles } from './blog/page'
+import { articles } from '@/lib/articles'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const blogUrls = articles.map(article => ({
