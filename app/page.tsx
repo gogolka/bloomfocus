@@ -146,6 +146,83 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* APP SECTION */}
+      <section style={{ padding: '80px 24px', background: '#2D2926', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(184,164,232,0.15) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,191,168,0.1) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>Free ADHD toolkit</div>
+              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#FAFAF8', lineHeight: 1.2, marginBottom: 16 }}>
+                The bloom focus <em style={{ color: '#B8A4E8' }}>app</em>
+              </h2>
+              <p style={{ fontSize: 15, color: '#9B8F88', lineHeight: 1.7, marginBottom: 32 }}>
+                A free ADHD toolkit that lives in your browser. Tasks, habits, focus timer, brain dump, dopamine menu — all in one place. With streaks, XP, and a plant that grows as you do.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
+                {[
+                  { emoji: '🌱', text: 'Grow a plant as you complete tasks' },
+                  { emoji: '🔥', text: 'Build streaks and earn XP' },
+                  { emoji: '✅', text: 'Task manager with micro-steps' },
+                  { emoji: '🧠', text: 'Brain dump → convert to tasks' },
+                  { emoji: '🍅', text: 'Pomodoro timer + habit tracker' },
+                ].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span style={{ fontSize: 18 }}>{f.emoji}</span>
+                    <span style={{ fontSize: 14, color: '#FEFCFA' }}>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/app" style={{
+                textDecoration: 'none', background: '#B8A4E8', color: 'white',
+                padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600,
+                display: 'inline-block', boxShadow: '0 4px 20px rgba(184,164,232,0.35)',
+              }}>
+                Try the free app →
+              </Link>
+            </div>
+
+            {/* App preview card */}
+            <div style={{ background: '#1A1814', borderRadius: 24, padding: '24px', border: '1px solid rgba(255,255,255,0.06)' }}>
+              {/* Plant */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(232,222,255,0.15) 0%, rgba(255,214,196,0.1) 100%)', borderRadius: 16, padding: '20px', marginBottom: 16, textAlign: 'center' }}>
+                <div style={{ fontSize: 56, marginBottom: 8 }}>🌸</div>
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 14, color: '#FAFAF8', marginBottom: 4 }}>My Brain Plant</div>
+                <div style={{ fontSize: 11, color: '#9B8F88', marginBottom: 10 }}>Stage: Full Bloom</div>
+                <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 100, height: 5, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: '78%', background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8)', borderRadius: 100 }} />
+                </div>
+              </div>
+
+              {/* XP bar */}
+              <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '12px 14px', marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <span style={{ fontSize: 12, color: '#FAFAF8', fontFamily: 'Georgia, serif' }}>Level 7 ADHD Brain</span>
+                  <span style={{ fontSize: 11, color: '#9B8F88' }}>🔥 12 streak</span>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: '65%', background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8)', borderRadius: 100 }} />
+                </div>
+              </div>
+
+              {/* Quick actions */}
+              {[
+                { emoji: '✅', label: 'Write report intro', xp: '+50 XP' },
+                { emoji: '🌱', label: 'Drink water', xp: '+30 XP' },
+                { emoji: '🍅', label: '25 min focus done', xp: '+40 XP' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                  <span style={{ fontSize: 16 }}>{item.emoji}</span>
+                  <span style={{ fontSize: 12, color: '#FAFAF8', flex: 1 }}>{item.label}</span>
+                  <span style={{ fontSize: 11, color: '#B8A4E8' }}>{item.xp}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* BLOG PREVIEW */}
       <section style={{ padding: '80px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
