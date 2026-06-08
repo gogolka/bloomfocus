@@ -31,7 +31,7 @@ export default function HabitsPage() {
     const { data: c } = await supabase.from('habit_completions').select('habit_id').eq('user_id', uid).eq('completed_date', today)
     setHabits(h || [])
     const done: Record<string, boolean> = {}
-    c?.forEach(x => { done[x.habit_id] = true })
+    c?.forEach((x: any) => { done[x.habit_id] = true })
     setCompletions(done)
   }
 
