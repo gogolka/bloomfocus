@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #FFF8F0;
+  --warm-white: #FEFCFA;
+  --lavender: #E8DEFF;
+  --lavender-mid: #D4C5F9;
+  --lavender-deep: #B8A4E8;
+  --lavender-dark: #7B5FCC;
+  --peach: #FFD6C4;
+  --peach-mid: #FFBFA8;
+  --peach-dark: #E8956A;
+  --sage: #D4E8D4;
+  --sage-mid: #B8D4B8;
+  --sage-dark: #5BA85B;
+  --blush: #FFE8E8;
+  --sky: #D4EEFF;
+  --text-dark: #2D2926;
+  --text-mid: #6B5F58;
+  --text-soft: #9B8F88;
+  --border: rgba(45,41,38,0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--cream);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+.font-georgia {
+  font-family: Georgia, serif;
+}
+
+/* Gradient strip */
+.gradient-strip {
+  background: linear-gradient(90deg, var(--lavender-deep), var(--peach-mid), var(--sage-mid));
+}
+
+/* Blob backgrounds */
+.blob-bg {
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 10%, rgba(232,222,255,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 80%, rgba(255,214,196,0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 50% 50%, rgba(212,232,212,0.3) 0%, transparent 70%);
+}
+
+/* Fade in animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.fade-up-delay-1 { animation-delay: 0.1s; opacity: 0; animation-fill-mode: forwards; }
+.fade-up-delay-2 { animation-delay: 0.2s; opacity: 0; animation-fill-mode: forwards; }
+.fade-up-delay-3 { animation-delay: 0.3s; opacity: 0; animation-fill-mode: forwards; }
+.fade-up-delay-4 { animation-delay: 0.4s; opacity: 0; animation-fill-mode: forwards; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--lavender-mid); border-radius: 100px; }
