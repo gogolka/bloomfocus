@@ -29,21 +29,11 @@ export default function BlogPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {articles.map((article, i) => (
             <Link key={i} href={`/blog/${article.slug}`} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)',
-                borderRadius: 20, padding: '28px 28px',
-                display: 'flex', gap: 24, alignItems: 'flex-start',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(45,41,38,0.08)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
-              >
+              <div className="hover-card-sm" style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '28px 28px', display: 'flex', gap: 24, alignItems: 'flex-start' }}>
                 <div style={{ fontSize: 40, flexShrink: 0 }}>{article.emoji}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
-                    <div style={{ background: article.tagColor, borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: article.tagTextColor }}>
-                      {article.tag}
-                    </div>
+                    <div style={{ background: article.tagColor, borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: article.tagTextColor }}>{article.tag}</div>
                     <div style={{ fontSize: 12, color: '#9B8F88' }}>{article.date} · {article.readTime}</div>
                   </div>
                   <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', lineHeight: 1.3, marginBottom: 10 }}>{article.title}</h2>
