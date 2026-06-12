@@ -1,13 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = (() => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null as any
-  return createClient(url, key)
-})()
+import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
 // XP model — must stay consistent with lib/gamification.ts
 const TASK_XP = 50
@@ -68,9 +61,15 @@ export default function TasksPage() {
   const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: any) => {
-      if (user) { setUserId(user.id); loadTasks(user.id) }
+    let done = false
+    const init = (uid: string) => { if (!done) { done = true; setUserId(uid); loadTasks(uid) } }
+    supabase.auth.getSession().then(({ data: { session } }: any) => {
+      if (session?.user) init(session.user.id)
     })
+    const { data: sub } = supabase.auth.onAuthStateChange((_e: any, session: any) => {
+      if (session?.user) init(session.user.id)
+    })
+    return () => sub.subscription.unsubscribe()
   }, [])
 
   // Sort: undated tasks first (newest first), then dated tasks by nearest due date.

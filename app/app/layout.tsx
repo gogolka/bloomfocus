@@ -1,17 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-function getSupabase(): SupabaseClient | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null
-  return createClient(url, key)
-}
-
-const supabase = getSupabase()
+import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null)

@@ -1,16 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { getLevelFromXP, getXPToNextLevel, PLANT_STAGES } from '@/lib/gamification'
-
-const supabase = (() => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null as any
-  const { createClient: cc } = require('@supabase/supabase-js')
-  return cc(url, key)
-})()
+import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
 export default function AppDashboard() {
   const [data, setData] = useState<any>(null)

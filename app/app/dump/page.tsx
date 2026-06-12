@@ -1,13 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = (() => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null as any
-  return createClient(url, key)
-})()
+import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
 export default function DumpPage() {
   const [content, setContent] = useState('')
