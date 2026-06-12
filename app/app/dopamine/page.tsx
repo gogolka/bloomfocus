@@ -73,10 +73,10 @@ export default function DopaminePage() {
   }, [])
 
   async function startBreak(item: { icon: string; text: string; time: string }) {
-    const sec = parseMinutes(item.time)
-    if (sec <= 0) return
+    const mins = parseMinutes(item.time)
+    if (mins <= 0) return
     await ensureNotificationPermission()
-    const end = Date.now() + sec * 1000
+    const end = Date.now() + mins * 60 * 1000
     try { localStorage.setItem(BREAK_STORE_KEY, JSON.stringify({ end, icon: item.icon, text: item.text, time: item.time })) } catch {}
     breakTimer.startAt(end)
   }
