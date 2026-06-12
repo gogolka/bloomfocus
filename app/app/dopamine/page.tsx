@@ -1,6 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import { useCountdown, ensureNotificationPermission, notify, parseMinutes } from '@/lib/timer'
+
+const BREAK_STORE_KEY = 'bloom-break-timer'
 
 const REWARDS = [
   { id: 'quick', icon: '⚡', title: 'Quick Hits', subtitle: '1–5 min', color: '#E8DEFF', borderColor: '#D4C5F9', items: [
@@ -39,9 +42,49 @@ interface CustomReward {
 export default function DopaminePage() {
   const [open, setOpen] = useState<string | null>('quick')
   const [picked, setPicked] = useState<string | null>(null)
-  const [random, setRandom] = useState<string | null>(null)
+  const [selected, setSelected] = useState<{ icon: string; text: string; time: string } | null>(null)
+  const [toast, setToast] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
   const [custom, setCustom] = useState<CustomReward[]>([])
+
+  const showToast = (m: string) => { setToast(m); setTimeout(() => setToast(''), 3500) }
+
+  function onBreakComplete() {
+    try { localStorage.removeItem(BREAK_STORE_KEY) } catch {}
+    showToast('💛 Break over — welcome back, no rush.')
+    notify('💛 Break over', 'Welcome back whenever you are ready.')
+  }
+
+  const breakTimer = useCountdown(onBreakComplete)
+
+  // Restore a running break timer after reload / PWA reopen
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(BREAK_STORE_KEY)
+      if (raw) {
+        const saved = JSON.parse(raw)
+        if (saved.end && saved.end > Date.now()) {
+          setSelected({ icon: saved.icon || '💛', text: saved.text || 'Break', time: saved.time || '' })
+          breakTimer.startAt(saved.end)
+        } else { localStorage.removeItem(BREAK_STORE_KEY) }
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function startBreak(item: { icon: string; text: string; time: string }) {
+    const sec = parseMinutes(item.time)
+    if (sec <= 0) return
+    await ensureNotificationPermission()
+    const end = Date.now() + sec * 1000
+    try { localStorage.setItem(BREAK_STORE_KEY, JSON.stringify({ end, icon: item.icon, text: item.text, time: item.time })) } catch {}
+    breakTimer.startAt(end)
+  }
+
+  function stopBreak() {
+    breakTimer.stop()
+    try { localStorage.removeItem(BREAK_STORE_KEY) } catch {}
+  }
 
   // Add-reward form state
   const [showForm, setShowForm] = useState(false)
@@ -91,24 +134,54 @@ export default function DopaminePage() {
       ...custom.map(c => ({ icon: c.icon, text: c.text, time: c.time })),
     ]
     const pick = all[Math.floor(Math.random() * all.length)]
-    setRandom(`${pick.icon} ${pick.text}${pick.time ? ` — ${pick.time}` : ''}`)
+    setPicked(null)
+    setSelected({ icon: pick.icon, text: pick.text, time: pick.time })
   }
 
   return (
     <div>
+      {toast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, whiteSpace: 'nowrap' }}>{toast}</div>}
+
       <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Dopamine Menu</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>When motivation disappears, pick a reward. You deserve it.</div>
 
-      {/* Random button */}
-      <button onClick={randomReward} style={{ width: '100%', background: '#FEFCFA', border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 14, padding: '14px', fontSize: 14, color: '#2D2926', cursor: 'pointer', marginBottom: random ? 0 : 12, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>
-        🎲 Surprise me with a reward
-      </button>
-      {random && (
-        <div style={{ background: 'linear-gradient(135deg, #E8DEFF 0%, #FFD6C4 100%)', borderRadius: 14, padding: '16px', marginBottom: 12, textAlign: 'center', marginTop: 10 }}>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926' }}>{random}</div>
-          <button onClick={() => setRandom(null)} style={{ marginTop: 10, background: 'none', border: 'none', fontSize: 12, color: '#9B8F88', cursor: 'pointer' }}>dismiss</button>
+      {/* Selected reward — confirmation + optional break timer */}
+      {selected && (
+        <div style={{ background: 'linear-gradient(135deg, #E8DEFF 0%, #FFD6C4 100%)', borderRadius: 16, padding: '18px', marginBottom: 16, textAlign: 'center' }}>
+          <div style={{ fontSize: 28, marginBottom: 6 }}>{selected.icon}</div>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 4 }}>{selected.text}</div>
+          {breakTimer.running ? (
+            <>
+              <div style={{ fontFamily: 'Georgia, serif', fontSize: 40, color: '#2D2926', letterSpacing: '-1px', margin: '8px 0' }}>
+                {Math.floor(breakTimer.remaining / 60).toString().padStart(2, '0')}:{(breakTimer.remaining % 60).toString().padStart(2, '0')}
+              </div>
+              <div style={{ fontSize: 12, color: '#6B5F58', marginBottom: 12 }}>Enjoy it — guilt-free. We'll let you know when it's over.</div>
+              <button onClick={stopBreak} style={{ background: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: 100, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: '#2D2926', cursor: 'pointer' }}>Stop break</button>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 13, color: '#6B5F58', lineHeight: 1.5, marginBottom: 14 }}>
+                This is your reward — enjoy it fully, with zero guilt. 💛
+              </div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+                {parseMinutes(selected.time) > 0 && (
+                  <button onClick={() => startBreak(selected)} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                    Start {parseMinutes(selected.time)}-min timer ⏱
+                  </button>
+                )}
+                <button onClick={() => { setSelected(null); setPicked(null) }} style={{ background: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: 100, padding: '10px 20px', fontSize: 14, fontWeight: 600, color: '#2D2926', cursor: 'pointer' }}>
+                  Just enjoy it
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
+
+      {/* Random button */}
+      <button onClick={randomReward} style={{ width: '100%', background: '#FEFCFA', border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 14, padding: '14px', fontSize: 14, color: '#2D2926', cursor: 'pointer', marginBottom: 12, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>
+        🎲 Surprise me with a reward
+      </button>
 
       {/* Add custom reward button */}
       <button onClick={() => setShowForm(!showForm)} style={{ width: '100%', background: showForm ? '#E8DEFF' : '#FEFCFA', border: '1.5px solid rgba(184,164,232,0.4)', borderRadius: 14, padding: '14px', fontSize: 14, color: '#2D2926', cursor: 'pointer', marginBottom: showForm ? 0 : 20, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>
@@ -166,23 +239,29 @@ export default function DopaminePage() {
               </div>
               {open === cat.id && (
                 <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {cat.items.map((item, i) => (
-                    <div key={i} onClick={() => setPicked(picked === `${cat.id}-${i}` ? null : `${cat.id}-${i}`)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: picked === `${cat.id}-${i}` ? 'white' : 'rgba(255,255,255,0.6)', borderRadius: 10, cursor: 'pointer', border: `1.5px solid ${picked === `${cat.id}-${i}` ? 'rgba(184,164,232,0.5)' : 'transparent'}`, transition: 'all 0.15s' }}>
+                  {cat.items.map((item, i) => {
+                    const key = `${cat.id}-${i}`
+                    return (
+                    <div key={i} onClick={() => { if (picked === key) { setPicked(null); setSelected(null) } else { setPicked(key); setSelected({ icon: item.icon, text: item.text, time: item.time }) } }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: picked === key ? 'white' : 'rgba(255,255,255,0.6)', borderRadius: 10, cursor: 'pointer', border: `1.5px solid ${picked === key ? 'rgba(184,164,232,0.5)' : 'transparent'}`, transition: 'all 0.15s' }}>
                       <span style={{ fontSize: 18 }}>{item.icon}</span>
                       <span style={{ fontSize: 14, flex: 1, color: '#2D2926' }}>{item.text}</span>
                       <span style={{ fontSize: 11, color: '#9B8F88' }}>{item.time}</span>
-                      {picked === `${cat.id}-${i}` && <span>⭐</span>}
+                      {picked === key && <span>⭐</span>}
                     </div>
-                  ))}
+                    )
+                  })}
                   {/* Custom rewards for this category */}
-                  {customForCat.map(item => (
-                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.6)', borderRadius: 10, border: '1.5px dashed rgba(184,164,232,0.5)' }}>
+                  {customForCat.map(item => {
+                    const key = `custom-${item.id}`
+                    return (
+                    <div key={item.id} onClick={() => { if (picked === key) { setPicked(null); setSelected(null) } else { setPicked(key); setSelected({ icon: item.icon, text: item.text, time: item.time }) } }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: picked === key ? 'white' : 'rgba(255,255,255,0.6)', borderRadius: 10, cursor: 'pointer', border: `1.5px dashed ${picked === key ? 'rgba(184,164,232,0.8)' : 'rgba(184,164,232,0.5)'}` }}>
                       <span style={{ fontSize: 18 }}>{item.icon}</span>
                       <span style={{ fontSize: 14, flex: 1, color: '#2D2926' }}>{item.text}</span>
                       {item.time && <span style={{ fontSize: 11, color: '#9B8F88' }}>{item.time}</span>}
-                      <button onClick={() => deleteReward(item.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#c0627a', padding: '2px 4px' }}>✕</button>
+                      <button onClick={(e) => { e.stopPropagation(); deleteReward(item.id) }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#c0627a', padding: '2px 4px' }}>✕</button>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>

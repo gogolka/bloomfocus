@@ -2,79 +2,112 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { POMODORO_XP, levelFromXP, stageFromXP } from '@/lib/xp'
+import { useCountdown, ensureNotificationPermission, notify } from '@/lib/timer'
+
 const MODES = { focus: 25 * 60, short: 5 * 60, long: 15 * 60, micro: 10 * 60 }
 const CIRCUMFERENCE = 2 * Math.PI * 88
+const STORE_KEY = 'bloom-focus-timer'
+
+async function awardPomodoroXP(uid: string) {
+  const today = new Date().toISOString().split('T')[0]
+  const now = new Date().toISOString()
+  const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
+  const newXP = (cur?.total_xp || 0) + POMODORO_XP
+  const newGems = (cur?.gems || 0) + Math.floor(POMODORO_XP / 10)
+  await supabase.from('user_xp').upsert({
+    user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
+    last_active_date: today, updated_at: now,
+  }, { onConflict: 'user_id' })
+  await supabase.from('xp_events').insert({ user_id: uid, action: 'pomodoro_done', xp_gained: POMODORO_XP, description: 'Focus session completed' })
+  const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
+  await supabase.from('user_plant').upsert({
+    user_id: uid, total_waterings: (plant?.total_waterings || 0) + 1, stage: stageFromXP(newXP),
+    last_watered_at: now, updated_at: now,
+  }, { onConflict: 'user_id' })
+}
 
 export default function TimerPage() {
   const [mode, setMode] = useState<keyof typeof MODES>('focus')
-  const [remaining, setRemaining] = useState(MODES.focus)
-  const [running, setRunning] = useState(false)
   const [task, setTask] = useState('')
   const [pomodoros, setPomodoros] = useState(0)
   const [xpToast, setXpToast] = useState('')
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const modeRef = useRef(mode); modeRef.current = mode
+  const taskRef = useRef(task); taskRef.current = task
 
-  const total = MODES[mode]
-  const pct = remaining / total
-  const mins = Math.floor(remaining / 60).toString().padStart(2, '0')
-  const secs = (remaining % 60).toString().padStart(2, '0')
-
-  useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(() => {
-        setRemaining(r => {
-          if (r <= 1) {
-            clearInterval(intervalRef.current!)
-            setRunning(false)
-            if (mode === 'focus') {
-              setPomodoros(p => p + 1)
-              setXpToast('+40 XP 🍅 Focus complete!')
-              setTimeout(() => setXpToast(''), 3000)
-              saveSession()
-            }
-            return 0
-          }
-          return r - 1
-        })
-      }, 1000)
-    } else {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [running])
+  const showToast = (msg: string) => { setXpToast(msg); setTimeout(() => setXpToast(''), 3000) }
 
   async function saveSession() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    await supabase.from('pomodoro_sessions').insert({ user_id: user.id, duration_minutes: MODES[mode] / 60, task_label: task || null, completed: true })
+    await supabase.from('pomodoro_sessions').insert({ user_id: user.id, duration_minutes: MODES[modeRef.current] / 60, task_label: taskRef.current || null, completed: true })
     try { await awardPomodoroXP(user.id) } catch (e) { console.error('pomodoro XP failed', e) }
   }
 
-  // Award 40 XP + water the plant for a completed focus session. Persists to DB.
-  async function awardPomodoroXP(uid: string) {
-    const today = new Date().toISOString().split('T')[0]
-    const now = new Date().toISOString()
-    const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
-    const newXP = (cur?.total_xp || 0) + POMODORO_XP
-    const newGems = (cur?.gems || 0) + Math.floor(POMODORO_XP / 10)
-    await supabase.from('user_xp').upsert({
-      user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
-      last_active_date: today, updated_at: now,
-    }, { onConflict: 'user_id' })
-    await supabase.from('xp_events').insert({ user_id: uid, action: 'pomodoro_done', xp_gained: POMODORO_XP, description: 'Focus session completed' })
-    const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
-    await supabase.from('user_plant').upsert({
-      user_id: uid, total_waterings: (plant?.total_waterings || 0) + 1, stage: stageFromXP(newXP),
-      last_watered_at: now, updated_at: now,
-    }, { onConflict: 'user_id' })
+  function handleComplete() {
+    try { localStorage.removeItem(STORE_KEY) } catch {}
+    if (modeRef.current === 'focus') {
+      setPomodoros(p => p + 1)
+      showToast('+40 XP 🍅 Focus complete!')
+      notify('🍅 Focus complete!', 'Nice work — time for a break.')
+      saveSession()
+    } else {
+      showToast('☕ Break over!')
+      notify('☕ Break over', 'Ready to focus again?')
+    }
+  }
+
+  const { remaining, running, startAt, start, pause, resume, reset } = useCountdown(handleComplete)
+
+  // Restore a running timer (and its mode) after a reload / PWA reopen.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORE_KEY)
+      if (raw) {
+        const saved = JSON.parse(raw)
+        if (saved.end && saved.end > Date.now() && saved.mode in MODES) {
+          setMode(saved.mode)
+          startAt(saved.end)
+        } else {
+          localStorage.removeItem(STORE_KEY)
+        }
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const total = MODES[mode]
+  const shown = running ? remaining : (remaining > 0 ? remaining : total)
+  const pct = shown / total
+  const mins = Math.floor(shown / 60).toString().padStart(2, '0')
+  const secs = (shown % 60).toString().padStart(2, '0')
+
+  function persist(end: number, m: keyof typeof MODES) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ end, mode: m })) } catch {}
+  }
+
+  async function handlePlayPause() {
+    if (running) {
+      pause()
+      try { localStorage.removeItem(STORE_KEY) } catch {}
+      return
+    }
+    await ensureNotificationPermission()
+    const sec = remaining > 0 && remaining < total ? remaining : MODES[mode]
+    const end = Date.now() + sec * 1000
+    persist(end, mode)
+    startAt(end)
   }
 
   function changeMode(m: keyof typeof MODES) {
-    setMode(m); setRemaining(MODES[m]); setRunning(false)
-    if (intervalRef.current) clearInterval(intervalRef.current)
+    setMode(m)
+    reset(MODES[m])
+    try { localStorage.removeItem(STORE_KEY) } catch {}
   }
 
-  function reset() { setRemaining(MODES[mode]); setRunning(false); if (intervalRef.current) clearInterval(intervalRef.current) }
+  function handleReset() {
+    reset(MODES[mode])
+    try { localStorage.removeItem(STORE_KEY) } catch {}
+  }
 
   return (
     <div>
@@ -105,13 +138,13 @@ export default function TimerPage() {
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ fontFamily: 'Georgia, serif', fontSize: 48, color: '#2D2926', letterSpacing: '-2px', lineHeight: 1 }}>{mins}:{secs}</div>
-            <div style={{ fontSize: 11, color: '#9B8F88', marginTop: 4, textTransform: 'uppercase', letterSpacing: '1px' }}>{running ? (mode === 'focus' ? 'focusing…' : 'resting…') : remaining === 0 ? 'done!' : 'ready'}</div>
+            <div style={{ fontSize: 11, color: '#9B8F88', marginTop: 4, textTransform: 'uppercase', letterSpacing: '1px' }}>{running ? (mode === 'focus' ? 'focusing…' : 'resting…') : shown === 0 ? 'done!' : 'ready'}</div>
           </div>
         </div>
 
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={reset} style={{ width: 52, height: 52, borderRadius: '50%', border: 'none', background: '#E8DEFF', color: '#2D2926', fontSize: 20, cursor: 'pointer' }}>↺</button>
-          <button onClick={() => setRunning(!running)} style={{ width: 52, height: 52, borderRadius: '50%', border: 'none', background: '#B8A4E8', color: 'white', fontSize: 20, cursor: 'pointer' }}>
+          <button onClick={handleReset} style={{ width: 52, height: 52, borderRadius: '50%', border: 'none', background: '#E8DEFF', color: '#2D2926', fontSize: 20, cursor: 'pointer' }}>↺</button>
+          <button onClick={handlePlayPause} style={{ width: 52, height: 52, borderRadius: '50%', border: 'none', background: '#B8A4E8', color: 'white', fontSize: 20, cursor: 'pointer' }}>
             {running ? '⏸' : '▶'}
           </button>
         </div>
