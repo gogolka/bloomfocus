@@ -65,10 +65,10 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
 
       {showModal && (
         <div
-          onClick={e => { if (e.target === e.currentTarget) setShowModal(false) }}
+          onClick={e => { if (e.target === e.currentTarget && !loading) setShowModal(false) }}
           style={{
             position: 'fixed', inset: 0, zIndex: 1000,
-            background: 'rgba(45,41,38,0.5)', backdropFilter: 'blur(8px)',
+            background: 'rgba(45,41,38,0.65)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '24px',
           }}
@@ -78,6 +78,23 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
             maxWidth: 420, width: '100%',
             boxShadow: '0 20px 60px rgba(45,41,38,0.2)',
           }}>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                <div style={{
+                  width: 44, height: 44, margin: '0 auto 20px',
+                  border: '3px solid #E8DEFF', borderTopColor: '#B8A4E8',
+                  borderRadius: '50%', animation: 'bloomspin 0.8s linear infinite',
+                }} />
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 6 }}>
+                  Preparing secure payment…
+                </div>
+                <div style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.5 }}>
+                  This can take a few seconds.<br />Please don't close this window.
+                </div>
+                <style>{`@keyframes bloomspin { to { transform: rotate(360deg); } }`}</style>
+              </div>
+            ) : (
+            <>
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
               <div>
@@ -145,13 +162,15 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
                 transition: 'all 0.2s',
               }}
             >
-              {loading ? 'Redirecting to payment...' : 'Pay now →'}
+              Pay now →
             </button>
 
             <p style={{ fontSize: 11, color: '#9B8F88', textAlign: 'center', marginTop: 14, lineHeight: 1.5 }}>
               🔒 Secure payment via Monobank<br />
               📧 Download link sent to your email instantly after payment
             </p>
+            </>
+            )}
           </div>
         </div>
       )}
