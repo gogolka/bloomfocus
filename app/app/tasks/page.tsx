@@ -59,6 +59,9 @@ async function awardTaskXP(uid: string) {
 export default function TasksPage() {
   const [tasks, setTasks] = useState<any[]>([])
   const [newTask, setNewTask] = useState('')
+  const [newDate, setNewDate] = useState('')
+  const [newTags, setNewTags] = useState<string[]>([])
+  const [newTagInput, setNewTagInput] = useState('')
   const [expanded, setExpanded] = useState<string | null>(null)
   const [newStep, setNewStep] = useState('')
   const [xpToast, setXpToast] = useState('')
@@ -70,15 +73,41 @@ export default function TasksPage() {
     })
   }, [])
 
+  // Sort: undated tasks first (newest first), then dated tasks by nearest due date.
+  function sortTasks(list: any[]) {
+    return [...list].sort((a, b) => {
+      if (!a.due_date && !b.due_date) return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      if (!a.due_date) return -1
+      if (!b.due_date) return 1
+      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
+    })
+  }
+
   async function loadTasks(uid: string) {
-    const { data } = await supabase.from('tasks').select('*').eq('user_id', uid).eq('status', 'active').order('created_at', { ascending: false })
-    setTasks(data || [])
+    const { data } = await supabase.from('tasks').select('*').eq('user_id', uid).eq('status', 'active')
+    setTasks(sortTasks(data || []))
+  }
+
+  function addTag() {
+    const t = newTagInput.trim()
+    if (!t || newTags.includes(t)) { setNewTagInput(''); return }
+    setNewTags(prev => [...prev, t])
+    setNewTagInput('')
   }
 
   async function addTask() {
     if (!newTask.trim() || !userId) return
-    const { data } = await supabase.from('tasks').insert({ user_id: userId, title: newTask.trim(), steps: [] }).select().single()
-    if (data) { setTasks(prev => [data, ...prev]); setNewTask('') }
+    const { data } = await supabase.from('tasks').insert({
+      user_id: userId,
+      title: newTask.trim(),
+      steps: [],
+      due_date: newDate || null,
+      tags: newTags,
+    }).select().single()
+    if (data) {
+      setTasks(prev => sortTasks([data, ...prev]))
+      setNewTask(''); setNewDate(''); setNewTags([]); setNewTagInput('')
+    }
   }
 
   async function completeTask(task: any) {
@@ -111,6 +140,17 @@ export default function TasksPage() {
 
   function showXP(msg: string) { setXpToast(msg); setTimeout(() => setXpToast(''), 2500) }
 
+  function formatDue(d: string): { label: string; color: string } {
+    const date = new Date(d + 'T00:00:00')
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const diff = Math.round((date.getTime() - today.getTime()) / 86400000)
+    if (diff < 0) return { label: `${Math.abs(diff)}d overdue`, color: '#c0627a' }
+    if (diff === 0) return { label: 'Today', color: '#7B5FCC' }
+    if (diff === 1) return { label: 'Tomorrow', color: '#7B5FCC' }
+    if (diff < 7) return { label: `In ${diff} days`, color: '#9B8F88' }
+    return { label: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), color: '#9B8F88' }
+  }
+
   return (
     <div>
       {xpToast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, whiteSpace: 'nowrap' }}>{xpToast}</div>}
@@ -118,9 +158,31 @@ export default function TasksPage() {
       <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Tasks</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>Each task = +50 XP + waters your plant 💧</div>
 
-      <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-        <input value={newTask} onChange={e => setNewTask(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="What needs doing today?" style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: '#FEFCFA', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
-        <button onClick={addTask} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 12, padding: '11px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Add ✨</button>
+      <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: 14, marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+          <input value={newTask} onChange={e => setNewTask(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="What's the plan?" style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
+          <button onClick={addTask} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 12, padding: '11px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Add ✨</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#9B8F88' }}>
+            <span>📅</span>
+            <input type="date" value={newDate} onChange={e => setNewDate(e.target.value)} style={{ border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 10px', fontSize: 12, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
+            {newDate && <button onClick={() => setNewDate('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9B8F88', fontSize: 13 }}>✕</button>}
+          </label>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#9B8F88' }}>
+            <span>🏷</span>
+            <input value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag() } }} placeholder="Add tag (optional)" style={{ border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 10px', fontSize: 12, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif", width: 130 }} />
+          </div>
+
+          {newTags.map(tag => (
+            <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#E8DEFF', color: '#7B5FCC', borderRadius: 100, padding: '3px 10px', fontSize: 11, fontWeight: 600 }}>
+              {tag}
+              <button onClick={() => setNewTags(prev => prev.filter(t => t !== tag))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7B5FCC', fontSize: 12, lineHeight: 1, padding: 0 }}>✕</button>
+            </span>
+          ))}
+        </div>
       </div>
 
       {tasks.length === 0 ? (
@@ -141,6 +203,16 @@ export default function TasksPage() {
                   <button onClick={() => completeTask(task)} title="Mark done" style={{ width: 24, height: 24, borderRadius: '50%', border: '2px solid #D4C5F9', background: 'transparent', cursor: 'pointer', flexShrink: 0 }} />
                   <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => setExpanded(isExp ? null : task.id)}>
                     <div style={{ fontSize: 14, color: '#2D2926', fontWeight: 500 }}>{task.title}</div>
+                    {(task.due_date || (task.tags && task.tags.length > 0)) && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 5 }}>
+                        {task.due_date && (() => { const d = formatDue(task.due_date); return (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, fontWeight: 600, color: d.color }}>📅 {d.label}</span>
+                        )})()}
+                        {(task.tags || []).map((tag: string) => (
+                          <span key={tag} style={{ background: '#E8DEFF', color: '#7B5FCC', borderRadius: 100, padding: '2px 8px', fontSize: 10, fontWeight: 600 }}>{tag}</span>
+                        ))}
+                      </div>
+                    )}
                     {stepsTotal > 0 && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
                         <div style={{ flex: 1, background: '#E8DEFF', borderRadius: 100, height: 3, overflow: 'hidden' }}>
