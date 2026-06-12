@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 interface BuyButtonProps {
   productSlug: string
@@ -13,6 +14,9 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   const handleBuy = async () => {
     if (!email || !email.includes('@')) {
@@ -63,7 +67,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
         Buy now →
       </button>
 
-      {showModal && (
+      {showModal && mounted && createPortal(
         <div
           onClick={e => { if (e.target === e.currentTarget && !loading) setShowModal(false) }}
           style={{
@@ -172,7 +176,8 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
             </>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
