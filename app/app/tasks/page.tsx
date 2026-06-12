@@ -65,7 +65,7 @@ export default function TasksPage() {
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>Each task = +50 XP + waters your plant 💧</div>
 
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-        <input value={newTask} onChange={e => setNewTask(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="What's the thing you're avoiding?" style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: '#FEFCFA', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
+        <input value={newTask} onChange={e => setNewTask(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="What needs doing today?" style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: '#FEFCFA', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
         <button onClick={addTask} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 12, padding: '11px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Add ✨</button>
       </div>
 
