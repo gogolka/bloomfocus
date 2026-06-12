@@ -72,13 +72,13 @@ export default function DopaminePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function startBreak(item: { icon: string; text: string; time: string }) {
+  function startBreak(item: { icon: string; text: string; time: string }) {
     const mins = parseMinutes(item.time)
     if (mins <= 0) return
-    await ensureNotificationPermission()
     const end = Date.now() + mins * 60 * 1000
     try { localStorage.setItem(BREAK_STORE_KEY, JSON.stringify({ end, icon: item.icon, text: item.text, time: item.time })) } catch {}
     breakTimer.startAt(end)
+    ensureNotificationPermission() // non-blocking: enables the completion notification
   }
 
   function stopBreak() {

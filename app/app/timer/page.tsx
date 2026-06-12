@@ -85,17 +85,17 @@ export default function TimerPage() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify({ end, mode: m })) } catch {}
   }
 
-  async function handlePlayPause() {
+  function handlePlayPause() {
     if (running) {
       pause()
       try { localStorage.removeItem(STORE_KEY) } catch {}
       return
     }
-    await ensureNotificationPermission()
     const sec = remaining > 0 && remaining < total ? remaining : MODES[mode]
     const end = Date.now() + sec * 1000
     persist(end, mode)
     startAt(end)
+    ensureNotificationPermission() // non-blocking: enables the completion notification
   }
 
   function changeMode(m: keyof typeof MODES) {
