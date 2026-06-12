@@ -33,7 +33,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
       const data = await res.json()
 
       if (!res.ok || !data.paymentUrl) {
-        setError(data.error || 'Something went wrong. Please try again.')
+        setError((data.error || 'Something went wrong') + (data.detail ? `: ${data.detail}` : ''))
         setLoading(false)
         return
       }
