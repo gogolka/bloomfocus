@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { HABIT_XP, levelFromXP, stageFromXP } from '@/lib/xp'
+import { computeStreak } from '@/lib/streak'
 const EMOJIS = ['💧','🏃','📖','🧘','🥗','😴','✍️','🎵','☀️','💊','🌿','❤️']
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
@@ -16,9 +17,12 @@ async function adjustHabitXP(uid: string, complete: boolean) {
   const newXP = Math.max(0, (cur?.total_xp || 0) + delta)
   const newGems = Math.max(0, (cur?.gems || 0) + gemDelta)
 
+  const streakFields = complete
+    ? await computeStreak(uid).then(s => ({ streak_days: s.streak_days, last_active_date: s.last_active_date }))
+    : { last_active_date: today }
   await supabase.from('user_xp').upsert({
     user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
-    last_active_date: today, updated_at: now,
+    ...streakFields, updated_at: now,
   }, { onConflict: 'user_id' })
 
   if (complete) {

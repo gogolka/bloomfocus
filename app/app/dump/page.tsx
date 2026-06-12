@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { BRAIN_DUMP_XP, levelFromXP, stageFromXP } from '@/lib/xp'
+import { computeStreak } from '@/lib/streak'
 
 async function awardDumpXP(uid: string) {
   const today = new Date().toISOString().split('T')[0]
@@ -9,9 +10,10 @@ async function awardDumpXP(uid: string) {
   const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
   const newXP = (cur?.total_xp || 0) + BRAIN_DUMP_XP
   const newGems = (cur?.gems || 0) + Math.floor(BRAIN_DUMP_XP / 10)
+  const streak = await computeStreak(uid)
   await supabase.from('user_xp').upsert({
     user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
-    last_active_date: today, updated_at: now,
+    streak_days: streak.streak_days, last_active_date: streak.last_active_date, updated_at: now,
   }, { onConflict: 'user_id' })
   await supabase.from('xp_events').insert({ user_id: uid, action: 'brain_dump', xp_gained: BRAIN_DUMP_XP, description: 'Brain dump' })
   const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
@@ -26,6 +28,8 @@ export default function DumpPage() {
   const [dumps, setDumps] = useState<any[]>([])
   const [xpToast, setXpToast] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
+  const [convertingId, setConvertingId] = useState<string | null>(null)
+  const [lineSel, setLineSel] = useState<boolean[]>([])
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }: any) => {
@@ -50,13 +54,27 @@ export default function DumpPage() {
     }
   }
 
-  async function convertToTask(dump: any) {
+  function dumpLines(dump: any): string[] {
+    return dump.content.split('\n').map((l: string) => l.trim()).filter(Boolean)
+  }
+
+  function openConvert(dump: any) {
+    setConvertingId(dump.id)
+    setLineSel(dumpLines(dump).map(() => true))
+  }
+
+  async function createTasksFromLines(dump: any) {
     if (!userId) return
-    const { data: task } = await supabase.from('tasks').insert({ user_id: userId, title: dump.content.substring(0, 100), steps: [], source: 'brain_dump' }).select().single()
-    if (task) {
-      await supabase.from('brain_dumps').update({ converted_task_id: task.id }).eq('id', dump.id)
-      setDumps(prev => prev.map(d => d.id === dump.id ? { ...d, converted_task_id: task.id } : d))
+    const lines = dumpLines(dump)
+    const chosen = lines.filter((_, i) => lineSel[i] ?? true)
+    if (chosen.length === 0) return
+    const rows = chosen.map(l => ({ user_id: userId, title: l.substring(0, 200), steps: [], source: 'brain_dump' }))
+    const { data: created } = await supabase.from('tasks').insert(rows).select('id')
+    if (created && created.length) {
+      await supabase.from('brain_dumps').update({ converted_task_id: created[0].id }).eq('id', dump.id)
+      setDumps(prev => prev.map(d => d.id === dump.id ? { ...d, converted_task_id: created[0].id } : d))
     }
+    setConvertingId(null); setLineSel([])
   }
 
   const words = content.trim().split(/\s+/).filter(Boolean).length
@@ -91,12 +109,31 @@ export default function DumpPage() {
               <div key={dump.id} style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 14, padding: '14px 16px' }}>
                 <div style={{ fontSize: 11, color: '#9B8F88', marginBottom: 8 }}>{new Date(dump.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
                 <div style={{ fontSize: 13, color: '#2D2926', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{dump.content.substring(0, 200)}{dump.content.length > 200 ? '…' : ''}</div>
-                {!dump.converted_task_id && (
-                  <button onClick={() => convertToTask(dump)} style={{ marginTop: 10, background: '#E8DEFF', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#7B5FCC', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
-                    → Convert to task
+                {dump.converted_task_id ? (
+                  <div style={{ marginTop: 8, fontSize: 11, color: '#5BA85B' }}>✓ Converted to tasks</div>
+                ) : convertingId === dump.id ? (
+                  <div style={{ marginTop: 12, background: '#FFF8F0', border: '1px solid rgba(184,164,232,0.4)', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 11, color: '#6B5F58', marginBottom: 10 }}>Tick the lines that are real tasks — each becomes its own task. Leave the rest as ideas.</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+                      {dumpLines(dump).map((line: string, i: number) => (
+                        <label key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, cursor: 'pointer', fontSize: 13, color: '#2D2926' }}>
+                          <input type="checkbox" checked={lineSel[i] ?? true} onChange={e => setLineSel(prev => { const n = [...prev]; n[i] = e.target.checked; return n })} style={{ marginTop: 3, accentColor: '#B8A4E8' }} />
+                          <span style={{ lineHeight: 1.5 }}>{line}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <button onClick={() => createTasksFromLines(dump)} disabled={lineSel.filter(Boolean).length === 0} style={{ background: lineSel.filter(Boolean).length === 0 ? '#D4C5F9' : '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: lineSel.filter(Boolean).length === 0 ? 'not-allowed' : 'pointer' }}>
+                        Create {lineSel.filter(Boolean).length} task{lineSel.filter(Boolean).length === 1 ? '' : 's'} →
+                      </button>
+                      <button onClick={() => { setConvertingId(null); setLineSel([]) }} style={{ background: 'none', border: 'none', fontSize: 12, color: '#9B8F88', cursor: 'pointer' }}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={() => openConvert(dump)} style={{ marginTop: 10, background: '#E8DEFF', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#7B5FCC', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
+                    → Convert to tasks
                   </button>
                 )}
-                {dump.converted_task_id && <div style={{ marginTop: 8, fontSize: 11, color: '#5BA85B' }}>✓ Converted to task</div>}
               </div>
             ))}
           </div>

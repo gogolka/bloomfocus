@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { POMODORO_XP, levelFromXP, stageFromXP } from '@/lib/xp'
+import { computeStreak } from '@/lib/streak'
 import { useCountdown, ensureNotificationPermission, notify } from '@/lib/timer'
 
 const MODES = { focus: 25 * 60, short: 5 * 60, long: 15 * 60, micro: 10 * 60 }
@@ -14,9 +15,10 @@ async function awardPomodoroXP(uid: string) {
   const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
   const newXP = (cur?.total_xp || 0) + POMODORO_XP
   const newGems = (cur?.gems || 0) + Math.floor(POMODORO_XP / 10)
+  const streak = await computeStreak(uid)
   await supabase.from('user_xp').upsert({
     user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
-    last_active_date: today, updated_at: now,
+    streak_days: streak.streak_days, last_active_date: streak.last_active_date, updated_at: now,
   }, { onConflict: 'user_id' })
   await supabase.from('xp_events').insert({ user_id: uid, action: 'pomodoro_done', xp_gained: POMODORO_XP, description: 'Focus session completed' })
   const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()

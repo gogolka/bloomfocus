@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import { computeStreak } from '@/lib/streak'
 
 // XP model — must stay consistent with lib/gamification.ts
 const TASK_XP = 50
@@ -28,12 +29,14 @@ async function awardTaskXP(uid: string) {
   const newXP = (cur?.total_xp || 0) + TASK_XP
   const newGems = (cur?.gems || 0) + Math.floor(TASK_XP / 10)
 
+  const streak = await computeStreak(uid)
   await supabase.from('user_xp').upsert({
     user_id: uid,
     total_xp: newXP,
     level: levelFromXP(newXP),
     gems: newGems,
-    last_active_date: today,
+    streak_days: streak.streak_days,
+    last_active_date: streak.last_active_date,
     updated_at: now,
   }, { onConflict: 'user_id' })
 
