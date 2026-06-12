@@ -30,7 +30,7 @@ async function sendDownloadEmail(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      sender: { name: 'bloom focus', email: 'hello@bloomfocus.org' },
+      sender: { name: 'bloom focus', email: 'hello.bloomfocus@gmail.com' },
       to: [{ email, name: customerName || email }],
       subject: `Your download is ready — ${productTitle} 🌸`,
       htmlContent: `
