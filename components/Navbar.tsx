@@ -1,9 +1,17 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import DownloadAppButton from '@/components/DownloadAppButton'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+
+  const links = [
+    { href: '/app', label: 'App' },
+    { href: '/quiz', label: 'ADHD Test' },
+    { href: '/shop', label: 'Shop' },
+    { href: '/blog', label: 'Blog' },
+  ]
 
   return (
     <nav style={{
@@ -21,11 +29,8 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="desktop-nav">
-          {[
-            { href: '/shop', label: 'Shop' },
-            { href: '/blog', label: 'Blog' },
-          ].map(link => (
+        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="desktop-nav">
+          {links.map(link => (
             <Link key={link.href} href={link.href} style={{
               textDecoration: 'none', fontSize: 14, color: '#6B5F58', fontWeight: 500,
               transition: 'color 0.2s',
@@ -36,6 +41,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <DownloadAppButton />
           <Link href="/shop" style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '9px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600,
@@ -57,14 +63,14 @@ export default function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div style={{ background: 'var(--cream)', borderTop: '1px solid var(--border)', padding: '16px 24px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[
-            { href: '/shop', label: 'Shop' },
-            { href: '/blog', label: 'Blog' },
-          ].map(link => (
+          {links.map(link => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} style={{ textDecoration: 'none', fontSize: 16, color: '#2D2926', fontWeight: 500 }}>
               {link.label}
             </Link>
           ))}
+          <div onClick={() => setOpen(false)}>
+            <DownloadAppButton variant="block" />
+          </div>
           <Link href="/shop" onClick={() => setOpen(false)} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',

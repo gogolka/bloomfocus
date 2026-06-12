@@ -36,6 +36,38 @@ const articleContent: Record<string, string[]> = {
     'Expect inconsistency. ADHD means your capacity varies enormously from day to day. On bad days, your habit might look like a 10-second version. That still counts. The streak isn\'t the point — the direction is.',
     'And if you miss days? That\'s not failure. That\'s ADHD. The habit isn\'t broken by missing days. It only dies if you decide it\'s dead. Start again. Every day is a new chance to build the life your brain is capable of.',
   ],
+  'do-i-have-adhd-test': [
+    'If you\'ve found yourself googling "do I have ADHD" at 1am, you\'re in good company. For a huge number of adults — especially women and people who did well in school — the question doesn\'t come up until life gets complicated enough that the coping strategies stop working. A demanding job, parenthood, or simply running your own life can suddenly make lifelong patterns impossible to ignore.',
+    'ADHD in adults rarely looks like the stereotype of a hyperactive child bouncing off the walls. It looks like a brilliant person who can\'t start the report that\'s due tomorrow. It looks like forgetting appointments despite three reminders, having forty browser tabs open and a hundred more in your head, and feeling exhausted by tasks that seem effortless for everyone else. The struggle is real, and it is not a matter of willpower.',
+    'There are three presentations. Predominantly inattentive ADHD centres on focus, memory, and organisation — the "lost in thought" pattern that often gets missed entirely. Predominantly hyperactive-impulsive ADHD centres on restlessness, impulsivity, and emotional intensity — the "always on" pattern. Combined type, which is the most common, means you experience significant traits from both, and the balance can shift depending on stress, environment, and the task in front of you.',
+    'A few signs tend to show up again and again: difficulty starting tasks even when you genuinely want to do them, time blindness (deadlines feel far away and then suddenly arrive), losing things constantly, hyperfocusing on what interests you while everything else slides, and a nervous system that reacts more intensely than the situation seems to call for. None of these alone means ADHD — but a consistent cluster across years is worth paying attention to.',
+    'A self-assessment can\'t diagnose you, and it shouldn\'t try to. What a good one can do is help you put language to patterns you\'ve felt for years but never named, and give you something concrete to bring to a professional. Our free ADHD test walks you through 40 questions based on DSM-5 criteria and shows you which type your answers lean toward — in about five minutes, with no shame and no jargon.',
+    'If your results resonate, the next step is a conversation with a licensed psychiatrist or psychologist, who can give you a real evaluation and discuss options. In the meantime, be gentle with yourself. Understanding how your brain works is not about finding something wrong with you — it\'s about finally getting to build a life that fits the brain you actually have.',
+  ],
+  'adhd-paralysis': [
+    'ADHD paralysis is one of the most frustrating and least understood parts of having ADHD. It\'s the experience of knowing exactly what you need to do, genuinely wanting to do it, understanding the consequences of not doing it — and still being completely unable to begin. You\'re not lazy. You\'re not avoiding it on purpose. You\'re frozen.',
+    'There are a few flavours of it. Task paralysis is the inability to start a single task. Choice paralysis hits when there are too many options and your brain simply refuses to pick one. And overwhelm paralysis arrives when everything feels equally urgent, so you end up doing nothing at all, often while feeling intense guilt about it. All three come from the same place: an executive function system that\'s temporarily overloaded.',
+    'The neuroscience helps explain why "just do it" never works. Starting a task requires your brain to estimate effort, sequence steps, and generate enough dopamine to initiate movement. In ADHD brains, that initiation system is unreliable. When a task feels big, boring, or ambiguous, the brain can\'t summon the activation energy — and the harder you push, the more it locks up.',
+    'The way out is almost never to push harder. It\'s to make the first step absurdly small. Not "clean the kitchen" but "put one cup in the sink." Not "write the report" but "open the document and type the title." The goal isn\'t to finish — it\'s to break the freeze. Movement creates dopamine, and dopamine makes the next step possible. This is why momentum feels so good once it starts.',
+    'Other things that genuinely help: body doubling, where you work alongside another person (even on a video call) so your brain borrows their focus. Externalising the steps, so they live on paper instead of swirling in your head. Setting a timer for just five minutes with full permission to stop afterward. And a brain dump to clear the mental clutter before you choose what matters. Each of these lowers the activation energy the task requires.',
+    'Most of all, drop the shame. Paralysis is a symptom, not a character flaw, and shame is fuel for the freeze — it makes the task feel even more threatening, which locks your brain up tighter. The kindest and most effective thing you can do is treat a stuck moment as information, shrink the step, and let yourself begin badly. Beginning badly still counts as beginning.',
+  ],
+  'best-planner-for-adhd': [
+    'If you\'ve bought a beautiful planner, used it religiously for nine days, and then watched it become an expensive paperweight, the planner wasn\'t the problem and neither were you. Most planners are designed for neurotypical brains — they assume you\'ll remember to open them, feel motivated by a tidy list, and experience time as a steady, predictable flow. ADHD brains don\'t work that way, so the tool quietly sets you up to fail.',
+    'An ADHD-friendly planner has to do something different. It needs to externalise time, because ADHD brains struggle to feel it passing. It needs to make starting easy, because task initiation is the hardest part. And it needs to be forgiving, because a system that punishes you for a missed day will be abandoned the moment you fall behind — which, with ADHD, is inevitable and completely normal.',
+    'The first thing to look for is task decomposition built in. "Plan event" is paralysing; "text the venue, pick three dates, draft the invite" is doable. A planner that gives you space to break tasks into tiny, concrete steps removes the single biggest barrier ADHD brains face. If the planner just gives you a blank to-do line, it\'s asking your executive function to do the work it\'s least able to do.',
+    'The second is energy-based structure rather than rigid hourly scheduling. ADHD energy fluctuates dramatically, and a planner that assumes you\'ll do deep work at 9am sharp every day will be wrong most days. Planning around your natural energy windows — matching demanding tasks to high-energy times and admin to low-energy ones — works with your brain instead of against it.',
+    'The third, and most overlooked, is built-in kindness. The best ADHD planners make room for brain dumps, for "good enough" days, for celebrating small wins, and for starting over without guilt. They treat a missed day as a fresh page, not a broken streak. This isn\'t soft — it\'s strategic, because shame is one of the biggest reasons ADHD systems collapse.',
+    'That\'s exactly what the bloom focus toolkit is built around: planners that decompose tasks for you, structure around energy instead of rigid clocks, and a tone that never makes you feel behind. If you\'ve been blaming yourself for every abandoned planner, it might be the design that failed you — not your discipline. The right tool feels less like a test you keep failing and more like a hand on your back.',
+  ],
+  'adhd-in-women': [
+    'For decades, ADHD was studied almost entirely in young boys — the hyperactive ones who couldn\'t sit still in class. The result is a diagnostic picture that misses how ADHD most often shows up in women and girls, which is why so many women don\'t get diagnosed until their thirties, forties, or later, frequently after a child of theirs is assessed and the symptoms suddenly look familiar.',
+    'In women, ADHD is more often inattentive than hyperactive — and inattentive ADHD is quiet. It doesn\'t disrupt the classroom. It looks like daydreaming, like being "scattered" or "ditzy," like a smart girl who isn\'t living up to her potential. Because it doesn\'t cause trouble for anyone else, it gets overlooked, and the girl learns to mask it, often at enormous internal cost.',
+    'That masking is a huge part of the story. Many women with ADHD become intense perfectionists and over-preparers, building elaborate systems to compensate for a brain they don\'t understand. From the outside they look organised and high-achieving. On the inside they\'re exhausted, anxious, and convinced they\'re one slipped mask away from everyone finding out how hard they\'re actually working to keep up.',
+    'This is why ADHD in women is so often misdiagnosed as anxiety or depression. Those conditions can absolutely coexist — but frequently the anxiety is downstream of years of undiagnosed ADHD: the chronic stress of missed deadlines, the shame of forgetting things, the toll of working twice as hard for the same result. Treating the anxiety without recognising the ADHD underneath only addresses half the picture.',
+    'Hormones add another layer that the old research ignored entirely. Estrogen affects dopamine, so ADHD symptoms often intensify premenstrually, postpartum, and during perimenopause. Many women describe their symptoms becoming suddenly unmanageable in their forties — not because anything is newly wrong, but because a hormonal shift removed the buffer they\'d been unconsciously relying on for years.',
+    'If any of this feels like reading your own diary, you are not broken, dramatic, or making it up. You may simply have a brain that was never assessed on its own terms. A self-assessment can help you name the pattern, and a licensed professional can give you a real evaluation. Understanding it changes everything — not because you become a different person, but because you finally get to stop blaming yourself for being one.',
+  ],
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -103,12 +135,20 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           <p style={{ fontSize: 14, color: '#6B5F58', lineHeight: 1.6, marginBottom: 24, maxWidth: 400, margin: '0 auto 24px' }}>
             Browse the bloom focus toolkit — designed for ADHD brains, built with care.
           </p>
-          <Link href="/shop" style={{
-            textDecoration: 'none', background: '#B8A4E8', color: 'white',
-            padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block',
-          }}>
-            Shop the toolkit ✨
-          </Link>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/shop" style={{
+              textDecoration: 'none', background: '#B8A4E8', color: 'white',
+              padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block',
+            }}>
+              Shop the toolkit ✨
+            </Link>
+            <Link href="/quiz" style={{
+              textDecoration: 'none', background: 'white', color: '#7B5FCC', border: '1.5px solid #D4C5F9',
+              padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block',
+            }}>
+              Take the free ADHD test 🧠
+            </Link>
+          </div>
         </div>
 
         {/* Related articles */}
