@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { createClient } from '@supabase/supabase-js'
 import BuyButton from '@/components/BuyButton'
 
 export const dynamic = 'force-dynamic'
@@ -12,29 +11,42 @@ export const metadata: Metadata = {
 
 async function getProducts() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!url || !key) {
-    console.error('Shop: missing Supabase env vars', { url: !!url, key: !!key })
+  if (!url) {
+    console.error('Shop: NEXT_PUBLIC_SUPABASE_URL is missing')
     return []
   }
 
-  const supabase = createClient(url, key, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  })
-
-  const { data, error } = await supabase
-    .from('products')
-    .select('slug, title, description, price_usd, tag, emoji, color, border_color')
-    .eq('is_active', true)
-    .order('created_at')
-
-  if (error) {
-    console.error('Shop: Supabase error:', error.message, error.code)
+  const key = anonKey || serviceKey
+  if (!key) {
+    console.error('Shop: no Supabase key available')
     return []
   }
 
-  return data ?? []
+  const endpoint = `${url}/rest/v1/products?select=slug,title,description,price_usd,tag,emoji,color,border_color&is_active=eq.true&order=created_at.asc`
+
+  try {
+    const res = await fetch(endpoint, {
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      cache: 'no-store',
+    })
+
+    if (!res.ok) {
+      const body = await res.text()
+      console.error('Shop: REST fetch failed', res.status, body)
+      return []
+    }
+
+    return await res.json()
+  } catch (e) {
+    console.error('Shop: fetch threw', e)
+    return []
+  }
 }
 
 export default async function ShopPage() {
@@ -61,7 +73,7 @@ export default async function ShopPage() {
           <p style={{ textAlign: 'center', color: '#9B8F88' }}>Loading products...</p>
         )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
-          {products.map((p) => (
+          {products.map((p: any) => (
             <div key={p.slug} className="hover-card" style={{ background: p.color, border: `1.5px solid ${p.border_color}`, borderRadius: 20, padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
               <div style={{ fontSize: 44, marginBottom: 16 }}>{p.emoji}</div>
               <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6B5F58', display: 'inline-block', marginBottom: 12, alignSelf: 'flex-start' }}>{p.tag}</div>
