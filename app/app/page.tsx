@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getLevelFromXP, getXPToNextLevel, PLANT_STAGES } from '@/lib/gamification'
+import { plantStatus } from '@/lib/plant'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
 export default function AppDashboard() {
@@ -24,7 +25,7 @@ export default function AppDashboard() {
     const [profile, xp, plant, achievements] = await Promise.all([
       supabase.from('profiles').select('display_name, avatar_emoji, is_pro').eq('id', user.id).single(),
       supabase.from('user_xp').select('total_xp, level, gems, streak_days').eq('user_id', user.id).single(),
-      supabase.from('user_plant').select('stage, health, plant_name').eq('user_id', user.id).single(),
+      supabase.from('user_plant').select('stage, health, plant_name, last_watered_at').eq('user_id', user.id).single(),
       supabase.from('user_achievements').select('achievement_id, achievements(title, emoji)').eq('user_id', user.id).order('earned_at', { ascending: false }).limit(3),
     ])
 
@@ -51,6 +52,7 @@ export default function AppDashboard() {
   const xpProgress = getXPToNextLevel(data.xp?.total_xp || 0)
   const level = getLevelFromXP(data.xp?.total_xp || 0)
   const plantStage = PLANT_STAGES[(data.plant?.stage || 1) as keyof typeof PLANT_STAGES] || PLANT_STAGES[1]
+  const status = plantStatus(data.plant?.last_watered_at)
 
   return (
     <div>
@@ -62,18 +64,21 @@ export default function AppDashboard() {
       {/* PLANT */}
       <div style={{ background: 'linear-gradient(135deg, #E8DEFF 0%, #FFD6C4 100%)', borderRadius: 24, padding: '28px 24px', marginBottom: 16, textAlign: 'center', border: '1.5px solid #D4C5F9', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', pointerEvents: 'none' }} />
-        <div style={{ fontSize: 80, marginBottom: 8, lineHeight: 1 }}>{plantStage.emoji}</div>
+        <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
+          <div style={{ fontSize: 80, lineHeight: 1, opacity: status.mood === 'napping' ? 0.7 : 1, transition: 'opacity 0.4s' }}>{plantStage.emoji}</div>
+          {status.badge && <div style={{ position: 'absolute', top: -6, right: -14, fontSize: 26 }}>{status.badge}</div>}
+        </div>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 4 }}>{data.plant?.plant_name || 'My Brain Plant'}</div>
         <div style={{ fontSize: 12, color: '#6B5F58', marginBottom: 16 }}>Stage: <strong>{plantStage.name}</strong></div>
         <div style={{ marginBottom: 8 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#6B5F58', marginBottom: 4 }}>
-            <span>Plant health</span><span>{data.plant?.health || 100}%</span>
+            <span>Plant health</span><span>{status.health}%</span>
           </div>
           <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${data.plant?.health || 100}%`, background: '#5BA85B', borderRadius: 100 }} />
+            <div style={{ height: '100%', width: `${status.health}%`, background: status.mood === 'awake' ? '#5BA85B' : status.mood === 'resting' ? '#E0B870' : '#C9A2D4', borderRadius: 100, transition: 'width 0.5s' }} />
           </div>
         </div>
-        <div style={{ fontSize: 11, color: '#6B5F58', fontStyle: 'italic' }}>Complete tasks to water your plant 💧</div>
+        <div style={{ fontSize: 11, color: '#6B5F58', fontStyle: 'italic' }}>{status.message}</div>
       </div>
 
       {/* XP + LEVEL */}

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { HABIT_XP, levelFromXP, stageFromXP } from '@/lib/xp'
-import { computeStreak } from '@/lib/streak'
+import { computeStreak, notifyStreakMilestone } from '@/lib/streak'
 const EMOJIS = ['💧','🏃','📖','🧘','🥗','😴','✍️','🎵','☀️','💊','🌿','❤️']
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
@@ -17,13 +17,15 @@ async function adjustHabitXP(uid: string, complete: boolean) {
   const newXP = Math.max(0, (cur?.total_xp || 0) + delta)
   const newGems = Math.max(0, (cur?.gems || 0) + gemDelta)
 
-  const streakFields = complete
-    ? await computeStreak(uid).then(s => ({ streak_days: s.streak_days, last_active_date: s.last_active_date }))
+  const streak = complete ? await computeStreak(uid) : null
+  const streakFields = streak
+    ? { streak_days: streak.streak_days, last_active_date: streak.last_active_date }
     : { last_active_date: today }
   await supabase.from('user_xp').upsert({
     user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
     ...streakFields, updated_at: now,
   }, { onConflict: 'user_id' })
+  if (streak?.milestoneReached) notifyStreakMilestone()
 
   if (complete) {
     await supabase.from('xp_events').insert({ user_id: uid, action: 'habit_done', xp_gained: HABIT_XP, description: 'Habit completed' })

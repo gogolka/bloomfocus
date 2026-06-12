@@ -1,20 +1,20 @@
 'use client'
 import { supabaseBrowser as supabase } from './supabaseBrowser'
 
+// Milestones that trigger a celebration email (kept in sync with the
+// /api/streak-milestone route, which is the source of truth for sending).
+export const STREAK_MILESTONES = [3, 7, 14, 30]
+
 // Computes the streak fields to merge into a user_xp upsert, based on the
-// stored last_active_date. Call this only on a positive activity (completing a
+// stored last_active_date. Call only on a positive activity (completing a
 // task/habit, finishing a focus session, saving a dump) — not on undo.
 //
 // Rules (kind, ADHD-aware):
-//  - first ever activity            -> streak = 1
-//  - already active today           -> streak unchanged (no double count)
-//  - active yesterday               -> streak + 1
-//  - gap of 2+ days                 -> streak restarts at 1 (no negative, no shame)
-//
-// Returns both the new streak and whether a milestone was newly reached this
-// call, so the caller can trigger a celebration / email.
-export const STREAK_MILESTONES = [3, 7, 14, 30, 66, 100]
-
+//  - first ever activity                 -> streak = 1
+//  - already active today                -> streak unchanged (no double count)
+//  - active yesterday                    -> streak + 1
+//  - exactly one missed day (grace day)  -> streak + 1 (forgiven, no reset)
+//  - gap of 3+ days                      -> streak restarts at 1 (no shame)
 export async function computeStreak(uid: string): Promise<{
   streak_days: number
   last_active_date: string
@@ -22,7 +22,6 @@ export async function computeStreak(uid: string): Promise<{
   milestoneReached: number | null
 }> {
   const today = new Date().toISOString().split('T')[0]
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
 
   const { data } = await supabase
     .from('user_xp')
@@ -34,12 +33,31 @@ export async function computeStreak(uid: string): Promise<{
   const last = (data?.last_active_date as string | null) || null
 
   let streak: number
-  if (last === today) streak = prev || 1
-  else if (last === yesterday) streak = prev + 1
-  else streak = 1
+  if (!last) {
+    streak = 1
+  } else {
+    const gap = Math.round((Date.parse(today) - Date.parse(last)) / 86400000)
+    if (gap === 0) streak = prev || 1
+    else if (gap === 1 || gap === 2) streak = prev + 1 // 1 grace day
+    else streak = 1
+  }
 
   const milestoneReached =
     streak > prev && STREAK_MILESTONES.includes(streak) ? streak : null
 
   return { streak_days: streak, last_active_date: today, previous: prev, milestoneReached }
+}
+
+// Fire-and-forget: ask the server to send a streak-milestone email. The server
+// re-checks the milestone against the DB and dedupes, so this is safe to call
+// whenever a milestone is reached. Never throws.
+export async function notifyStreakMilestone() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.access_token) return
+    await fetch('/api/streak-milestone', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+  } catch { /* ignore */ }
 }

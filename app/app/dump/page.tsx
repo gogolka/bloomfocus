@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { BRAIN_DUMP_XP, levelFromXP, stageFromXP } from '@/lib/xp'
-import { computeStreak } from '@/lib/streak'
+import { computeStreak, notifyStreakMilestone } from '@/lib/streak'
 
 async function awardDumpXP(uid: string) {
   const today = new Date().toISOString().split('T')[0]
@@ -15,6 +15,7 @@ async function awardDumpXP(uid: string) {
     user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
     streak_days: streak.streak_days, last_active_date: streak.last_active_date, updated_at: now,
   }, { onConflict: 'user_id' })
+  if (streak.milestoneReached) notifyStreakMilestone()
   await supabase.from('xp_events').insert({ user_id: uid, action: 'brain_dump', xp_gained: BRAIN_DUMP_XP, description: 'Brain dump' })
   const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
   await supabase.from('user_plant').upsert({

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
-import { computeStreak } from '@/lib/streak'
+import { computeStreak, notifyStreakMilestone } from '@/lib/streak'
 
 // XP model — must stay consistent with lib/gamification.ts
 const TASK_XP = 50
@@ -39,6 +39,7 @@ async function awardTaskXP(uid: string) {
     last_active_date: streak.last_active_date,
     updated_at: now,
   }, { onConflict: 'user_id' })
+  if (streak.milestoneReached) notifyStreakMilestone()
 
   await supabase.from('xp_events').insert({ user_id: uid, action: 'task_done', xp_gained: TASK_XP, description: 'Task completed' })
 
