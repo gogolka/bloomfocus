@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase'
 import BuyButton from '@/components/BuyButton'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Shop — ADHD Planners & Toolkits',
   description: 'Browse all bloom focus products — printable planners, habit trackers, dopamine menus, and more. Designed for ADHD brains.',
