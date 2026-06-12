@@ -1,6 +1,25 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import { BRAIN_DUMP_XP, levelFromXP, stageFromXP } from '@/lib/xp'
+
+async function awardDumpXP(uid: string) {
+  const today = new Date().toISOString().split('T')[0]
+  const now = new Date().toISOString()
+  const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
+  const newXP = (cur?.total_xp || 0) + BRAIN_DUMP_XP
+  const newGems = (cur?.gems || 0) + Math.floor(BRAIN_DUMP_XP / 10)
+  await supabase.from('user_xp').upsert({
+    user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
+    last_active_date: today, updated_at: now,
+  }, { onConflict: 'user_id' })
+  await supabase.from('xp_events').insert({ user_id: uid, action: 'brain_dump', xp_gained: BRAIN_DUMP_XP, description: 'Brain dump' })
+  const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
+  await supabase.from('user_plant').upsert({
+    user_id: uid, total_waterings: (plant?.total_waterings || 0) + 1, stage: stageFromXP(newXP),
+    last_watered_at: now, updated_at: now,
+  }, { onConflict: 'user_id' })
+}
 
 export default function DumpPage() {
   const [content, setContent] = useState('')
@@ -25,6 +44,7 @@ export default function DumpPage() {
     if (data) {
       setDumps(prev => [data, ...prev])
       setContent('')
+      try { await awardDumpXP(userId) } catch (e) { console.error('dump XP failed', e) }
       setXpToast('+20 XP 🧠 Brain unloaded!')
       setTimeout(() => setXpToast(''), 2500)
     }
