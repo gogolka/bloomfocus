@@ -53,8 +53,9 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
         onClick={() => setShowModal(true)}
         style={{
           background: '#2D2926', color: 'white', border: 'none',
-          padding: '11px 22px', borderRadius: 100, fontSize: 13,
+          padding: '12px 22px', borderRadius: 100, fontSize: 14,
           fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
+          width: '100%',
         }}
         onMouseEnter={e => (e.currentTarget.style.background = '#4a3f38')}
         onMouseLeave={e => (e.currentTarget.style.background = '#2D2926')}
