@@ -86,7 +86,7 @@ export default function SuccessContent() {
                 <p style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.6 }}>
                   📧 A download link was also sent to your email.<br />
                   ⏰ The link is valid for 24 hours (3 downloads max).<br />
-                  💬 Need help? Email us at hello@bloomfocus.org
+                  💬 Need help? Email us at hello.bloomfocus@gmail.com
                 </p>
               </div>
               <Link href="/shop" style={{ textDecoration: 'none', fontSize: 14, color: '#6B5F58' }}>← Back to shop</Link>

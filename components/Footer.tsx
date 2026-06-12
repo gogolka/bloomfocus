@@ -31,7 +31,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <div style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 16 }}>Connect</div>
-            <div style={{ fontSize: 14, color: '#FEFCFA', opacity: 0.8, marginBottom: 10 }}>hello@bloomfocus.org</div>
+            <div style={{ fontSize: 14, color: '#FEFCFA', opacity: 0.8, marginBottom: 10 }}>hello.bloomfocus@gmail.com</div>
             <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
               {[
                 { label: 'Etsy', href: 'https://bloomfocusshop.etsy.com' },
