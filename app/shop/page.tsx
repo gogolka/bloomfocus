@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { supabaseAdmin } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import BuyButton from '@/components/BuyButton'
 
 export const dynamic = 'force-dynamic'
@@ -11,16 +11,29 @@ export const metadata: Metadata = {
 }
 
 async function getProducts() {
-  const { data, error } = await supabaseAdmin
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    console.error('Shop: missing Supabase env vars', { url: !!url, key: !!key })
+    return []
+  }
+
+  const supabase = createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  })
+
+  const { data, error } = await supabase
     .from('products')
     .select('slug, title, description, price_usd, tag, emoji, color, border_color')
     .eq('is_active', true)
     .order('created_at')
 
   if (error) {
-    console.error('Shop: failed to fetch products:', error.message, error.code)
+    console.error('Shop: Supabase error:', error.message, error.code)
     return []
   }
+
   return data ?? []
 }
 
@@ -44,6 +57,9 @@ export default async function ShopPage() {
       </section>
 
       <section style={{ padding: '48px 24px 80px', maxWidth: 1100, margin: '0 auto' }}>
+        {products.length === 0 && (
+          <p style={{ textAlign: 'center', color: '#9B8F88' }}>Loading products...</p>
+        )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
           {products.map((p) => (
             <div key={p.slug} className="hover-card" style={{ background: p.color, border: `1.5px solid ${p.border_color}`, borderRadius: 20, padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
