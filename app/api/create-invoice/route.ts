@@ -13,11 +13,11 @@ export async function POST(req: NextRequest) {
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-    // Read product with anon key (public RLS allows it)
-    const publicClient = createClient(url, anonKey)
-    const { data: product, error: productError } = await publicClient
+    const supabase = createClient(url, anonKey)
+
+    // 1. Read product (public RLS allows)
+    const { data: product, error: productError } = await supabase
       .from('products')
       .select('*')
       .eq('slug', productSlug)
@@ -25,18 +25,14 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (productError || !product) {
-      console.error('create-invoice: product read failed', productError?.message, productError?.code)
+      console.error('create-invoice: product read failed', productError?.message)
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Write order with service role key (orders RLS requires service_role)
-    const adminClient = createClient(url, serviceKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    })
-
+    // 2. Create order (anon INSERT policy allows)
     const orderNumber = `BF-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
 
-    const { data: order, error: orderError } = await adminClient
+    const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
         order_number: orderNumber,
@@ -50,11 +46,11 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (orderError || !order) {
-      console.error('create-invoice: order insert failed', orderError?.message, orderError?.code, orderError?.details)
+      console.error('create-invoice: order insert failed', orderError?.message, orderError?.code)
       return NextResponse.json({ error: 'Failed to create order', detail: orderError?.message }, { status: 500 })
     }
 
-    // Create Monobank invoice
+    // 3. Create Monobank invoice
     const monoPayload = {
       amount: product.price_uah,
       ccy: 980,
@@ -85,7 +81,7 @@ export async function POST(req: NextRequest) {
 
     const monoData = await monoResponse.json()
 
-    await adminClient
+    await supabase
       .from('orders')
       .update({ mono_invoice_id: monoData.invoiceId })
       .eq('id', order.id)
