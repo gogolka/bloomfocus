@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'bloom focus — ADHD Toolkit & Planners',
   description: 'Planning tools designed for ADHD brains. Printable planners, habit trackers, dopamine menus — shame-free, gentle, and actually helpful.',

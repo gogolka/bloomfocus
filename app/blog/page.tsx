@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { articles } from '@/lib/articles'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'ADHD Blog — Tips, Guides & Understanding Your Brain',
   description: 'Articles about ADHD, neurodivergence, productivity systems that actually work, and gentle approaches to planning and organization.',
