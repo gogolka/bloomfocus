@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -34,6 +34,20 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
   alternates: { canonical: 'https://bloomfocus.org' },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'bloom focus',
+  },
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/icons/icon-180.png',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#B8A4E8',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
