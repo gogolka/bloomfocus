@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const MILESTONES = [3, 7, 14, 30]
+const MILESTONES = [3, 7, 14, 30, 60, 100, 180, 365]
 
 // Tailored encouragement per milestone — kind, ADHD-aware, never shaming.
 const COPY: Record<number, { headline: string; body: string }> = {
@@ -20,6 +20,22 @@ const COPY: Record<number, { headline: string; body: string }> = {
   30: {
     headline: 'Thirty days 🌺',
     body: 'A whole month. Not perfectly, not without messy days, but you returned again and again — and that is exactly the point. This is a genuinely big deal.',
+  },
+  60: {
+    headline: 'Sixty days 🌼',
+    body: 'Two months of returning to yourself. What started as effort has quietly become a part of how you live. Take a moment to feel how far that is.',
+  },
+  100: {
+    headline: 'One hundred days 🏆',
+    body: 'A hundred days is the kind of number most people only talk about. You actually did it, one gentle day at a time. This deserves real celebration.',
+  },
+  180: {
+    headline: 'Half a year 🌟',
+    body: 'Six months. Through busy weeks, hard weeks, and ordinary ones, you kept a thread of care for yourself unbroken. That is remarkable, and it is yours.',
+  },
+  365: {
+    headline: 'A whole year 🎉',
+    body: 'One full year of showing up for yourself — through every season and every mood. This is no longer a streak, it is who you have become. Congratulations.',
   },
 }
 

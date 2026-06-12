@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import InstallButton from '@/components/InstallButton'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null)
@@ -46,27 +47,56 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh', fontFamily: "'DM Sans', sans-serif" }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .bf-desktop-nav { display: none; }
+        .bf-bottom-nav { display: flex; }
+        @media (min-width: 768px) {
+          .bf-desktop-nav { display: flex; }
+          .bf-bottom-nav { display: none; }
+          .bf-content { padding-bottom: 48px !important; }
+        }
+      `}} />
+
       {/* Top bar */}
-      <div style={{ background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(45,41,38,0.08)', padding: '0 20px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 64, zIndex: 40 }}>
-        <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926' }}>
+      <div style={{ background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(45,41,38,0.08)', padding: '0 20px', minHeight: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 64, zIndex: 40 }}>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', flexShrink: 0 }}>
           bloom <em style={{ color: '#B8A4E8' }}>focus</em>
           <span style={{ fontSize: 11, color: '#9B8F88', marginLeft: 8 }}>app</span>
         </div>
-        <button
-          onClick={() => supabase.auth.signOut()}
-          style={{ background: 'none', border: 'none', fontSize: 12, color: '#9B8F88', cursor: 'pointer' }}
-        >
-          Sign out
-        </button>
+
+        {/* Desktop nav (centered) */}
+        <div className="bf-desktop-nav" style={{ gap: 4, alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+          {navItems.map(item => {
+            const isActive = pathname === item.href
+            return (
+              <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+                <div style={{ background: isActive ? '#E8DEFF' : 'transparent', borderRadius: 100, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s' }}>
+                  <span style={{ fontSize: 14, lineHeight: 1 }}>{item.emoji}</span>
+                  <span style={{ fontSize: 13, color: isActive ? '#7B5FCC' : '#6B5F58', fontWeight: isActive ? 600 : 400 }}>{item.label}</span>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+          <InstallButton />
+          <button
+            onClick={() => supabase.auth.signOut()}
+            style={{ background: 'none', border: 'none', fontSize: 12, color: '#9B8F88', cursor: 'pointer' }}
+          >
+            Sign out
+          </button>
+        </div>
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 600, margin: '0 auto', padding: '20px 16px 100px' }}>
+      <div className="bf-content" style={{ maxWidth: 600, margin: '0 auto', padding: '20px 16px 100px' }}>
         {children}
       </div>
 
-      {/* Bottom nav */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 16px 16px' }}>
+      {/* Bottom nav (mobile only) */}
+      <div className="bf-bottom-nav" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, justifyContent: 'center', padding: '0 16px 16px' }}>
         <div style={{ background: 'rgba(254,252,250,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 28, padding: '8px 6px', display: 'flex', gap: 2, boxShadow: '0 8px 32px rgba(45,41,38,0.1)' }}>
           {navItems.map(item => {
             const isActive = pathname === item.href

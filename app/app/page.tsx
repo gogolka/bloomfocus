@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getLevelFromXP, getXPToNextLevel, PLANT_STAGES } from '@/lib/gamification'
+import { stageFromXP, PLANT_STAGE_XP } from '@/lib/xp'
 import { plantStatus } from '@/lib/plant'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
@@ -25,7 +26,7 @@ export default function AppDashboard() {
     const [profile, xp, plant, achievements] = await Promise.all([
       supabase.from('profiles').select('display_name, avatar_emoji, is_pro').eq('id', user.id).single(),
       supabase.from('user_xp').select('total_xp, level, gems, streak_days').eq('user_id', user.id).single(),
-      supabase.from('user_plant').select('stage, health, plant_name, last_watered_at').eq('user_id', user.id).single(),
+      supabase.from('user_plant').select('stage, health, plant_name, last_watered_at, bloomed_count, xp_base').eq('user_id', user.id).single(),
       supabase.from('user_achievements').select('achievement_id, achievements(title, emoji)').eq('user_id', user.id).order('earned_at', { ascending: false }).limit(3),
     ])
 
@@ -51,8 +52,32 @@ export default function AppDashboard() {
 
   const xpProgress = getXPToNextLevel(data.xp?.total_xp || 0)
   const level = getLevelFromXP(data.xp?.total_xp || 0)
-  const plantStage = PLANT_STAGES[(data.plant?.stage || 1) as keyof typeof PLANT_STAGES] || PLANT_STAGES[1]
+  // Current plant grows on XP earned since the last bloom (xp_base). This lets a
+  // fully-bloomed plant be "harvested" into the garden and a fresh seed begin,
+  // so progress never hits a ceiling.
+  const totalXP = data.xp?.total_xp || 0
+  const xpBase = data.plant?.xp_base || 0
+  const plantXP = Math.max(0, totalXP - xpBase)
+  const plantStageNum = stageFromXP(plantXP)
+  const plantStage = PLANT_STAGES[plantStageNum as keyof typeof PLANT_STAGES] || PLANT_STAGES[1]
   const status = plantStatus(data.plant?.last_watered_at)
+  const fullyBloomed = plantStageNum >= 6
+  const bloomedCount = data.plant?.bloomed_count || 0
+  const nextStageXP = PLANT_STAGE_XP[plantStageNum] // undefined at full bloom
+  const xpToNextStage = nextStageXP ? nextStageXP - plantXP : 0
+
+  async function harvestBloom() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    await supabase.from('user_plant').update({
+      bloomed_count: bloomedCount + 1,
+      xp_base: xpBase + 3000,
+      stage: 1,
+      last_watered_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }).eq('user_id', user.id)
+    loadData()
+  }
 
   return (
     <div>
@@ -70,15 +95,36 @@ export default function AppDashboard() {
         </div>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 4 }}>{data.plant?.plant_name || 'My Brain Plant'}</div>
         <div style={{ fontSize: 12, color: '#6B5F58', marginBottom: 16 }}>Stage: <strong>{plantStage.name}</strong></div>
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#6B5F58', marginBottom: 4 }}>
-            <span>Plant health</span><span>{status.health}%</span>
+
+        {fullyBloomed ? (
+          <div style={{ background: 'rgba(255,255,255,0.55)', borderRadius: 16, padding: '16px', marginBottom: 8 }}>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 6 }}>Full bloom! 🎉</div>
+            <div style={{ fontSize: 12, color: '#6B5F58', lineHeight: 1.6, marginBottom: 14 }}>
+              This plant grew all the way. Move it into your garden and plant a fresh seed — your progress keeps going.
+            </div>
+            <button onClick={harvestBloom} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '11px 22px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              Plant your next seed 🌱
+            </button>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${status.health}%`, background: status.mood === 'awake' ? '#5BA85B' : status.mood === 'resting' ? '#E0B870' : '#C9A2D4', borderRadius: 100, transition: 'width 0.5s' }} />
+        ) : (
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#6B5F58', marginBottom: 4 }}>
+              <span>Plant health</span><span>{status.health}%</span>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${status.health}%`, background: status.mood === 'awake' ? '#5BA85B' : status.mood === 'resting' ? '#E0B870' : '#C9A2D4', borderRadius: 100, transition: 'width 0.5s' }} />
+            </div>
+            <div style={{ fontSize: 11, color: '#6B5F58', fontStyle: 'italic', marginTop: 10 }}>{status.message}</div>
+            <div style={{ fontSize: 10, color: '#9B8F88', marginTop: 4 }}>{xpToNextStage} XP to {plantStageNum >= 5 ? 'full bloom' : 'next stage'}</div>
           </div>
-        </div>
-        <div style={{ fontSize: 11, color: '#6B5F58', fontStyle: 'italic' }}>{status.message}</div>
+        )}
+
+        {bloomedCount > 0 && (
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.5)', marginTop: 14, paddingTop: 12 }}>
+            <div style={{ fontSize: 10, color: '#6B5F58', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Your garden · {bloomedCount} bloomed</div>
+            <div style={{ fontSize: 22, lineHeight: 1.3 }}>{Array.from({ length: bloomedCount }).map((_, i) => '🌺').join(' ')}</div>
+          </div>
+        )}
       </div>
 
       {/* XP + LEVEL */}

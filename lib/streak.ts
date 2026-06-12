@@ -3,7 +3,7 @@ import { supabaseBrowser as supabase } from './supabaseBrowser'
 
 // Milestones that trigger a celebration email (kept in sync with the
 // /api/streak-milestone route, which is the source of truth for sending).
-export const STREAK_MILESTONES = [3, 7, 14, 30]
+export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100, 180, 365]
 
 // Computes the streak fields to merge into a user_xp upsert, based on the
 // stored last_active_date. Call only on a positive activity (completing a
