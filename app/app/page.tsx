@@ -89,11 +89,6 @@ export default function AppDashboard() {
               <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926' }}>{data.xp?.streak_days || 0}</div>
               <div style={{ fontSize: 9, color: '#9B8F88' }}>streak</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 20, marginBottom: 2 }}>💎</div>
-              <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926' }}>{data.xp?.gems || 0}</div>
-              <div style={{ fontSize: 9, color: '#9B8F88' }}>gems</div>
-            </div>
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#9B8F88', marginBottom: 4 }}>

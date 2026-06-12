@@ -1,8 +1,37 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import { HABIT_XP, levelFromXP, stageFromXP } from '@/lib/xp'
 const EMOJIS = ['💧','🏃','📖','🧘','🥗','😴','✍️','🎵','☀️','💊','🌿','❤️']
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+
+// Adjust XP + plant when a habit is completed (+) or un-completed (-). Persists to DB.
+async function adjustHabitXP(uid: string, complete: boolean) {
+  const today = new Date().toISOString().split('T')[0]
+  const now = new Date().toISOString()
+  const delta = complete ? HABIT_XP : -HABIT_XP
+  const gemDelta = complete ? Math.floor(HABIT_XP / 10) : -Math.floor(HABIT_XP / 10)
+
+  const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
+  const newXP = Math.max(0, (cur?.total_xp || 0) + delta)
+  const newGems = Math.max(0, (cur?.gems || 0) + gemDelta)
+
+  await supabase.from('user_xp').upsert({
+    user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
+    last_active_date: today, updated_at: now,
+  }, { onConflict: 'user_id' })
+
+  if (complete) {
+    await supabase.from('xp_events').insert({ user_id: uid, action: 'habit_done', xp_gained: HABIT_XP, description: 'Habit completed' })
+  }
+
+  const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
+  const newWater = Math.max(0, (plant?.total_waterings || 0) + (complete ? 1 : -1))
+  await supabase.from('user_plant').upsert({
+    user_id: uid, total_waterings: newWater, stage: stageFromXP(newXP),
+    last_watered_at: now, updated_at: now,
+  }, { onConflict: 'user_id' })
+}
 
 export default function HabitsPage() {
   const [habits, setHabits] = useState<any[]>([])
@@ -14,9 +43,15 @@ export default function HabitsPage() {
   const today = new Date().toISOString().split('T')[0]
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: any) => {
-      if (user) { setUserId(user.id); loadHabits(user.id) }
+    let done = false
+    const init = (uid: string) => { if (!done) { done = true; setUserId(uid); loadHabits(uid) } }
+    supabase.auth.getSession().then(({ data: { session } }: any) => {
+      if (session?.user) init(session.user.id)
     })
+    const { data: sub } = supabase.auth.onAuthStateChange((_e: any, session: any) => {
+      if (session?.user) init(session.user.id)
+    })
+    return () => sub.subscription.unsubscribe()
   }, [])
 
   async function loadHabits(uid: string) {
@@ -39,9 +74,11 @@ export default function HabitsPage() {
     if (completions[habitId]) {
       await supabase.from('habit_completions').delete().eq('habit_id', habitId).eq('completed_date', today)
       setCompletions(prev => { const n = {...prev}; delete n[habitId]; return n })
+      try { await adjustHabitXP(userId, false) } catch (e) { console.error('habit XP remove failed', e) }
     } else {
       await supabase.from('habit_completions').insert({ habit_id: habitId, user_id: userId, completed_date: today })
       setCompletions(prev => ({ ...prev, [habitId]: true }))
+      try { await adjustHabitXP(userId, true) } catch (e) { console.error('habit XP award failed', e) }
       setXpToast('+30 XP 🌱'); setTimeout(() => setXpToast(''), 2000)
     }
   }
@@ -88,6 +125,7 @@ export default function HabitsPage() {
       {/* Add habit */}
       <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '16px' }}>
         <div style={{ fontSize: 13, color: '#6B5F58', fontWeight: 500, marginBottom: 10 }}>Add a new habit</div>
+        <div style={{ fontSize: 11, color: '#9B8F88', marginBottom: 6 }}>Pick an icon</div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
           {EMOJIS.map(e => (
             <button key={e} onClick={() => setSelectedEmoji(e)} style={{ fontSize: 18, padding: '4px 8px', borderRadius: 8, border: `1.5px solid ${selectedEmoji === e ? '#B8A4E8' : 'transparent'}`, background: selectedEmoji === e ? '#E8DEFF' : 'transparent', cursor: 'pointer' }}>{e}</button>
