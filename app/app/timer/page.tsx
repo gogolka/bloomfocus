@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import { POMODORO_XP, levelFromXP, stageFromXP } from '@/lib/xp'
 const MODES = { focus: 25 * 60, short: 5 * 60, long: 15 * 60, micro: 10 * 60 }
 const CIRCUMFERENCE = 2 * Math.PI * 88
 
@@ -46,6 +47,26 @@ export default function TimerPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     await supabase.from('pomodoro_sessions').insert({ user_id: user.id, duration_minutes: MODES[mode] / 60, task_label: task || null, completed: true })
+    try { await awardPomodoroXP(user.id) } catch (e) { console.error('pomodoro XP failed', e) }
+  }
+
+  // Award 40 XP + water the plant for a completed focus session. Persists to DB.
+  async function awardPomodoroXP(uid: string) {
+    const today = new Date().toISOString().split('T')[0]
+    const now = new Date().toISOString()
+    const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
+    const newXP = (cur?.total_xp || 0) + POMODORO_XP
+    const newGems = (cur?.gems || 0) + Math.floor(POMODORO_XP / 10)
+    await supabase.from('user_xp').upsert({
+      user_id: uid, total_xp: newXP, level: levelFromXP(newXP), gems: newGems,
+      last_active_date: today, updated_at: now,
+    }, { onConflict: 'user_id' })
+    await supabase.from('xp_events').insert({ user_id: uid, action: 'pomodoro_done', xp_gained: POMODORO_XP, description: 'Focus session completed' })
+    const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
+    await supabase.from('user_plant').upsert({
+      user_id: uid, total_waterings: (plant?.total_waterings || 0) + 1, stage: stageFromXP(newXP),
+      last_watered_at: now, updated_at: now,
+    }, { onConflict: 'user_id' })
   }
 
   function changeMode(m: keyof typeof MODES) {
