@@ -96,12 +96,16 @@ export default function TasksPage() {
 
   async function addTask() {
     if (!newTask.trim() || !userId) return
+    // Fold any text still sitting in the tag input into the tags, so the user
+    // doesn't have to press Enter — typing a tag and hitting Add just works.
+    const pending = newTagInput.trim()
+    const finalTags = pending && !newTags.includes(pending) ? [...newTags, pending] : newTags
     const { data } = await supabase.from('tasks').insert({
       user_id: userId,
       title: newTask.trim(),
       steps: [],
       due_date: newDate || null,
-      tags: newTags,
+      tags: finalTags,
     }).select().single()
     if (data) {
       setTasks(prev => sortTasks([data, ...prev]))
