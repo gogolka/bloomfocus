@@ -79,8 +79,8 @@ export default async function ShopPage() {
               <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6B5F58', display: 'inline-block', marginBottom: 12, alignSelf: 'flex-start' }}>{p.tag}</div>
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 10 }}>{p.title}</h2>
               <p style={{ fontSize: 13, color: '#6B5F58', lineHeight: 1.6, flex: 1, marginBottom: 20 }}>{p.description}</p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926' }}>${Number(p.price_usd).toFixed(2)}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <span style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926' }}>${Number(p.price_usd).toFixed(2)}</span>
                 <BuyButton productSlug={p.slug} productTitle={p.title} priceUsd={`$${Number(p.price_usd).toFixed(2)}`} />
               </div>
             </div>
