@@ -49,7 +49,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile burger */}
-        <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: '#2D2926' }}>
+        <button className="mobile-menu-btn" onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: '#2D2926' }}>
           {open ? '✕' : '☰'}
         </button>
       </div>
@@ -75,7 +75,7 @@ export default function Navbar() {
       )}
 
       <style>{`
-        @media (min-width: 768px) { button { display: none !important; } }
+        @media (min-width: 768px) { .mobile-menu-btn { display: none !important; } }
         @media (max-width: 767px) { .desktop-nav { display: none !important; } }
       `}</style>
     </nav>
