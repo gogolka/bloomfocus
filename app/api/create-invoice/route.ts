@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
-import crypto from 'crypto'
+import { createClient } from '@supabase/supabase-js'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,8 +11,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // 1. Get product from DB
-    const { data: product, error: productError } = await supabaseAdmin
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+    // Read product with anon key (public RLS allows it)
+    const publicClient = createClient(url, anonKey)
+    const { data: product, error: productError } = await publicClient
       .from('products')
       .select('*')
       .eq('slug', productSlug)
@@ -19,14 +25,18 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (productError || !product) {
+      console.error('create-invoice: product read failed', productError?.message, productError?.code)
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // 2. Generate unique order number
+    // Write order with service role key (orders RLS requires service_role)
+    const adminClient = createClient(url, serviceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    })
+
     const orderNumber = `BF-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
 
-    // 3. Create order in DB (pending)
-    const { data: order, error: orderError } = await supabaseAdmin
+    const { data: order, error: orderError } = await adminClient
       .from('orders')
       .insert({
         order_number: orderNumber,
@@ -40,66 +50,50 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (orderError || !order) {
-      console.error('Order creation error:', orderError)
-      return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+      console.error('create-invoice: order insert failed', orderError?.message, orderError?.code, orderError?.details)
+      return NextResponse.json({ error: 'Failed to create order', detail: orderError?.message }, { status: 500 })
     }
 
-    // 4. Create Monobank invoice
+    // Create Monobank invoice
     const monoPayload = {
       amount: product.price_uah,
-      ccy: 980, // UAH
+      ccy: 980,
       merchantPaymInfo: {
         reference: orderNumber,
         destination: `bloom focus — ${product.title}`,
         basketOrder: [
-          {
-            name: product.title,
-            qty: 1,
-            sum: product.price_uah,
-            icon: product.emoji || '🌸',
-            unit: 'шт',
-          },
+          { name: product.title, qty: 1, sum: product.price_uah, icon: product.emoji || '🌸', unit: 'шт' },
         ],
       },
       redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order=${orderNumber}`,
       webHookUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/mono-webhook`,
-      validity: 3600, // 1 hour
+      validity: 3600,
       paymentType: 'debit',
     }
 
     const monoResponse = await fetch('https://api.monobank.ua/api/merchant/invoice/create', {
       method: 'POST',
-      headers: {
-        'X-Token': process.env.MONO_TOKEN!,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'X-Token': process.env.MONO_TOKEN!, 'Content-Type': 'application/json' },
       body: JSON.stringify(monoPayload),
     })
 
     if (!monoResponse.ok) {
       const monoError = await monoResponse.text()
-      console.error('Monobank error:', monoError)
-      return NextResponse.json({ error: 'Payment system error' }, { status: 500 })
+      console.error('create-invoice: monobank error', monoResponse.status, monoError)
+      return NextResponse.json({ error: 'Payment system error', detail: monoError }, { status: 500 })
     }
 
     const monoData = await monoResponse.json()
 
-    // 5. Save Monobank invoice ID to order
-    await supabaseAdmin
+    await adminClient
       .from('orders')
       .update({ mono_invoice_id: monoData.invoiceId })
       .eq('id', order.id)
 
-    return NextResponse.json({
-      success: true,
-      paymentUrl: monoData.pageUrl,
-      orderNumber,
-    })
+    return NextResponse.json({ success: true, paymentUrl: monoData.pageUrl, orderNumber })
 
-  } catch (error) {
-    console.error('Create invoice error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  } catch (error: any) {
+    console.error('create-invoice: threw', error?.message)
+    return NextResponse.json({ error: 'Internal server error', detail: error?.message }, { status: 500 })
   }
 }
-
-export const dynamic = 'force-dynamic'
