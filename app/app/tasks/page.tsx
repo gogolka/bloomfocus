@@ -9,6 +9,53 @@ const supabase = (() => {
   return createClient(url, key)
 })()
 
+// XP model — must stay consistent with lib/gamification.ts
+const TASK_XP = 50
+const LEVEL_THRESHOLDS = [0, 100, 250, 500, 900, 1400, 2000, 2700, 3500, 4400, 5500, 6700, 8000, 9500, 11000, 13000, 15000, 17500, 20000, 23000]
+const PLANT_STAGE_XP = [0, 100, 300, 700, 1500, 3000] // stages 1..6
+
+function levelFromXP(xp: number): number {
+  let lvl = 1
+  for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) { if (xp >= LEVEL_THRESHOLDS[i]) lvl = i + 1; else break }
+  return lvl
+}
+function stageFromXP(xp: number): number {
+  let stage = 1
+  for (let i = 0; i < PLANT_STAGE_XP.length; i++) { if (xp >= PLANT_STAGE_XP[i]) stage = i + 1; else break }
+  return stage
+}
+
+// Award XP for completing a whole task and water the plant. Persists to DB
+// under the user's own session (RLS: auth.uid() = user_id).
+async function awardTaskXP(uid: string) {
+  const today = new Date().toISOString().split('T')[0]
+  const now = new Date().toISOString()
+
+  const { data: cur } = await supabase.from('user_xp').select('total_xp, gems').eq('user_id', uid).single()
+  const newXP = (cur?.total_xp || 0) + TASK_XP
+  const newGems = (cur?.gems || 0) + Math.floor(TASK_XP / 10)
+
+  await supabase.from('user_xp').upsert({
+    user_id: uid,
+    total_xp: newXP,
+    level: levelFromXP(newXP),
+    gems: newGems,
+    last_active_date: today,
+    updated_at: now,
+  }, { onConflict: 'user_id' })
+
+  await supabase.from('xp_events').insert({ user_id: uid, action: 'task_done', xp_gained: TASK_XP, description: 'Task completed' })
+
+  const { data: plant } = await supabase.from('user_plant').select('total_waterings').eq('user_id', uid).single()
+  await supabase.from('user_plant').upsert({
+    user_id: uid,
+    total_waterings: (plant?.total_waterings || 0) + 1,
+    stage: stageFromXP(newXP),
+    last_watered_at: now,
+    updated_at: now,
+  }, { onConflict: 'user_id' })
+}
+
 export default function TasksPage() {
   const [tasks, setTasks] = useState<any[]>([])
   const [newTask, setNewTask] = useState('')
@@ -37,6 +84,9 @@ export default function TasksPage() {
   async function completeTask(task: any) {
     await supabase.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', task.id)
     setTasks(prev => prev.filter(t => t.id !== task.id))
+    if (userId) {
+      try { await awardTaskXP(userId) } catch (e) { console.error('awardTaskXP failed', e) }
+    }
     showXP('+50 XP 💧 Plant watered!')
   }
 
@@ -52,7 +102,11 @@ export default function TasksPage() {
     const updatedSteps = task.steps.map((s: any, i: number) => i === stepIdx ? { ...s, done: !s.done } : s)
     await supabase.from('tasks').update({ steps: updatedSteps }).eq('id', taskId)
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, steps: updatedSteps } : t))
-    if (!task.steps[stepIdx].done) showXP('+10 XP ✓')
+    // Steps only track progress — no XP. XP is awarded once, when the whole task is done.
+    if (!task.steps[stepIdx].done) {
+      const allDone = updatedSteps.every((s: any) => s.done)
+      showXP(allDone ? 'All steps done — finish the task for +50 XP ✨' : 'Step done ✓')
+    }
   }
 
   function showXP(msg: string) { setXpToast(msg); setTimeout(() => setXpToast(''), 2500) }
