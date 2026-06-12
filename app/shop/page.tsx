@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase'
 import BuyButton from '@/components/BuyButton'
 
 export const metadata: Metadata = {
@@ -9,20 +9,17 @@ export const metadata: Metadata = {
 }
 
 async function getProducts() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('products')
     .select('slug, title, description, price_usd, tag, emoji, color, border_color')
     .eq('is_active', true)
     .order('created_at')
+
   if (error) {
-    console.error('Failed to fetch products:', error)
+    console.error('Shop: failed to fetch products:', error.message, error.code)
     return []
   }
-  return data
+  return data ?? []
 }
 
 export default async function ShopPage() {
