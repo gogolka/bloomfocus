@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 export const dynamic = 'force-dynamic'
 
@@ -249,6 +250,11 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section style={{ padding: '20px 24px 72px', background: '#FFF8F0' }}>
+        <NewsletterSignup />
       </section>
 
       {/* CTA BANNER */}

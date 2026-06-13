@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import NewsletterSignup from './NewsletterSignup'
 
 export default function Footer() {
   const pathname = usePathname()
@@ -47,6 +48,9 @@ export default function Footer() {
               ))}
             </div>
           </div>
+
+          {/* Newsletter */}
+          <NewsletterSignup compact />
         </div>
 
         {/* Bottom bar */}
