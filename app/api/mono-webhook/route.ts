@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import crypto from 'crypto'
 
+// Post-purchase bonus. Keep this in sync with the THANKYOU row in promo_codes:
+// if you change the percent here, also update promo_codes so checkout matches.
+const BONUS_CODE = 'THANKYOU'
+const BONUS_PERCENT = 10
+
 // Verify Monobank webhook signature
 function verifyMonoSignature(body: string, signature: string, publicKey: string): boolean {
   try {
@@ -61,6 +66,19 @@ async function sendDownloadEmail(
               <a href="${downloadUrl}" style="display: inline-block; background: #B8A4E8; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-size: 15px; font-weight: 600;">
                 Download now →
               </a>
+            </div>
+
+            <div style="background: #FFF3EC; border: 1px solid rgba(255,180,140,0.45); border-radius: 14px; padding: 22px; margin-bottom: 24px;">
+              <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #C07A3E; margin-bottom: 12px;">🎁 A little thank-you</div>
+              <p style="font-size: 14px; color: #2D2926; line-height: 1.7; margin: 0 0 4px;"><strong>Your free companion app</strong></p>
+              <p style="font-size: 14px; color: #6B5F58; line-height: 1.7; margin: 0 0 14px;">Tasks, habits, a focus timer and a brain dump that turns into to-dos — all free, right in your browser.</p>
+              <div style="text-align: center; margin-bottom: 20px;">
+                <a href="https://bloomfocus.org/app" style="display: inline-block; background: #B8A4E8; color: white; padding: 11px 24px; border-radius: 100px; text-decoration: none; font-size: 14px; font-weight: 600;">Open the free app →</a>
+              </div>
+              <p style="font-size: 14px; color: #2D2926; line-height: 1.7; margin: 0 0 10px;"><strong>${BONUS_PERCENT}% off your next order</strong> as a thank-you — use this code at checkout:</p>
+              <div style="text-align: center; background: #FEFCFA; border: 1px dashed #C07A3E; border-radius: 10px; padding: 12px;">
+                <span style="font-size: 20px; font-weight: 700; letter-spacing: 0.14em; color: #C07A3E;">${BONUS_CODE}</span>
+              </div>
             </div>
 
             <p style="font-size: 13px; color: #9B8F88; line-height: 1.6; margin-bottom: 8px;">
