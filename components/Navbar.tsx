@@ -15,10 +15,11 @@ export default function Navbar() {
 
   const cur = pathname?.startsWith('/de') ? 'de' : pathname?.startsWith('/fr') ? 'fr' : pathname?.startsWith('/es') ? 'es' : 'en'
   const c = chrome[cur]
+  const quizPath = cur === 'en' ? '/quiz' : `/${cur}/quiz`
 
   const links = [
     { href: '/app', label: c.navApp },
-    { href: '/quiz', label: c.navTest },
+    { href: quizPath, label: c.navTest },
     { href: '/shop', label: c.navShop },
     { href: '/blog', label: c.navBlog },
   ]
