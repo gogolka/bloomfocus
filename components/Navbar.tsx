@@ -16,11 +16,12 @@ export default function Navbar() {
   const cur = pathname?.startsWith('/de') ? 'de' : pathname?.startsWith('/fr') ? 'fr' : pathname?.startsWith('/es') ? 'es' : 'en'
   const c = chrome[cur]
   const quizPath = cur === 'en' ? '/quiz' : `/${cur}/quiz`
+  const shopPath = cur === 'en' ? '/shop' : `/${cur}/shop`
 
   const links = [
     { href: '/app', label: c.navApp },
     { href: quizPath, label: c.navTest },
-    { href: '/shop', label: c.navShop },
+    { href: shopPath, label: c.navShop },
     { href: '/blog', label: c.navBlog },
   ]
 
@@ -58,7 +59,7 @@ export default function Navbar() {
             ))}
           </div>
           <DownloadAppButton />
-          <Link href="/shop" style={{
+          <Link href={shopPath} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '9px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600,
             transition: 'all 0.2s',
@@ -90,7 +91,7 @@ export default function Navbar() {
               <Link key={l} href={LANG_PATH[l]} onClick={() => setOpen(false)} style={{ textDecoration: 'none', fontSize: 14, fontWeight: cur === l ? 700 : 500, color: cur === l ? '#7B5FCC' : '#9B8F88', border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 12px' }}>{LANG_LABEL[l]}</Link>
             ))}
           </div>
-          <Link href="/shop" onClick={() => setOpen(false)} style={{
+          <Link href={shopPath} onClick={() => setOpen(false)} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',
           }}>

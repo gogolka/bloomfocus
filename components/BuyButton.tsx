@@ -1,14 +1,18 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import type { Lang } from '@/lib/i18n'
+import { buy } from '@/lib/i18n-shop'
 
 interface BuyButtonProps {
   productSlug: string
   productTitle: string
   priceUsd: string
+  lang?: Lang
 }
 
-export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyButtonProps) {
+export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 'en' as Lang }: BuyButtonProps) {
+  const t = buy[lang] || buy.en
   const [showModal, setShowModal] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -42,17 +46,17 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
         setPromoMsg('')
       } else {
         setDiscountPercent(0)
-        setPromoMsg(data.message || 'That code isn\'t valid')
+        setPromoMsg(data.message || t.promoInvalid)
       }
     } catch {
-      setPromoMsg('Could not check that code')
+      setPromoMsg(t.promoCheckErr)
     }
     setPromoChecking(false)
   }
 
   const handleBuy = async () => {
     if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address')
+      setError(t.invalidEmail)
       return
     }
 
@@ -74,7 +78,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
       const data = await res.json()
 
       if (!res.ok || !data.paymentUrl) {
-        setError((data.error || 'Something went wrong') + (data.detail ? `: ${data.detail}` : ''))
+        setError((data.error || t.genericError) + (data.detail ? `: ${data.detail}` : ''))
         setLoading(false)
         return
       }
@@ -83,7 +87,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
       window.location.href = data.paymentUrl
 
     } catch {
-      setError('Connection error. Please try again.')
+      setError(t.connError)
       setLoading(false)
     }
   }
@@ -101,7 +105,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
         onMouseEnter={e => (e.currentTarget.style.background = '#4a3f38')}
         onMouseLeave={e => (e.currentTarget.style.background = '#2D2926')}
       >
-        Buy now →
+        {t.buyNow}
       </button>
 
       {showModal && mounted && createPortal(
@@ -127,10 +131,10 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
                   borderRadius: '50%', animation: 'bloomspin 0.8s linear infinite',
                 }} />
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 6 }}>
-                  Preparing secure payment…
+                  {t.preparing}
                 </div>
                 <div style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.5 }}>
-                  This can take a few seconds.<br />Please don't close this window.
+                  {t.preparingA}<br />{t.preparingB}
                 </div>
                 <style>{`@keyframes bloomspin { to { transform: rotate(360deg); } }`}</style>
               </div>
@@ -142,7 +146,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 4 }}>
                   {productTitle}
                 </div>
-                <div style={{ fontSize: 13, color: '#9B8F88' }}>Enter your email to continue</div>
+                <div style={{ fontSize: 13, color: '#9B8F88' }}>{t.enterEmail}</div>
               </div>
               <button
                 onClick={() => setShowModal(false)}
@@ -152,7 +156,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
 
             {/* Price */}
             <div style={{ background: '#E8DEFF', borderRadius: 12, padding: '12px 16px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 13, color: '#6B5F58' }}>Total</span>
+              <span style={{ fontSize: 13, color: '#6B5F58' }}>{t.total}</span>
               {discountPercent > 0 ? (
                 <span style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                   <span style={{ fontSize: 14, color: '#9B8F88', textDecoration: 'line-through' }}>{priceUsd}</span>
@@ -166,7 +170,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
             {/* Promo code */}
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: 'block', fontSize: 12, color: '#6B5F58', fontWeight: 500, marginBottom: 6 }}>
-                Promo code
+                {t.promoLabel}
               </label>
               <div style={{ display: 'flex', gap: 8 }}>
                 <input
@@ -190,17 +194,17 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
                     cursor: promoChecking || !promo.trim() ? 'default' : 'pointer', whiteSpace: 'nowrap',
                   }}
                 >
-                  {promoChecking ? '…' : discountPercent > 0 ? 'Applied ✓' : 'Apply'}
+                  {promoChecking ? '…' : discountPercent > 0 ? t.applied : t.apply}
                 </button>
               </div>
-              {discountPercent > 0 && <div style={{ fontSize: 12, color: '#5BA85B', marginTop: 6 }}>✓ {discountPercent}% off applied</div>}
+              {discountPercent > 0 && <div style={{ fontSize: 12, color: '#5BA85B', marginTop: 6 }}>{t.offApplied(discountPercent)}</div>}
               {promoMsg && <div style={{ fontSize: 12, color: '#c0627a', marginTop: 6 }}>{promoMsg}</div>}
             </div>
 
             {/* Form */}
             <div style={{ marginBottom: 12 }}>
               <label style={{ display: 'block', fontSize: 12, color: '#6B5F58', fontWeight: 500, marginBottom: 6 }}>
-                Your name (optional)
+                {t.nameLabel}
               </label>
               <input
                 type="text"
@@ -217,7 +221,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
 
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: 'block', fontSize: 12, color: '#6B5F58', fontWeight: 500, marginBottom: 6 }}>
-                Email address <span style={{ color: '#B8A4E8' }}>*</span>
+                {t.emailLabel} <span style={{ color: '#B8A4E8' }}>*</span>
               </label>
               <input
                 type="email"
@@ -244,12 +248,12 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
                 transition: 'all 0.2s',
               }}
             >
-              Pay now →
+              {t.payNow}
             </button>
 
             <p style={{ fontSize: 11, color: '#9B8F88', textAlign: 'center', marginTop: 14, lineHeight: 1.5 }}>
-              🔒 Secure payment via Monobank<br />
-              📧 Download link sent to your email instantly after payment
+              {t.secureA}<br />
+              {t.secureB}
             </p>
             </>
             )}
