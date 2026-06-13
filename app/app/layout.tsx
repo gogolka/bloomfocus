@@ -81,12 +81,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
           <InstallButton />
-          <button
-            onClick={() => supabase.auth.signOut()}
-            style={{ background: 'none', border: 'none', fontSize: 12, color: '#9B8F88', cursor: 'pointer' }}
-          >
-            Sign out
-          </button>
+          <Link href="/app/settings" aria-label="Settings" style={{ textDecoration: 'none', fontSize: 18, lineHeight: 1, color: '#6B5F58' }}>⚙</Link>
         </div>
       </div>
 
