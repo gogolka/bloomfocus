@@ -60,7 +60,14 @@ const RESULTS: Record<string, any> = {
     subtitle:"Your responses suggest few ADHD-related patterns",
     color:"#A8C5A0",
     textColor:"#2A6B4A",
-    desc:"Based on your responses, you show relatively few signs associated with ADHD. Everyone experiences focus challenges sometimes — but your pattern doesn't suggest significant ADHD traits. If you're still struggling with focus, anxiety, sleep, or mood, it may be worth exploring other possibilities with a professional.",
+    desc:"Based on your responses, you show relatively few of the patterns associated with ADHD. Everyone struggles with focus, restlessness, or motivation from time to time, and that is completely normal. Your answers simply don't point to a consistent, pervasive pattern across many areas of your life, which is what ADHD usually looks like.",
+    strategies:[
+      "Protecting your sleep, movement, and downtime, since focus and mood rest on those foundations more than most people realise.",
+      "Using a single place to capture tasks and ideas, so your mind isn't doing the work of remembering everything.",
+      "Breaking big or boring tasks into smaller steps whenever they start to feel heavy.",
+      "Noticing which environments help you concentrate, and shaping more of your day around them.",
+    ],
+    nextSteps:"If you're still struggling with focus, energy, sleep, anxiety, or mood despite this result, that struggle is real and worth taking seriously. Many things other than ADHD can affect attention, and a conversation with a doctor or therapist can help you find what's actually going on.",
     products:[],
   },
   inattentive:{
@@ -68,7 +75,29 @@ const RESULTS: Record<string, any> = {
     subtitle:"The 'lost in thought' pattern",
     color:"#B8A4E8",
     textColor:"#5A3EA8",
-    desc:"Your responses show a strong pattern of inattentive traits — difficulty focusing, forgetfulness, losing track of tasks, and mental fatigue. This is often called 'quiet ADHD' and is frequently missed or diagnosed late, especially in women and adults. You may have spent years developing coping strategies that mask how hard things actually are for you.",
+    desc:"Your responses show a strong pattern of inattentive traits — difficulty sustaining focus, forgetfulness, losing track of tasks, and mental fatigue. This presentation is often called 'quiet ADHD' because there is little outward hyperactivity, and it is frequently missed or diagnosed late, especially in women and adults. You may have spent years quietly building coping strategies that hide just how much effort everyday focus actually takes you.",
+    desc2:"This is not a matter of laziness or low intelligence. Your attention system is wired to follow interest and novelty rather than importance, which is why you can disappear into something you love for hours and yet stall completely on a task that feels dull, even when you genuinely want to do it.",
+    strengths:[
+      "Deep, immersive focus on things that genuinely interest you, where you can do remarkable work.",
+      "Creative, associative thinking that links ideas other people don't see as connected.",
+      "Strong empathy and sensitivity to what the people around you are feeling.",
+      "A rich inner world and a natural pull toward big-picture, conceptual thinking.",
+    ],
+    challenges:[
+      "Starting tasks, even ones you actually want to do, and seeing them through to the finish.",
+      "Holding several steps in mind at once, which makes complex tasks feel overwhelming fast.",
+      "Time blindness — consistently underestimating how long things will take.",
+      "Forgetting appointments, everyday details, and where you put important things.",
+      "Tiredness that comes from masking how hard sustained attention really is for you.",
+    ],
+    strategies:[
+      "Shrinking the first step until it feels almost too small to skip, so starting takes no willpower.",
+      "Moving your memory out of your head and into one trusted capture inbox for everything.",
+      "Working alongside someone, even on a video call, so their presence anchors your focus.",
+      "Making reminders and deadlines visible in your space, because out of sight truly means out of mind.",
+      "Using short, gentle focus blocks with real breaks instead of forcing long stretches.",
+    ],
+    nextSteps:"Because inattentive ADHD is so easily overlooked, many people reach adulthood without ever being recognised. If you saw yourself again and again in these questions, it is worth bringing this result to a psychiatrist or psychologist who can do a proper evaluation and talk through your options.",
     products:["Daily Planner","Brain Dump Journal","Task Decomposer","Habit Tracker"],
   },
   hyperactive:{
@@ -76,7 +105,29 @@ const RESULTS: Record<string, any> = {
     subtitle:"The 'always on' pattern",
     color:"#FFB4A2",
     textColor:"#A84A2A",
-    desc:"Your responses show a strong pattern of hyperactive and impulsive traits — restlessness, emotional reactivity, impulsive decisions, and difficulty slowing down. Your brain moves fast and needs stimulation. Routine structures and reward systems tend to work well for this type.",
+    desc:"Your responses show a strong pattern of hyperactive and impulsive traits — restlessness, emotional intensity, fast decisions, and real difficulty slowing down. Your brain moves quickly and craves stimulation, so quiet, repetitive, or low-reward situations are the ones that feel hardest. Structure, movement, and reward systems tend to work especially well for this presentation.",
+    desc2:"The same wiring that makes it hard to sit still and wait also gives you momentum, courage, and the ability to act when others freeze. The goal isn't to suppress that energy but to give it good places to go, so it works for you instead of against you.",
+    strengths:[
+      "High energy and drive that can carry you through work other people find draining.",
+      "Spontaneity and courage to take action and start things while others are still hesitating.",
+      "Quick thinking and a real talent for improvising under pressure.",
+      "Warmth and enthusiasm that naturally draws other people toward you.",
+    ],
+    challenges:[
+      "An internal restlessness that makes slowing down and truly relaxing genuinely difficult.",
+      "Speaking or acting before fully thinking it through, then wishing you had waited.",
+      "Emotional reactions that arrive fast and feel bigger than the moment seems to call for.",
+      "Boredom and a constant hunger for stimulation that makes routine tasks feel unbearable.",
+      "Impulsive choices around spending, plans, or commitments you later reconsider.",
+    ],
+    strategies:[
+      "Spending your restless energy through movement before and between focus blocks.",
+      "Building a deliberate pause into big decisions and purchases, even a single night to sleep on it.",
+      "Wrapping routine tasks in reward and novelty so they feel worth your attention.",
+      "Setting up structure and external guardrails so the good choice is also the easy one.",
+      "Naming each emotion as it rises, which gradually takes the edge off its intensity.",
+    ],
+    nextSteps:"If these patterns have followed you across different parts of your life and over many years, a psychiatrist or psychologist can help you understand them properly. A real evaluation opens up options — from practical strategies to other forms of support — that are hard to access on your own.",
     products:["Dopamine Menu","Weekly Planner","Habit Tracker","Daily Gratitude"],
   },
   combined:{
@@ -84,7 +135,29 @@ const RESULTS: Record<string, any> = {
     subtitle:"Both inattentive and hyperactive-impulsive patterns",
     color:"#F0C070",
     textColor:"#8A6010",
-    desc:"Your responses show significant traits across both dimensions — Combined Type is actually the most common ADHD presentation. You likely experience both focus difficulties and restlessness, and the intensity may shift depending on your environment, stress level, or the task at hand.",
+    desc:"Your responses show significant traits across both dimensions, and Combined Type is actually the most common ADHD presentation. You likely live with both the focus difficulties of the inattentive pattern and the restlessness of the hyperactive-impulsive one, and which side shows up most can shift with your environment, your stress level, and the task in front of you.",
+    desc2:"Living with both can feel contradictory — your mind races and goes blank, you crave stimulation and get overwhelmed by it. That mix is exactly why a flexible toolkit matters more than any single trick: different days and different tasks will call for different tools.",
+    strengths:[
+      "Bursts of deep hyperfocus paired with the energy and drive to act on your ideas.",
+      "Creative, fast, associative thinking that generates a lot of possibilities quickly.",
+      "Empathy and spontaneity that make you engaging and genuinely fun to be around.",
+      "Big-picture vision combined with a real willingness to dive in and start.",
+    ],
+    challenges:[
+      "Both stalling on tasks and feeling too restless to settle, sometimes within the same hour.",
+      "Managing a mind that can race and feel blank depending on the moment.",
+      "Following through once the initial novelty and excitement wear off.",
+      "Strong emotions and time blindness layered on top of focus difficulties.",
+      "Feeling pulled in several directions at once and struggling to choose where to start.",
+    ],
+    strategies:[
+      "Keeping one capture inbox for everything, so nothing depends on you remembering it.",
+      "Breaking tasks into very small first steps to get past the hardest moment, the start.",
+      "Using movement to discharge restlessness before you sit down to focus.",
+      "Adding reward and novelty to dull tasks so your brain has a reason to engage.",
+      "Leaning on visible structure and gentle external accountability rather than willpower alone.",
+    ],
+    nextSteps:"Combined Type can be a lot to carry, precisely because it pulls from both directions. If you recognised yourself throughout this quiz, please consider bringing the result to a psychiatrist or psychologist. A proper assessment can make sense of the whole picture and point you toward support that actually fits.",
     products:["Full ADHD Toolkit Bundle","Dopamine Menu","Daily Planner","Brain Dump Journal"],
   },
 };
@@ -104,6 +177,17 @@ function getResult(answers: Record<number, number>) {
   return "combined";
 }
 
+function getScores(answers: Record<number, number>) {
+  const iQs = QUESTIONS.filter(q=>q.type==="I");
+  const hQs = QUESTIONS.filter(q=>q.type==="H");
+  const scoreI = iQs.reduce((s,q)=>s+(answers[q.id]||0),0);
+  const scoreH = hQs.reduce((s,q)=>s+(answers[q.id]||0),0);
+  return {
+    pI: Math.round((scoreI/(iQs.length*4))*100),
+    pH: Math.round((scoreH/(hQs.length*4))*100),
+  };
+}
+
 const C = {
   bg:"#FAFAF8", card:"#FFFFFF",
   purple:"#B8A4E8", purpleDark:"#7B5FCC", purpleLight:"#F0EBFF",
@@ -119,6 +203,7 @@ export default function ADHDQuiz() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [result, setResult] = useState<string | null>(null);
+  const [scores, setScores] = useState<{pI:number;pH:number} | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
 
   const progress = Math.round((current/QUESTIONS.length)*100);
@@ -134,6 +219,7 @@ export default function ADHDQuiz() {
         setCurrent(c=>c+1);
       } else {
         setResult(getResult(newAnswers));
+        setScores(getScores(newAnswers));
         setStep("email");
       }
     },280);
@@ -266,6 +352,7 @@ export default function ADHDQuiz() {
                 <h2 style={{fontSize:26,fontWeight:700,color:C.text,lineHeight:1.2,marginBottom:6}}>{R.title}</h2>
                 <p style={{fontSize:14,fontWeight:600,color:R.textColor,marginBottom:20}}>{R.subtitle}</p>
                 <p style={{fontSize:15,color:C.mid,lineHeight:1.8}}>{R.desc}</p>
+                {R.desc2 && <p style={{fontSize:15,color:C.mid,lineHeight:1.8,marginTop:14}}>{R.desc2}</p>}
               </div>
               {/* Disclaimer in result */}
               <div style={{padding:"20px 36px",background:"#FFF8F0",borderTop:"1px solid #FFD6C4"}}>
@@ -277,6 +364,50 @@ export default function ADHDQuiz() {
                 </p>
               </div>
             </div>
+
+            {/* Score breakdown */}
+            {scores && (
+              <div style={{background:C.card,borderRadius:20,padding:"24px 28px",border:`1px solid ${C.border}`}}>
+                <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:C.purpleDark,marginBottom:16}}>How your answers broke down</div>
+                {[["Inattentive traits",scores.pI,"#B8A4E8"],["Hyperactive-impulsive traits",scores.pH,"#FFB4A2"]].map((row:any,i:number)=>(
+                  <div key={i} style={{marginBottom:i===0?16:0}}>
+                    <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:C.text,marginBottom:6}}>
+                      <span>{row[0]}</span><span style={{fontWeight:700,color:C.mid}}>{row[1]}%</span>
+                    </div>
+                    <div style={{background:"#F0EBFF",borderRadius:100,height:10,overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${row[1]}%`,background:row[2],borderRadius:100}}/>
+                    </div>
+                  </div>
+                ))}
+                <p style={{fontSize:12,color:C.soft,lineHeight:1.7,marginTop:16,marginBottom:0}}>These percentages show how strongly each set of traits came through in your answers. They are a reflection of this quiz, not a clinical score.</p>
+              </div>
+            )}
+
+            {/* Detailed sections */}
+            {[
+              R.strengths && {label:"Your strengths",emoji:"🌟",items:R.strengths,color:"#5E9E4A"},
+              R.challenges && {label:"Where it tends to get hard",emoji:"🌧",items:R.challenges,color:"#C07A3E"},
+              R.strategies && {label:"What helps your type",emoji:"🛠",items:R.strategies,color:C.purpleDark},
+            ].filter(Boolean).map((sec:any,i:number)=>(
+              <div key={i} style={{background:C.card,borderRadius:20,padding:"24px 28px",border:`1px solid ${C.border}`}}>
+                <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:sec.color,marginBottom:16}}>{sec.emoji} {sec.label}</div>
+                <div style={{display:"grid",gap:10}}>
+                  {sec.items.map((it:string,j:number)=>(
+                    <div key={j} style={{display:"flex",gap:10,alignItems:"flex-start",fontSize:14,color:C.text,lineHeight:1.6}}>
+                      <span style={{color:sec.color,fontWeight:700,flexShrink:0,marginTop:1}}>›</span><span>{it}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Next steps */}
+            {R.nextSteps && (
+              <div style={{background:C.card,borderRadius:20,padding:"24px 28px",border:`1px solid ${C.border}`}}>
+                <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:C.purpleDark,marginBottom:12}}>What you can do next</div>
+                <p style={{fontSize:14,color:C.mid,lineHeight:1.8,margin:0}}>{R.nextSteps}</p>
+              </div>
+            )}
 
             {/* Products */}
             {R.products.length>0 && (
@@ -302,7 +433,7 @@ export default function ADHDQuiz() {
               </div>
             )}
 
-            <button onClick={()=>{setStep("intro");setCurrent(0);setAnswers({});setEmail("");setResult(null);setSelected(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:10,padding:"12px",fontSize:13,color:C.soft,cursor:"pointer"}}>
+            <button onClick={()=>{setStep("intro");setCurrent(0);setAnswers({});setEmail("");setResult(null);setScores(null);setSelected(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:10,padding:"12px",fontSize:13,color:C.soft,cursor:"pointer"}}>
               Retake the quiz
             </button>
           </div>
