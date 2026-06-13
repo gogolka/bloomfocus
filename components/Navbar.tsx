@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import DownloadAppButton from '@/components/DownloadAppButton'
+import { LOCALES, LANG_LABEL, LANG_PATH } from '@/lib/i18n'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -11,6 +12,8 @@ export default function Navbar() {
   // The /app section is a standalone toolkit with its own header and nav —
   // the marketing chrome would just double up and cover the content.
   if (pathname?.startsWith('/app')) return null
+
+  const cur = pathname?.startsWith('/de') ? 'de' : pathname?.startsWith('/fr') ? 'fr' : pathname?.startsWith('/es') ? 'es' : 'en'
 
   const links = [
     { href: '/app', label: 'App' },
@@ -47,6 +50,11 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center', borderRight: '1px solid rgba(45,41,38,0.12)', paddingRight: 18, marginRight: -8 }}>
+            {LOCALES.map(l => (
+              <Link key={l} href={LANG_PATH[l]} style={{ textDecoration: 'none', fontSize: 12, fontWeight: cur === l ? 700 : 500, color: cur === l ? '#7B5FCC' : '#9B8F88', padding: '2px 5px', borderRadius: 6 }}>{LANG_LABEL[l]}</Link>
+            ))}
+          </div>
           <DownloadAppButton />
           <Link href="/shop" style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
@@ -75,6 +83,11 @@ export default function Navbar() {
             </Link>
           ))}
           <DownloadAppButton variant="block" />
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', paddingTop: 4 }}>
+            {LOCALES.map(l => (
+              <Link key={l} href={LANG_PATH[l]} onClick={() => setOpen(false)} style={{ textDecoration: 'none', fontSize: 14, fontWeight: cur === l ? 700 : 500, color: cur === l ? '#7B5FCC' : '#9B8F88', border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 12px' }}>{LANG_LABEL[l]}</Link>
+            ))}
+          </div>
           <Link href="/shop" onClick={() => setOpen(false)} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',
