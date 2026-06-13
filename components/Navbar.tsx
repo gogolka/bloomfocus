@@ -68,9 +68,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div onClick={() => setOpen(false)}>
-            <DownloadAppButton variant="block" />
-          </div>
+          <DownloadAppButton variant="block" />
           <Link href="/shop" onClick={() => setOpen(false)} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',

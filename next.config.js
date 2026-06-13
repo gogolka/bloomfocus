@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-// build: 2026-06-13a (cache-bust to force full static regeneration)
+// build: 2026-06-13b (cache-bust to force full static regeneration)
 const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
