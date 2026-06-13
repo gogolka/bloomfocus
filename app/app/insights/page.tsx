@@ -10,11 +10,10 @@ const C = {
 }
 
 const ACTION_META: Record<string, { label: string; emoji: string; color: string }> = {
-  task: { label: 'Tasks', emoji: '✅', color: '#B8D4B8' },
-  habit: { label: 'Habits', emoji: '🌱', color: '#A8D8C8' },
-  pomodoro: { label: 'Focus', emoji: '🍅', color: '#FFBFA8' },
-  timer: { label: 'Focus', emoji: '🍅', color: '#FFBFA8' },
-  dump: { label: 'Brain dumps', emoji: '🧠', color: '#C9B8E8' },
+  task_done: { label: 'Tasks', emoji: '✅', color: '#B8D4B8' },
+  habit_done: { label: 'Habits', emoji: '🌱', color: '#A8D8C8' },
+  pomodoro_done: { label: 'Focus', emoji: '🍅', color: '#FFBFA8' },
+  brain_dump: { label: 'Brain dumps', emoji: '🧠', color: '#C9B8E8' },
 }
 
 function dayKey(d: Date) { return d.toISOString().split('T')[0] }

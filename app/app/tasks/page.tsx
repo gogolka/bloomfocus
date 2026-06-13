@@ -63,6 +63,8 @@ export default function TasksPage() {
   const [newStep, setNewStep] = useState('')
   const [xpToast, setXpToast] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
+  const [aiBusy, setAiBusy] = useState<string | null>(null)
+  const [aiMsg, setAiMsg] = useState('')
 
   useEffect(() => {
     let done = false
@@ -132,6 +134,30 @@ export default function TasksPage() {
     await supabase.from('tasks').update({ steps: updatedSteps }).eq('id', taskId)
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, steps: updatedSteps } : t))
     setNewStep('')
+  }
+
+  // Pro AI feature: ask the model to split the task into tiny first steps and
+  // append them to the task. Re-validated/keyed server-side.
+  async function aiBreakdown(taskId: string, task: any) {
+    setAiBusy(taskId); setAiMsg('')
+    try {
+      const res = await fetch('/api/ai/breakdown', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: task.title }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.steps) {
+        setAiMsg(data.notConfigured ? 'AI is being set up — try again shortly' : (data.error || 'Could not break that down'))
+        setAiBusy(null); return
+      }
+      const aiSteps = data.steps.map((s: string) => ({ text: s, done: false }))
+      const updatedSteps = [...(task.steps || []), ...aiSteps]
+      await supabase.from('tasks').update({ steps: updatedSteps }).eq('id', taskId)
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, steps: updatedSteps } : t))
+    } catch {
+      setAiMsg('Connection error — try again')
+    }
+    setAiBusy(null)
   }
 
   async function toggleStep(taskId: string, task: any, stepIdx: number) {
@@ -245,6 +271,14 @@ export default function TasksPage() {
                       <input value={newStep} onChange={e => setNewStep(e.target.value)} onKeyDown={e => e.key === 'Enter' && addStep(task.id, task)} placeholder="Add a micro-step..." style={{ flex: 1, border: '1px solid rgba(45,41,38,0.1)', borderRadius: 8, padding: '7px 10px', fontSize: 13, background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
                       <button onClick={() => addStep(task.id, task)} style={{ background: '#E8DEFF', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 12, cursor: 'pointer', color: '#7B5FCC' }}>+</button>
                     </div>
+                    <button
+                      onClick={() => aiBreakdown(task.id, task)}
+                      disabled={aiBusy === task.id}
+                      style={{ marginTop: 8, width: '100%', background: 'linear-gradient(100deg, #E8DEFF, #FFE8DD)', border: '1px solid rgba(123,95,204,0.25)', borderRadius: 10, padding: '9px', fontSize: 12, fontWeight: 600, color: '#7B5FCC', cursor: aiBusy === task.id ? 'default' : 'pointer', fontFamily: "'DM Sans', sans-serif" }}
+                    >
+                      {aiBusy === task.id ? 'Thinking through it…' : '✨ Break it down for me'}
+                    </button>
+                    {aiMsg && aiBusy !== task.id && <div style={{ fontSize: 11, color: '#9B8F88', marginTop: 6, textAlign: 'center' }}>{aiMsg}</div>}
                     <button onClick={() => completeTask(task)} style={{ marginTop: 10, width: '100%', background: '#2D2926', color: 'white', border: 'none', borderRadius: 10, padding: '10px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                       Mark as done ✓ (+50 XP)
                     </button>
