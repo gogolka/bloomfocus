@@ -188,6 +188,17 @@ export default function SettingsPage() {
         </div>
       </Link>
 
+      {/* Printables library link */}
+      <Link href="/app/library" style={{ textDecoration: 'none', display: 'block' }}>
+        <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>Printables library 📔</div>
+            <div style={{ fontSize: 12, color: C.soft }}>Download the printables included with Pro.</div>
+          </div>
+          <span style={{ color: C.purple, fontSize: 18 }}>→</span>
+        </div>
+      </Link>
+
       {/* Pro */}
       <div style={{ ...card, background: 'linear-gradient(150deg, #F3EEFF, #FFF3EC)', border: '1px solid rgba(123,95,204,0.2)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>

@@ -161,6 +161,14 @@ export default function AppDashboard() {
         </div>
       </Link>
 
+      {/* PRINTABLES LIBRARY LINK */}
+      <Link href="/app/library" style={{ textDecoration: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '14px 18px', marginBottom: 16 }}>
+          <span style={{ fontSize: 14, color: '#2D2926', fontWeight: 500 }}>📔 Printables library <span style={{ fontSize: 11, color: '#7B5FCC', fontWeight: 600 }}>· Pro</span></span>
+          <span style={{ fontSize: 13, color: '#7B5FCC' }}>Open →</span>
+        </div>
+      </Link>
+
       {/* TODAY STATS */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
         {[
