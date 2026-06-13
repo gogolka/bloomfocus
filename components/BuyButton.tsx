@@ -15,8 +15,40 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [promo, setPromo] = useState('')
+  const [promoChecking, setPromoChecking] = useState(false)
+  const [discountPercent, setDiscountPercent] = useState(0)
+  const [promoMsg, setPromoMsg] = useState('')
 
   useEffect(() => { setMounted(true) }, [])
+
+  const baseNum = parseFloat(priceUsd.replace(/[^0-9.]/g, '')) || 0
+  const discountedNum = discountPercent > 0 ? baseNum * (100 - discountPercent) / 100 : baseNum
+  const discountedDisplay = `$${discountedNum.toFixed(2)}`
+
+  const applyPromo = async () => {
+    if (!promo.trim()) return
+    setPromoChecking(true)
+    setPromoMsg('')
+    try {
+      const res = await fetch('/api/validate-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promo }),
+      })
+      const data = await res.json()
+      if (data.valid) {
+        setDiscountPercent(data.discountPercent || 0)
+        setPromoMsg('')
+      } else {
+        setDiscountPercent(0)
+        setPromoMsg(data.message || 'That code isn\'t valid')
+      }
+    } catch {
+      setPromoMsg('Could not check that code')
+    }
+    setPromoChecking(false)
+  }
 
   const handleBuy = async () => {
     if (!email || !email.includes('@')) {
@@ -31,7 +63,12 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
       const res = await fetch('/api/create-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productSlug, customerEmail: email, customerName: name }),
+        body: JSON.stringify({
+          productSlug,
+          customerEmail: email,
+          customerName: name,
+          promoCode: discountPercent > 0 ? promo.trim() : undefined,
+        }),
       })
 
       const data = await res.json()
@@ -114,9 +151,50 @@ export default function BuyButton({ productSlug, productTitle, priceUsd }: BuyBu
             </div>
 
             {/* Price */}
-            <div style={{ background: '#E8DEFF', borderRadius: 12, padding: '12px 16px', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ background: '#E8DEFF', borderRadius: 12, padding: '12px 16px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: 13, color: '#6B5F58' }}>Total</span>
-              <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926' }}>{priceUsd}</span>
+              {discountPercent > 0 ? (
+                <span style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <span style={{ fontSize: 14, color: '#9B8F88', textDecoration: 'line-through' }}>{priceUsd}</span>
+                  <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926' }}>{discountedDisplay}</span>
+                </span>
+              ) : (
+                <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926' }}>{priceUsd}</span>
+              )}
+            </div>
+
+            {/* Promo code */}
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#6B5F58', fontWeight: 500, marginBottom: 6 }}>
+                Promo code
+              </label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  type="text"
+                  value={promo}
+                  onChange={e => { setPromo(e.target.value); setDiscountPercent(0); setPromoMsg('') }}
+                  onKeyDown={e => e.key === 'Enter' && applyPromo()}
+                  placeholder="BLOOM15"
+                  style={{
+                    flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 10,
+                    padding: '10px 14px', fontSize: 14, color: '#2D2926', textTransform: 'uppercase',
+                    background: '#FFF8F0', outline: 'none', fontFamily: 'DM Sans, sans-serif',
+                  }}
+                />
+                <button
+                  onClick={applyPromo}
+                  disabled={promoChecking || !promo.trim()}
+                  style={{
+                    background: discountPercent > 0 ? '#5BA85B' : '#E8DEFF', color: discountPercent > 0 ? 'white' : '#7B5FCC',
+                    border: 'none', borderRadius: 10, padding: '0 18px', fontSize: 13, fontWeight: 600,
+                    cursor: promoChecking || !promo.trim() ? 'default' : 'pointer', whiteSpace: 'nowrap',
+                  }}
+                >
+                  {promoChecking ? '…' : discountPercent > 0 ? 'Applied ✓' : 'Apply'}
+                </button>
+              </div>
+              {discountPercent > 0 && <div style={{ fontSize: 12, color: '#5BA85B', marginTop: 6 }}>✓ {discountPercent}% off applied</div>}
+              {promoMsg && <div style={{ fontSize: 12, color: '#c0627a', marginTop: 6 }}>{promoMsg}</div>}
             </div>
 
             {/* Form */}

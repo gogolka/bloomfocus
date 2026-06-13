@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   try {
-    const { productSlug, customerEmail, customerName } = await req.json()
+    const { productSlug, customerEmail, customerName, promoCode } = await req.json()
 
     if (!productSlug || !customerEmail) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -29,6 +29,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
+    // 1b. Apply promo code if provided — ALWAYS re-validated server-side so the
+    // charged amount can never be tampered with from the client.
+    let amount = product.price_uah
+    let discount = 0
+    let appliedCode: string | null = null
+    if (promoCode && typeof promoCode === 'string' && promoCode.trim()) {
+      const { data: promo } = await supabase.rpc('validate_promo', { p_code: promoCode })
+      const row = Array.isArray(promo) ? promo[0] : promo
+      if (!row?.valid) {
+        return NextResponse.json({ error: 'This promo code is no longer valid' }, { status: 400 })
+      }
+      const pct = Math.min(100, Math.max(0, row.discount_percent || 0))
+      amount = Math.max(1, Math.round(product.price_uah * (100 - pct) / 100))
+      discount = product.price_uah - amount
+      appliedCode = promoCode.trim().toUpperCase()
+    }
+
     // 2. Create order (anon INSERT policy allows)
     const orderNumber = `BF-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
 
@@ -39,7 +56,9 @@ export async function POST(req: NextRequest) {
         product_id: product.id,
         customer_email: customerEmail,
         customer_name: customerName || null,
-        amount_uah: product.price_uah,
+        amount_uah: amount,
+        promo_code: appliedCode,
+        discount_uah: discount,
         status: 'pending',
       })
       .select()
@@ -52,13 +71,13 @@ export async function POST(req: NextRequest) {
 
     // 3. Create Monobank invoice
     const monoPayload = {
-      amount: product.price_uah,
+      amount: amount,
       ccy: 980,
       merchantPaymInfo: {
         reference: orderNumber,
         destination: `bloom focus — ${product.title}`,
         basketOrder: [
-          { name: product.title, qty: 1, sum: product.price_uah, icon: product.emoji || '🌸', unit: 'шт' },
+          { name: product.title, qty: 1, sum: amount, icon: product.emoji || '🌸', unit: 'шт' },
         ],
       },
       redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order=${orderNumber}`,
