@@ -31,6 +31,10 @@ export default function DumpPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [convertingId, setConvertingId] = useState<string | null>(null)
   const [lineSel, setLineSel] = useState<boolean[]>([])
+  const [aiBusy, setAiBusy] = useState(false)
+  const [aiResult, setAiResult] = useState<{ tasks: string[]; nextAction: string } | null>(null)
+  const [aiSel, setAiSel] = useState<boolean[]>([])
+  const [aiMsg, setAiMsg] = useState('')
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }: any) => {
@@ -80,6 +84,40 @@ export default function DumpPage() {
 
   const words = content.trim().split(/\s+/).filter(Boolean).length
 
+  // Pro AI feature: ask the model to pull concrete tasks out of the dump and
+  // pick the easiest next action.
+  async function aiSort() {
+    if (!content.trim()) return
+    setAiBusy(true); setAiMsg(''); setAiResult(null)
+    try {
+      const res = await fetch('/api/ai/triage', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.tasks) {
+        setAiMsg(data.notConfigured ? 'AI is being set up — try again shortly' : ((data.error || 'Could not sort that') + (data.detail ? `: ${data.detail}` : '')))
+        setAiBusy(false); return
+      }
+      setAiResult({ tasks: data.tasks, nextAction: data.nextAction || '' })
+      setAiSel(data.tasks.map(() => true))
+    } catch {
+      setAiMsg('Connection error — try again')
+    }
+    setAiBusy(false)
+  }
+
+  async function createTasksFromAI() {
+    if (!userId || !aiResult) return
+    const chosen = aiResult.tasks.filter((_, i) => aiSel[i] ?? true)
+    if (chosen.length === 0) return
+    const rows = chosen.map(l => ({ user_id: userId, title: l.substring(0, 200), steps: [], source: 'brain_dump' }))
+    await supabase.from('tasks').insert(rows)
+    setAiResult(null); setAiSel([])
+    setXpToast(`${chosen.length} task${chosen.length === 1 ? '' : 's'} added ✓`)
+    setTimeout(() => setXpToast(''), 2500)
+  }
+
   return (
     <div>
       {xpToast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, maxWidth: 'calc(100vw - 32px)', textAlign: 'center' }}>{xpToast}</div>}
@@ -93,13 +131,46 @@ export default function DumpPage() {
           placeholder={"Everything that's in your head right now…\nTasks, worries, ideas, random thoughts — let it all out."}
           style={{ width: '100%', border: 'none', resize: 'none', minHeight: 180, fontSize: 15, lineHeight: 1.8, color: '#2D2926', background: 'transparent', outline: 'none', fontFamily: "'DM Sans', sans-serif" }}
         />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, gap: 8, flexWrap: 'wrap' }}>
           <span style={{ fontSize: 11, color: '#9B8F88' }}>{words} words</span>
-          <button onClick={saveDump} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '9px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            Save dump 🧠 (+20 XP)
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={aiSort} disabled={aiBusy || !content.trim()} style={{ background: 'linear-gradient(100deg, #E8DEFF, #FFE8DD)', border: '1px solid rgba(123,95,204,0.25)', color: '#7B5FCC', borderRadius: 100, padding: '9px 16px', fontSize: 13, fontWeight: 600, cursor: aiBusy || !content.trim() ? 'default' : 'pointer', whiteSpace: 'nowrap', fontFamily: "'DM Sans', sans-serif" }}>
+              {aiBusy ? 'Sorting…' : '✨ Sort with AI'}
+            </button>
+            <button onClick={saveDump} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '9px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              Save dump 🧠
+            </button>
+          </div>
         </div>
+        {aiMsg && <div style={{ fontSize: 12, color: '#9B8F88', marginTop: 8 }}>{aiMsg}</div>}
       </div>
+
+      {/* AI triage result */}
+      {aiResult && (
+        <div style={{ background: 'linear-gradient(150deg, #F3EEFF, #FFF3EC)', border: '1px solid rgba(123,95,204,0.2)', borderRadius: 16, padding: '16px', marginBottom: 20 }}>
+          {aiResult.nextAction && (
+            <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 12, padding: '12px 14px', marginBottom: 14 }}>
+              <div style={{ fontSize: 11, color: '#7B5FCC', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600, marginBottom: 4 }}>👉 Start here</div>
+              <div style={{ fontSize: 14, color: '#2D2926', lineHeight: 1.5 }}>{aiResult.nextAction}</div>
+            </div>
+          )}
+          <div style={{ fontSize: 12, color: '#6B5F58', marginBottom: 10 }}>Tasks I found — tick the ones to add:</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+            {aiResult.tasks.map((t, i) => (
+              <label key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, cursor: 'pointer', fontSize: 13, color: '#2D2926' }}>
+                <input type="checkbox" checked={aiSel[i] ?? true} onChange={e => setAiSel(prev => { const n = [...prev]; n[i] = e.target.checked; return n })} style={{ marginTop: 3, accentColor: '#B8A4E8' }} />
+                <span style={{ lineHeight: 1.5 }}>{t}</span>
+              </label>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button onClick={createTasksFromAI} disabled={aiSel.filter(Boolean).length === 0} style={{ background: aiSel.filter(Boolean).length === 0 ? '#D4C5F9' : '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: aiSel.filter(Boolean).length === 0 ? 'not-allowed' : 'pointer' }}>
+              Add {aiSel.filter(Boolean).length} task{aiSel.filter(Boolean).length === 1 ? '' : 's'} →
+            </button>
+            <button onClick={() => { setAiResult(null); setAiSel([]) }} style={{ background: 'none', border: 'none', fontSize: 12, color: '#9B8F88', cursor: 'pointer' }}>Dismiss</button>
+          </div>
+        </div>
+      )}
 
       {/* Previous dumps */}
       {dumps.length > 0 && (

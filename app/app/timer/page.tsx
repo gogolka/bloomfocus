@@ -5,9 +5,11 @@ import { POMODORO_XP, levelFromXP, stageFromXP } from '@/lib/xp'
 import { computeStreak, notifyStreakMilestone } from '@/lib/streak'
 import { useCountdown, ensureNotificationPermission, notify } from '@/lib/timer'
 
-const MODES = { focus: 25 * 60, short: 5 * 60, long: 15 * 60, micro: 10 * 60 }
+const MODE_DEFAULTS = { focus: 25 * 60, short: 5 * 60, long: 15 * 60, micro: 10 * 60 }
+type Mode = keyof typeof MODE_DEFAULTS
 const CIRCUMFERENCE = 2 * Math.PI * 88
 const STORE_KEY = 'bloom-focus-timer'
+const FOCUS_KEY = 'bloom-focus-length'
 
 async function awardPomodoroXP(uid: string) {
   const today = new Date().toISOString().split('T')[0]
@@ -30,19 +32,24 @@ async function awardPomodoroXP(uid: string) {
 }
 
 export default function TimerPage() {
-  const [mode, setMode] = useState<keyof typeof MODES>('focus')
+  const [mode, setMode] = useState<Mode>('focus')
+  const [focusMin, setFocusMin] = useState(25)
   const [task, setTask] = useState('')
   const [pomodoros, setPomodoros] = useState(0)
   const [xpToast, setXpToast] = useState('')
   const modeRef = useRef(mode); modeRef.current = mode
   const taskRef = useRef(task); taskRef.current = task
+  const focusMinRef = useRef(focusMin); focusMinRef.current = focusMin
+
+  const MODES: Record<Mode, number> = { focus: focusMin * 60, short: MODE_DEFAULTS.short, long: MODE_DEFAULTS.long, micro: MODE_DEFAULTS.micro }
 
   const showToast = (msg: string) => { setXpToast(msg); setTimeout(() => setXpToast(''), 3000) }
 
   async function saveSession() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    await supabase.from('pomodoro_sessions').insert({ user_id: user.id, duration_minutes: MODES[modeRef.current] / 60, task_label: taskRef.current || null, completed: true })
+    const durationMin = modeRef.current === 'focus' ? focusMinRef.current : MODE_DEFAULTS[modeRef.current] / 60
+    await supabase.from('pomodoro_sessions').insert({ user_id: user.id, duration_minutes: durationMin, task_label: taskRef.current || null, completed: true })
     try { await awardPomodoroXP(user.id) } catch (e) { console.error('pomodoro XP failed', e) }
   }
 
@@ -63,6 +70,10 @@ export default function TimerPage() {
 
   // Restore a running timer (and its mode) after a reload / PWA reopen.
   useEffect(() => {
+    try {
+      const fl = parseInt(localStorage.getItem(FOCUS_KEY) || '', 10)
+      if (fl && fl >= 1 && fl <= 180) setFocusMin(fl)
+    } catch {}
     try {
       const raw = localStorage.getItem(STORE_KEY)
       if (raw) {
@@ -101,7 +112,7 @@ export default function TimerPage() {
     ensureNotificationPermission() // non-blocking: enables the completion notification
   }
 
-  function changeMode(m: keyof typeof MODES) {
+  function changeMode(m: Mode) {
     setMode(m)
     reset(MODES[m])
     try { localStorage.removeItem(STORE_KEY) } catch {}
@@ -110,6 +121,16 @@ export default function TimerPage() {
   function handleReset() {
     reset(MODES[mode])
     try { localStorage.removeItem(STORE_KEY) } catch {}
+  }
+
+  // Pro: customise the focus length. Only allowed while not running, so an
+  // in-progress session is never disrupted.
+  function setFocusLength(min: number) {
+    if (running) return
+    const clamped = Math.max(1, Math.min(180, Math.round(min)))
+    setFocusMin(clamped)
+    try { localStorage.setItem(FOCUS_KEY, String(clamped)) } catch {}
+    if (mode === 'focus') reset(clamped * 60)
   }
 
   return (
@@ -123,12 +144,28 @@ export default function TimerPage() {
       <input value={task} onChange={e => setTask(e.target.value)} placeholder="What are you focusing on?" style={{ width: '100%', border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: '#FEFCFA', outline: 'none', marginBottom: 16, fontFamily: "'DM Sans', sans-serif", boxSizing: 'border-box' }} />
 
       {/* Mode buttons */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
-        {(Object.entries(MODES) as [keyof typeof MODES, number][]).map(([m, s]) => (
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+        {(Object.entries(MODES) as [Mode, number][]).map(([m]) => (
           <button key={m} onClick={() => changeMode(m)} style={{ background: mode === m ? '#B8A4E8' : '#FEFCFA', color: mode === m ? 'white' : '#6B5F58', border: `1.5px solid ${mode === m ? '#B8A4E8' : 'rgba(45,41,38,0.12)'}`, borderRadius: 100, padding: '7px 16px', fontSize: 12, fontWeight: mode === m ? 600 : 400, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
-            {m === 'focus' ? '🍅 Focus 25m' : m === 'short' ? '☕ Break 5m' : m === 'long' ? '🌿 Long 15m' : '⚡ Micro 10m'}
+            {m === 'focus' ? `🍅 Focus ${focusMin}m` : m === 'short' ? '☕ Break 5m' : m === 'long' ? '🌿 Long 15m' : '⚡ Micro 10m'}
           </button>
         ))}
+      </div>
+
+      {/* Focus-length presets (Pro) */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontSize: 11, color: '#9B8F88' }}>Focus length:</span>
+        {[25, 50, 90].map(min => (
+          <button key={min} onClick={() => setFocusLength(min)} disabled={running} style={{ background: focusMin === min ? '#E8DEFF' : 'transparent', color: focusMin === min ? '#7B5FCC' : '#9B8F88', border: '1px solid rgba(123,95,204,0.25)', borderRadius: 100, padding: '5px 12px', fontSize: 12, fontWeight: focusMin === min ? 600 : 400, cursor: running ? 'default' : 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
+            {min}m
+          </button>
+        ))}
+        <input
+          type="number" min={1} max={180} value={focusMin}
+          onChange={e => setFocusLength(parseInt(e.target.value, 10) || 1)}
+          disabled={running}
+          style={{ width: 60, border: '1px solid rgba(123,95,204,0.25)', borderRadius: 100, padding: '5px 10px', fontSize: 12, color: '#7B5FCC', background: 'transparent', outline: 'none', fontFamily: "'DM Sans', sans-serif", textAlign: 'center' }}
+        />
       </div>
 
       {/* Timer ring */}

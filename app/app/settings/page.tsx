@@ -55,6 +55,28 @@ export default function SettingsPage() {
     setTimeout(() => setNameMsg(''), 2000)
   }
 
+  async function exportData() {
+    if (!uid) return
+    const [tasks, habits, dumps] = await Promise.all([
+      supabase.from('tasks').select('title, status, steps, tags, due_date, created_at, completed_at').eq('user_id', uid),
+      supabase.from('habits').select('title, emoji, is_active, created_at').eq('user_id', uid),
+      supabase.from('brain_dumps').select('content, created_at').eq('user_id', uid),
+    ])
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      tasks: tasks.data || [],
+      habits: habits.data || [],
+      brainDumps: dumps.data || [],
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `bloom-focus-export-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a); a.click(); a.remove()
+    URL.revokeObjectURL(url)
+  }
+
   const card: React.CSSProperties = { background: C.card, border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '20px', marginBottom: 16 }
   const labelStyle: React.CSSProperties = { fontSize: 11, color: C.soft, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }
 
@@ -99,6 +121,18 @@ export default function SettingsPage() {
           </button>
         </div>
         {nameMsg && <div style={{ fontSize: 12, color: nameMsg.includes('✓') ? C.green : '#c0627a', marginTop: 8 }}>{nameMsg}</div>}
+      </div>
+
+      {/* Export */}
+      <div style={card}>
+        <div style={labelStyle}>Your data</div>
+        <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Download everything you've created — tasks, habits and brain dumps — as a file you keep.</div>
+        <button
+          onClick={exportData}
+          style={{ background: 'transparent', border: `1.5px solid ${C.lav}`, color: C.purple, borderRadius: 100, padding: '9px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}
+        >
+          Export my data ⬇
+        </button>
       </div>
 
       {/* Pro */}
