@@ -1,10 +1,16 @@
 'use client'
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import DownloadAppButton from '@/components/DownloadAppButton'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  // The /app section is a standalone toolkit with its own header and nav —
+  // the marketing chrome would just double up and cover the content.
+  if (pathname?.startsWith('/app')) return null
 
   const links = [
     { href: '/app', label: 'App' },

@@ -1,6 +1,10 @@
+'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function Footer() {
+  const pathname = usePathname()
+  if (pathname?.startsWith('/app')) return null
   return (
     <footer style={{ background: '#2D2926', color: '#FEFCFA', padding: '48px 24px 32px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>

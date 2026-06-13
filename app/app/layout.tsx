@@ -58,7 +58,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       `}} />
 
       {/* Top bar */}
-      <div style={{ background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(45,41,38,0.08)', padding: '0 20px', minHeight: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 64, zIndex: 40 }}>
+      <div style={{ background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(45,41,38,0.08)', padding: '0 20px', minHeight: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 0, zIndex: 40 }}>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', flexShrink: 0 }}>
           bloom <em style={{ color: '#B8A4E8' }}>focus</em>
           <span style={{ fontSize: 11, color: '#9B8F88', marginLeft: 8 }}>app</span>
