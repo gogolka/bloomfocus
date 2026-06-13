@@ -59,6 +59,7 @@ export default function TasksPage() {
   const [newDate, setNewDate] = useState('')
   const [newTags, setNewTags] = useState<string[]>([])
   const [newTagInput, setNewTagInput] = useState('')
+  const [newRecurrence, setNewRecurrence] = useState('none')
   const [expanded, setExpanded] = useState<string | null>(null)
   const [newStep, setNewStep] = useState('')
   const [xpToast, setXpToast] = useState('')
@@ -112,10 +113,11 @@ export default function TasksPage() {
       steps: [],
       due_date: newDate || null,
       tags: finalTags,
+      recurrence: newRecurrence,
     }).select().single()
     if (data) {
       setTasks(prev => sortTasks([data, ...prev]))
-      setNewTask(''); setNewDate(''); setNewTags([]); setNewTagInput('')
+      setNewTask(''); setNewDate(''); setNewTags([]); setNewTagInput(''); setNewRecurrence('none')
     }
   }
 
@@ -124,6 +126,23 @@ export default function TasksPage() {
     setTasks(prev => prev.filter(t => t.id !== task.id))
     if (userId) {
       try { await awardTaskXP(userId) } catch (e) { console.error('awardTaskXP failed', e) }
+    }
+    // Recurring tasks regenerate the next instance with a fresh due date.
+    if (userId && task.recurrence && task.recurrence !== 'none') {
+      const next = new Date()
+      if (task.recurrence === 'daily') next.setDate(next.getDate() + 1)
+      else if (task.recurrence === 'weekly') next.setDate(next.getDate() + 7)
+      else if (task.recurrence === 'monthly') next.setMonth(next.getMonth() + 1)
+      const nextDue = next.toISOString().split('T')[0]
+      const { data: spawned } = await supabase.from('tasks').insert({
+        user_id: userId,
+        title: task.title,
+        steps: [],
+        due_date: nextDue,
+        tags: task.tags || [],
+        recurrence: task.recurrence,
+      }).select().single()
+      if (spawned) setTasks(prev => sortTasks([spawned, ...prev]))
     }
     showXP('+50 XP 💧 Plant watered!')
   }
@@ -209,6 +228,16 @@ export default function TasksPage() {
             <input value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag() } }} placeholder="Add tag (optional)" style={{ border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 10px', fontSize: 12, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif", width: 130 }} />
           </div>
 
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#9B8F88' }}>
+            <span>🔁</span>
+            <select value={newRecurrence} onChange={e => setNewRecurrence(e.target.value)} style={{ border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 10px', fontSize: 12, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif" }}>
+              <option value="none">Doesn't repeat</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+
           {newTags.map(tag => (
             <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#E8DEFF', color: '#7B5FCC', borderRadius: 100, padding: '3px 10px', fontSize: 11, fontWeight: 600 }}>
               {tag}
@@ -236,11 +265,14 @@ export default function TasksPage() {
                   <button onClick={() => completeTask(task)} title="Mark done" style={{ width: 24, height: 24, borderRadius: '50%', border: '2px solid #D4C5F9', background: 'transparent', cursor: 'pointer', flexShrink: 0 }} />
                   <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => setExpanded(isExp ? null : task.id)}>
                     <div style={{ fontSize: 14, color: '#2D2926', fontWeight: 500 }}>{task.title}</div>
-                    {(task.due_date || (task.tags && task.tags.length > 0)) && (
+                    {(task.due_date || (task.recurrence && task.recurrence !== 'none') || (task.tags && task.tags.length > 0)) && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 5 }}>
                         {task.due_date && (() => { const d = formatDue(task.due_date); return (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, fontWeight: 600, color: d.color }}>📅 {d.label}</span>
                         )})()}
+                        {task.recurrence && task.recurrence !== 'none' && (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, fontWeight: 600, color: '#7B5FCC' }}>🔁 {task.recurrence}</span>
+                        )}
                         {(task.tags || []).map((tag: string) => (
                           <span key={tag} style={{ background: '#E8DEFF', color: '#7B5FCC', borderRadius: 100, padding: '2px 8px', fontSize: 10, fontWeight: 600 }}>{tag}</span>
                         ))}
