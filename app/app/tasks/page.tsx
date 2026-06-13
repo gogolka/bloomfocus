@@ -66,6 +66,9 @@ export default function TasksPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [aiBusy, setAiBusy] = useState<string | null>(null)
   const [aiMsg, setAiMsg] = useState('')
+  const [view, setView] = useState<'active' | 'done'>('active')
+  const [doneTasks, setDoneTasks] = useState<any[] | null>(null)
+  const [doneLoading, setDoneLoading] = useState(false)
 
   useEffect(() => {
     let done = false
@@ -92,6 +95,27 @@ export default function TasksPage() {
   async function loadTasks(uid: string) {
     const { data } = await supabase.from('tasks').select('*').eq('user_id', uid).eq('status', 'active')
     setTasks(sortTasks(data || []))
+  }
+
+  async function loadDone(uid: string) {
+    setDoneLoading(true)
+    const { data } = await supabase.from('tasks').select('*').eq('user_id', uid).eq('status', 'done').order('completed_at', { ascending: false }).limit(100)
+    setDoneTasks(data || [])
+    setDoneLoading(false)
+  }
+
+  function switchView(v: 'active' | 'done') {
+    setView(v)
+    if (v === 'done' && userId) loadDone(userId)
+  }
+
+  // Reopen a completed task: it returns to the active list. XP already earned
+  // stays — this is just for fixing an accidental or premature completion.
+  async function reopenTask(task: any) {
+    const { error } = await supabase.from('tasks').update({ status: 'active', completed_at: null }).eq('id', task.id)
+    if (error) return
+    setDoneTasks(prev => (prev || []).filter(t => t.id !== task.id))
+    setTasks(prev => sortTasks([{ ...task, status: 'active', completed_at: null }, ...prev]))
   }
 
   function addTag() {
@@ -122,7 +146,11 @@ export default function TasksPage() {
   }
 
   async function completeTask(task: any) {
-    await supabase.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', task.id)
+    const { error } = await supabase.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', task.id)
+    if (error) {
+      showXP('Could not save — check your connection and try again')
+      return
+    }
     setTasks(prev => prev.filter(t => t.id !== task.id))
     if (userId) {
       try { await awardTaskXP(userId) } catch (e) { console.error('awardTaskXP failed', e) }
@@ -210,6 +238,14 @@ export default function TasksPage() {
       <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Tasks</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>Each task = +50 XP + waters your plant 💧</div>
 
+      {/* To do / Done toggle */}
+      <div style={{ display: 'flex', gap: 6, background: '#F1ECF9', borderRadius: 100, padding: 4, marginBottom: 20, width: 'fit-content' }}>
+        {([['active', 'To do'], ['done', 'Done']] as const).map(([v, label]) => (
+          <button key={v} onClick={() => switchView(v)} style={{ background: view === v ? 'white' : 'transparent', color: view === v ? '#7B5FCC' : '#9B8F88', border: 'none', borderRadius: 100, padding: '6px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", boxShadow: view === v ? '0 1px 3px rgba(0,0,0,0.06)' : 'none' }}>{label}</button>
+        ))}
+      </div>
+
+      {view === 'active' && (<>
       <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: 14, marginBottom: 20 }}>
         <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
           <input value={newTask} onChange={e => setNewTask(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="What's the plan?" style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
@@ -319,6 +355,37 @@ export default function TasksPage() {
               </div>
             )
           })}
+        </div>
+      )}
+      </>)}
+
+      {view === 'done' && (
+        <div>
+          {doneLoading && <div style={{ textAlign: 'center', padding: '40px 0', color: '#9B8F88', fontSize: 24 }}>⏳</div>}
+          {!doneLoading && (doneTasks || []).length === 0 && (
+            <div style={{ textAlign: 'center', padding: '48px 0', color: '#9B8F88' }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>🌙</div>
+              <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 4 }}>Nothing completed yet</div>
+              <div style={{ fontSize: 13 }}>Finished tasks will gather here so you can look back on them.</div>
+            </div>
+          )}
+          {!doneLoading && (doneTasks || []).length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {(doneTasks || []).map(task => (
+                <div key={task.id} style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#7FB069', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>✓</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, color: '#6B5F58', textDecoration: 'line-through' }}>{String(task.title).split('\n')[0]}</div>
+                    <div style={{ fontSize: 11, color: '#9B8F88', marginTop: 3 }}>
+                      {task.completed_at ? `Done ${new Date(task.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}` : 'Done'}
+                      {task.recurrence && task.recurrence !== 'none' ? ` · 🔁 ${task.recurrence}` : ''}
+                    </div>
+                  </div>
+                  <button onClick={() => reopenTask(task)} title="Reopen" style={{ background: 'none', border: '1px solid rgba(123,95,204,0.25)', color: '#7B5FCC', borderRadius: 100, padding: '5px 12px', fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>Reopen</button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

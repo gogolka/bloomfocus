@@ -32,13 +32,14 @@ export default function InsightsPage() {
     const since30 = new Date(now.getTime() - 30 * 86400000)
     const since30Date = dayKey(since30)
 
-    const [xp, plant, events, pomos, tasksDone, habitComps, dumps] = await Promise.all([
+    const [xp, plant, events, pomos, tasksDone, habitsRes, habitComps, dumps] = await Promise.all([
       supabase.from('user_xp').select('total_xp, level, streak_days, longest_streak').eq('user_id', user.id).single(),
       supabase.from('user_plant').select('bloomed_count, total_waterings').eq('user_id', user.id).single(),
       supabase.from('xp_events').select('action, xp_gained, created_at').eq('user_id', user.id).gte('created_at', since30.toISOString()).order('created_at', { ascending: true }),
       supabase.from('pomodoro_sessions').select('duration_minutes, created_at').eq('user_id', user.id).eq('completed', true),
       supabase.from('tasks').select('completed_at').eq('user_id', user.id).eq('status', 'done'),
-      supabase.from('habit_completions').select('completed_date').eq('user_id', user.id).gte('completed_date', since30Date),
+      supabase.from('habits').select('id, title, emoji, color').eq('user_id', user.id).eq('is_active', true),
+      supabase.from('habit_completions').select('habit_id, completed_date').eq('user_id', user.id).gte('completed_date', since30Date),
       supabase.from('brain_dumps').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
     ])
 
@@ -82,6 +83,16 @@ export default function InsightsPage() {
     // Active days in last 30 (distinct days with any XP event)
     const activeDays = new Set(evs.map(e => (e.created_at || '').split('T')[0])).size
 
+    // Per-habit completions in the last 30 days
+    const habitsList: any[] = habitsRes.data || []
+    const compsList: any[] = habitComps.data || []
+    const compCount: Record<string, number> = {}
+    compsList.forEach(c => { compCount[c.habit_id] = (compCount[c.habit_id] || 0) + 1 })
+    const habitBreakdown = habitsList
+      .map(h => ({ id: h.id, title: h.title, emoji: h.emoji || '🌱', color: h.color || '#A8D8C8', count: compCount[h.id] || 0 }))
+      .sort((a, b) => b.count - a.count)
+    const habitMax = Math.max(1, ...habitBreakdown.map(h => h.count))
+
     setD({
       totalXp: xp.data?.total_xp || 0,
       level: xp.data?.level || 1,
@@ -98,6 +109,8 @@ export default function InsightsPage() {
       done7,
       done30,
       habits30: (habitComps.data || []).length,
+      habitBreakdown,
+      habitMax,
       dumps: dumps.count || 0,
       activeDays,
     })
@@ -170,6 +183,24 @@ export default function InsightsPage() {
         ))}
       </div>
 
+      {/* Per-habit breakdown */}
+      <div style={{ background: C.card, border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '20px', marginBottom: 16 }}>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: C.text, marginBottom: 2 }}>Each habit · last 30 days</div>
+        <div style={{ fontSize: 12, color: C.soft, marginBottom: 18 }}>How many times you checked off each one.</div>
+        {d.habitBreakdown.length === 0 && <div style={{ fontSize: 13, color: C.soft }}>No active habits yet — add one on the Habits page and it'll show up here.</div>}
+        {d.habitBreakdown.map((h: any) => (
+          <div key={h.id} style={{ marginBottom: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: C.text, marginBottom: 5 }}>
+              <span>{h.emoji} {h.title}</span>
+              <span style={{ color: C.mid }}>{h.count}×</span>
+            </div>
+            <div style={{ background: C.lav, borderRadius: 100, height: 8, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${(h.count / d.habitMax) * 100}%`, minWidth: h.count > 0 ? 6 : 0, background: h.color, borderRadius: 100 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Focus + tasks */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
         {statCard('Focus time', focusH > 0 ? `${focusH}h ${focusM}m` : `${focusM}m`, `${d.focusSessions} sessions`)}
@@ -177,7 +208,7 @@ export default function InsightsPage() {
       </div>
       <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
         {statCard('Tasks · 7 days', d.done7)}
-        {statCard('Habits · 30 days', d.habits30)}
+        {statCard('Active days · 30', d.activeDays)}
       </div>
 
       <p style={{ fontSize: 12, color: C.soft, textAlign: 'center', lineHeight: 1.6 }}>
