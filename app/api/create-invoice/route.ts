@@ -5,7 +5,8 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   try {
-    const { productSlug, customerEmail, customerName, promoCode } = await req.json()
+    const { productSlug, customerEmail, customerName, promoCode, lang } = await req.json()
+    const loc = ['en','de','fr','es'].includes(lang) ? lang : 'en'
 
     if (!productSlug || !customerEmail) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
         promo_code: appliedCode,
         discount_uah: discount,
         status: 'pending',
+        lang: loc,
       })
       .select()
       .single()

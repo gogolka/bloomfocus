@@ -72,6 +72,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 
           customerEmail: email,
           customerName: name,
           promoCode: discountPercent > 0 ? promo.trim() : undefined,
+          lang,
         }),
       })
 

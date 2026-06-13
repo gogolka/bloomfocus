@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { purchaseEmail, emailLang } from '@/lib/i18n-email'
 import { supabaseAdmin } from '@/lib/supabase'
 import crypto from 'crypto'
 
@@ -23,81 +24,27 @@ async function sendDownloadEmail(
   customerName: string | null,
   productTitle: string,
   downloadUrl: string,
-  orderNumber: string
+  orderNumber: string,
+  lang: string
 ) {
   const brevoApiKey = process.env.BREVO_API_KEY
   if (!brevoApiKey) return
-
+  const loc = emailLang(lang)
+  const mail = purchaseEmail(loc, {
+    productTitle,
+    downloadUrl,
+    orderNumber,
+    bonusCode: BONUS_CODE,
+    bonusPercent: BONUS_PERCENT,
+  })
   await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
-    headers: {
-      'api-key': brevoApiKey,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'api-key': brevoApiKey, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       sender: { name: 'bloom focus', email: 'hello.bloomfocus@gmail.com' },
       to: [{ email, name: customerName || email }],
-      subject: `Your download is ready — ${productTitle} 🌸`,
-      htmlContent: `
-        <!DOCTYPE html>
-        <html>
-        <body style="font-family: Georgia, serif; background: #FFF8F0; margin: 0; padding: 40px 20px;">
-          <div style="max-width: 560px; margin: 0 auto; background: #FEFCFA; border-radius: 20px; padding: 40px; border: 1px solid rgba(45,41,38,0.08);">
-            
-            <div style="text-align: center; margin-bottom: 32px;">
-              <div style="font-size: 40px; margin-bottom: 12px;">🌸</div>
-              <div style="font-size: 24px; color: #2D2926; letter-spacing: -0.5px;">
-                bloom <em style="color: #B8A4E8;">focus</em>
-              </div>
-            </div>
-
-            <h1 style="font-size: 22px; color: #2D2926; margin-bottom: 8px; line-height: 1.3;">
-              Your download is ready!
-            </h1>
-            <p style="font-size: 15px; color: #6B5F58; line-height: 1.7; margin-bottom: 24px;">
-              Thank you for your purchase. Your <strong>${productTitle}</strong> is ready to download.
-            </p>
-
-            <div style="background: #E8DEFF; border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 24px;">
-              <p style="font-size: 14px; color: #6B5F58; margin-bottom: 16px;">
-                Click the button below to download your file.<br/>
-                <em>This link is valid for 24 hours and can be used up to 3 times.</em>
-              </p>
-              <a href="${downloadUrl}" style="display: inline-block; background: #B8A4E8; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-size: 15px; font-weight: 600;">
-                Download now →
-              </a>
-            </div>
-
-            <div style="background: #FFF3EC; border: 1px solid rgba(255,180,140,0.45); border-radius: 14px; padding: 22px; margin-bottom: 24px;">
-              <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #C07A3E; margin-bottom: 12px;">🎁 A little thank-you</div>
-              <p style="font-size: 14px; color: #2D2926; line-height: 1.7; margin: 0 0 4px;"><strong>Your free companion app</strong></p>
-              <p style="font-size: 14px; color: #6B5F58; line-height: 1.7; margin: 0 0 14px;">Tasks, habits, a focus timer and a brain dump that turns into to-dos — all free, right in your browser.</p>
-              <div style="text-align: center; margin-bottom: 20px;">
-                <a href="https://bloomfocus.org/app" style="display: inline-block; background: #B8A4E8; color: white; padding: 11px 24px; border-radius: 100px; text-decoration: none; font-size: 14px; font-weight: 600;">Open the free app →</a>
-              </div>
-              <p style="font-size: 14px; color: #2D2926; line-height: 1.7; margin: 0 0 10px;"><strong>${BONUS_PERCENT}% off your next order</strong> as a thank-you — use this code at checkout:</p>
-              <div style="text-align: center; background: #FEFCFA; border: 1px dashed #C07A3E; border-radius: 10px; padding: 12px;">
-                <span style="font-size: 20px; font-weight: 700; letter-spacing: 0.14em; color: #C07A3E;">${BONUS_CODE}</span>
-              </div>
-            </div>
-
-            <p style="font-size: 13px; color: #9B8F88; line-height: 1.6; margin-bottom: 8px;">
-              Order number: <strong>${orderNumber}</strong>
-            </p>
-            <p style="font-size: 13px; color: #9B8F88; line-height: 1.6;">
-              If the link expires or you need help, reply to this email.
-            </p>
-
-            <div style="border-top: 1px solid rgba(45,41,38,0.08); margin-top: 32px; padding-top: 20px; text-align: center;">
-              <p style="font-size: 12px; color: #9B8F88;">
-                bloom focus · bloomfocus.org<br/>
-                <em>Planning that works with your brain, not against it.</em>
-              </p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
+      subject: mail.subject,
+      htmlContent: mail.html,
     }),
   })
 }
@@ -162,7 +109,8 @@ export async function POST(req: NextRequest) {
         order.customer_name,
         order.products.title,
         downloadUrl,
-        order.order_number
+        order.order_number,
+        order.lang,
       )
 
       // Mark email as sent
