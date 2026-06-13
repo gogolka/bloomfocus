@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import DownloadAppButton from '@/components/DownloadAppButton'
-import { LOCALES, LANG_LABEL, LANG_PATH } from '@/lib/i18n'
+import { LOCALES, LANG_LABEL, LANG_PATH, chrome } from '@/lib/i18n'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -14,12 +14,13 @@ export default function Navbar() {
   if (pathname?.startsWith('/app')) return null
 
   const cur = pathname?.startsWith('/de') ? 'de' : pathname?.startsWith('/fr') ? 'fr' : pathname?.startsWith('/es') ? 'es' : 'en'
+  const c = chrome[cur]
 
   const links = [
-    { href: '/app', label: 'App' },
-    { href: '/quiz', label: 'ADHD Test' },
-    { href: '/shop', label: 'Shop' },
-    { href: '/blog', label: 'Blog' },
+    { href: '/app', label: c.navApp },
+    { href: '/quiz', label: c.navTest },
+    { href: '/shop', label: c.navShop },
+    { href: '/blog', label: c.navBlog },
   ]
 
   return (
@@ -31,7 +32,7 @@ export default function Navbar() {
     }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none' }}>
+        <Link href={LANG_PATH[cur]} style={{ textDecoration: 'none' }}>
           <span style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', letterSpacing: '-0.5px' }}>
             bloom <em style={{ color: '#B8A4E8' }}>focus</em>
           </span>
@@ -64,7 +65,7 @@ export default function Navbar() {
             onMouseEnter={e => { e.currentTarget.style.background = '#a08fd6'; e.currentTarget.style.transform = 'translateY(-1px)' }}
             onMouseLeave={e => { e.currentTarget.style.background = '#B8A4E8'; e.currentTarget.style.transform = 'translateY(0)' }}
           >
-            Shop now ✨
+            {c.shopNow}
           </Link>
         </div>
 
@@ -92,7 +93,7 @@ export default function Navbar() {
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',
           }}>
-            Shop now ✨
+            {c.shopNow}
           </Link>
         </div>
       )}

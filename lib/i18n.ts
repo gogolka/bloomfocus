@@ -385,3 +385,51 @@ export const newsletter: Record<Lang, NewsletterDict> = {
     compactSuccess: `Ya estás dentro: revisa tu correo para la nota de bienvenida y tu descuento. 🌱`,
   },
 }
+
+export interface ChromeDict {
+  navApp: string
+  navTest: string
+  navShop: string
+  navBlog: string
+  shopNow: string
+  tagline: string
+  explore: string
+  shopAll: string
+  adhdBlog: string
+  connect: string
+  rights: string
+}
+
+export const chrome: Record<Lang, ChromeDict> = {
+  en: {
+    navApp: `App`, navTest: `ADHD Test`, navShop: `Shop`, navBlog: `Blog`, shopNow: `Shop now ✨`,
+    tagline: `Planning tools designed for ADHD brains. Warm, gentle, and actually helpful.`,
+    explore: `Explore`, shopAll: `Shop all products`, adhdBlog: `ADHD blog`, connect: `Connect`,
+    rights: `© 2026 bloom focus. All rights reserved.`,
+  },
+  de: {
+    navApp: `App`, navTest: `ADHS-Test`, navShop: `Shop`, navBlog: `Blog`, shopNow: `Zum Shop ✨`,
+    tagline: `Planungstools für ADHS-Gehirne. Warm, sanft und wirklich hilfreich.`,
+    explore: `Entdecken`, shopAll: `Alle Produkte`, adhdBlog: `ADHS-Blog`, connect: `Kontakt`,
+    rights: `© 2026 bloom focus. Alle Rechte vorbehalten.`,
+  },
+  fr: {
+    navApp: `Appli`, navTest: `Test TDAH`, navShop: `Boutique`, navBlog: `Blog`, shopNow: `Boutique ✨`,
+    tagline: `Des outils d'organisation pensés pour les cerveaux TDAH. Chaleureux, doux et vraiment utiles.`,
+    explore: `Explorer`, shopAll: `Tous les produits`, adhdBlog: `Blog TDAH`, connect: `Contact`,
+    rights: `© 2026 bloom focus. Tous droits réservés.`,
+  },
+  es: {
+    navApp: `App`, navTest: `Test TDAH`, navShop: `Tienda`, navBlog: `Blog`, shopNow: `Comprar ✨`,
+    tagline: `Herramientas de planificación para cerebros con TDAH. Cálidas, suaves y de verdad útiles.`,
+    explore: `Explorar`, shopAll: `Todos los productos`, adhdBlog: `Blog TDAH`, connect: `Contacto`,
+    rights: `© 2026 bloom focus. Todos los derechos reservados.`,
+  },
+}
+
+export function langFromPath(pathname: string | null | undefined): Lang {
+  if (pathname?.startsWith('/de')) return 'de'
+  if (pathname?.startsWith('/fr')) return 'fr'
+  if (pathname?.startsWith('/es')) return 'es'
+  return 'en'
+}
