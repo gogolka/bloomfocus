@@ -151,6 +151,14 @@ export default function AppDashboard() {
         </div>
       </div>
 
+      {/* INSIGHTS LINK */}
+      <Link href="/app/insights" style={{ textDecoration: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(100deg, #E8DEFF, #FFF0E8)', border: '1px solid rgba(123,95,204,0.18)', borderRadius: 16, padding: '14px 18px', marginBottom: 16 }}>
+          <span style={{ fontSize: 14, color: '#2D2926', fontWeight: 500 }}>📊 See your insights</span>
+          <span style={{ fontSize: 13, color: '#7B5FCC' }}>View →</span>
+        </div>
+      </Link>
+
       {/* TODAY STATS */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
         {[
