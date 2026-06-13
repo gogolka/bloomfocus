@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Give me a task first' }, { status: 400 })
     }
 
-    const key = process.env.ANTHROPIC_API_KEY
+    // Strip any stray non-printable/non-ASCII characters (e.g. U+2028 line
+    // separators that copy-paste sometimes injects) — HTTP header values must
+    // be ByteStrings (<= 255), so an invisible character here breaks the request.
+    const key = (process.env.ANTHROPIC_API_KEY || '').replace(/[^\x21-\x7E]/g, '')
     if (!key) {
       // Graceful state until the key is set in Vercel.
       return NextResponse.json({ error: 'AI is not set up yet', notConfigured: true }, { status: 503 })
