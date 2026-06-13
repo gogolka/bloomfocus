@@ -130,7 +130,17 @@ function AuthScreen() {
     if (mode === 'signup') {
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) setError(error.message)
-      else setSuccess('Check your email to confirm your account!')
+      else {
+        // Fire the delayed welcome email (Brevo delivers it ~20 min later).
+        // Non-blocking: never let this hold up the sign-up UI.
+        try {
+          fetch('/api/app-welcome', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          }).catch(() => {})
+        } catch {}
+        setSuccess('Check your email to confirm your account!')
+      }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
