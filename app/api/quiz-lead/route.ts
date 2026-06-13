@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 const RESULT_LABELS: Record<string, string> = {
   negative: 'Low ADHD indicators',
@@ -37,8 +38,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No email' }, { status: 400 })
     }
     const label = RESULT_LABELS[result] || 'ADHD self-assessment'
+
+    // Save the lead in your own database first — this is your source of truth and
+    // is independent of Brevo. Duplicate emails are silently ignored.
+    try {
+      await supabaseAdmin
+        .from('leads')
+        .upsert(
+          { email: email.trim().toLowerCase(), name: name || null, adhd_type: label, source: 'adhd-quiz' },
+          { onConflict: 'email', ignoreDuplicates: true }
+        )
+    } catch (e) {
+      console.error('lead save to supabase failed', e)
+    }
+
     const brevoApiKey = process.env.BREVO_API_KEY
-    if (!brevoApiKey) return NextResponse.json({ ok: true, captured: false })
+    if (!brevoApiKey) return NextResponse.json({ ok: true, captured: true, emailed: false })
 
     // Upsert the contact so the lead is saved (and tagged with their type).
     await fetch('https://api.brevo.com/v3/contacts', {
