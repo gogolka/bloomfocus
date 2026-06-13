@@ -17,12 +17,13 @@ export default function Navbar() {
   const c = chrome[cur]
   const quizPath = cur === 'en' ? '/quiz' : `/${cur}/quiz`
   const shopPath = cur === 'en' ? '/shop' : `/${cur}/shop`
+  const blogPath = cur === 'en' ? '/blog' : `/${cur}/blog`
 
   const links = [
     { href: '/app', label: c.navApp },
     { href: quizPath, label: c.navTest },
     { href: shopPath, label: c.navShop },
-    { href: '/blog', label: c.navBlog },
+    { href: blogPath, label: c.navBlog },
   ]
 
   return (

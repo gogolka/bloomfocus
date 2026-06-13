@@ -28,7 +28,7 @@ export default function Footer() {
             <div style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 16 }}>{c.explore}</div>
             {[
               { href: lang === 'en' ? '/shop' : `/${lang}/shop`, label: c.shopAll },
-              { href: '/blog', label: c.adhdBlog },
+              { href: lang === 'en' ? '/blog' : `/${lang}/blog`, label: c.adhdBlog },
             ].map(l => (
               <div key={l.href} style={{ marginBottom: 10 }}>
                 <Link href={l.href} style={{ textDecoration: 'none', fontSize: 14, color: '#FEFCFA', opacity: 0.8 }}>{l.label}</Link>

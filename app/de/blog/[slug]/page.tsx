@@ -1,17 +1,20 @@
 import type { Metadata } from 'next'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
+import { blogTitle, blogExcerpt } from '@/lib/articles-i18n'
 
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const article = articles.find(a => a.slug === params.slug)
   if (!article) return { title: 'Article not found' }
+  const title = blogTitle(params.slug, 'de', article.title)
+  const description = blogExcerpt(params.slug, 'de', article.excerpt)
   return {
-    title: article.title,
-    description: article.excerpt,
+    title,
+    description,
     alternates: {
-      canonical: `https://bloomfocus.org/blog/${params.slug}`,
+      canonical: `https://bloomfocus.org/de/blog/${params.slug}`,
       languages: {
         en: `https://bloomfocus.org/blog/${params.slug}`,
         de: `https://bloomfocus.org/de/blog/${params.slug}`,
@@ -19,7 +22,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
         es: `https://bloomfocus.org/es/blog/${params.slug}`,
       },
     },
-    openGraph: { title: article.title, description: article.excerpt, type: 'article', publishedTime: article.date },
+    openGraph: { title, description, type: 'article', publishedTime: article.date },
   }
 }
 
@@ -28,5 +31,5 @@ export function generateStaticParams() {
 }
 
 export default function BlogArticlePage({ params }: { params: { slug: string } }) {
-  return <BlogArticle lang="en" slug={params.slug} />
+  return <BlogArticle lang="de" slug={params.slug} />
 }

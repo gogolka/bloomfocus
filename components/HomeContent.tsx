@@ -31,6 +31,7 @@ const blogPreviews = [
 
 export default function HomeContent({ lang }: { lang: Lang }) {
   const t = home[lang]
+  const base = lang === 'en' ? '' : `/${lang}`
 
   return (
     <div style={{ background: 'var(--cream)' }}>
@@ -51,10 +52,10 @@ export default function HomeContent({ lang }: { lang: Lang }) {
             {t.heroSub}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/shop" className="btn-primary" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600, boxShadow: '0 4px 20px rgba(184,164,232,0.35)', display: 'inline-block' }}>
+            <Link href={`${base}/shop`} className="btn-primary" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600, boxShadow: '0 4px 20px rgba(184,164,232,0.35)', display: 'inline-block' }}>
               {t.ctaShop}
             </Link>
-            <Link href="/blog" className="btn-outline" style={{ textDecoration: 'none', background: 'transparent', color: '#6B5F58', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 500, border: '1.5px solid rgba(45,41,38,0.12)', display: 'inline-block' }}>
+            <Link href={`${base}/blog`} className="btn-outline" style={{ textDecoration: 'none', background: 'transparent', color: '#6B5F58', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 500, border: '1.5px solid rgba(45,41,38,0.12)', display: 'inline-block' }}>
               {t.ctaBlog}
             </Link>
           </div>
@@ -108,12 +109,12 @@ export default function HomeContent({ lang }: { lang: Lang }) {
                 <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6B5F58', display: 'inline-block', marginBottom: 12 }}>{p.tag}</div>
                 <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 10 }}>{p.title}</h3>
                 <p style={{ fontSize: 13, color: '#6B5F58', lineHeight: 1.6, marginBottom: 20 }}>{p.desc}</p>
-                <Link href="/shop" style={{ textDecoration: 'none', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600, display: 'inline-block' }}>{t.viewProduct}</Link>
+                <Link href={`${base}/shop`} style={{ textDecoration: 'none', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600, display: 'inline-block' }}>{t.viewProduct}</Link>
               </div>
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/shop" className="btn-outline" style={{ textDecoration: 'none', background: 'transparent', color: '#2D2926', padding: '13px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, border: '1.5px solid rgba(45,41,38,0.2)', display: 'inline-block' }}>
+            <Link href={`${base}/shop`} className="btn-outline" style={{ textDecoration: 'none', background: 'transparent', color: '#2D2926', padding: '13px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, border: '1.5px solid rgba(45,41,38,0.2)', display: 'inline-block' }}>
               {t.seeAll}
             </Link>
           </div>
@@ -211,11 +212,11 @@ export default function HomeContent({ lang }: { lang: Lang }) {
                 {t.blogPre}<em style={{ color: '#B8A4E8' }}>{t.blogEm}</em>
               </h2>
             </div>
-            <Link href="/blog" style={{ textDecoration: 'none', fontSize: 13, color: '#6B5F58', fontWeight: 500 }}>{t.allArticles}</Link>
+            <Link href={`${base}/blog`} style={{ textDecoration: 'none', fontSize: 13, color: '#6B5F58', fontWeight: 500 }}>{t.allArticles}</Link>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
             {blogPreviews.map((post, i) => (
-              <Link key={i} href={`/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
+              <Link key={i} href={`${base}/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
                 <div className="hover-card-sm" style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '28px 24px', height: '100%' }}>
                   <div style={{ background: '#E8DEFF', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7B5FCC', display: 'inline-block', marginBottom: 16 }}>{post.tag}</div>
                   <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 17, color: '#2D2926', lineHeight: 1.4, marginBottom: 12 }}>{post.title}</h3>
@@ -243,7 +244,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
           <p style={{ fontSize: 15, color: '#9B8F88', lineHeight: 1.7, marginBottom: 36 }}>
             {t.ctaSub}
           </p>
-          <Link href="/shop" className="btn-primary" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '15px 32px', borderRadius: 100, fontSize: 15, fontWeight: 600, display: 'inline-block', boxShadow: '0 4px 24px rgba(184,164,232,0.4)' }}>
+          <Link href={`${base}/shop`} className="btn-primary" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '15px 32px', borderRadius: 100, fontSize: 15, fontWeight: 600, display: 'inline-block', boxShadow: '0 4px 24px rgba(184,164,232,0.4)' }}>
             {t.ctaButton}
           </Link>
         </div>
