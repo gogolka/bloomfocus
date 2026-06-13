@@ -140,7 +140,7 @@ export default function DopaminePage() {
 
   return (
     <div>
-      {toast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, whiteSpace: 'nowrap' }}>{toast}</div>}
+      {toast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, maxWidth: 'calc(100vw - 32px)', textAlign: 'center' }}>{toast}</div>}
 
       <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Dopamine Menu</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>When motivation disappears, pick a reward. You deserve it.</div>

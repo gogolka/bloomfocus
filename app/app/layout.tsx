@@ -46,7 +46,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   ]
 
   return (
-    <div style={{ background: 'var(--cream)', minHeight: '100vh', fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ background: 'var(--cream)', minHeight: '100vh', fontFamily: "'DM Sans', sans-serif", overflowX: 'hidden', width: '100%', maxWidth: '100%', position: 'relative' }}>
       <style dangerouslySetInnerHTML={{ __html: `
         .bf-desktop-nav { display: none; }
         .bf-bottom-nav { display: flex; }
@@ -96,17 +96,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Bottom nav (mobile only) */}
-      <div className="bf-bottom-nav" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, justifyContent: 'center', padding: '0 16px 16px' }}>
-        <div style={{ background: 'rgba(254,252,250,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 28, padding: '8px 6px', display: 'flex', gap: 2, boxShadow: '0 8px 32px rgba(45,41,38,0.1)' }}>
+      <div className="bf-bottom-nav" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, justifyContent: 'center', padding: '0 12px 16px', boxSizing: 'border-box', overflowX: 'hidden' }}>
+        <div style={{ background: 'rgba(254,252,250,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 28, padding: '8px 6px', display: 'flex', gap: 2, boxShadow: '0 8px 32px rgba(45,41,38,0.1)', width: '100%', maxWidth: 440, boxSizing: 'border-box' }}>
           {navItems.map(item => {
             const isActive = pathname === item.href
             return (
-              <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+              <Link key={item.href} href={item.href} style={{ textDecoration: 'none', flex: '1 1 0', minWidth: 0 }}>
                 <div style={{
                   background: isActive ? '#E8DEFF' : 'transparent',
-                  borderRadius: 20, padding: '7px 11px',
+                  borderRadius: 20, padding: '7px 4px',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
-                  minWidth: 52, transition: 'all 0.2s',
+                  transition: 'all 0.2s', boxSizing: 'border-box',
                 }}>
                   <span style={{ fontSize: 18, lineHeight: 1 }}>{item.emoji}</span>
                   <span style={{ fontSize: 9, color: isActive ? '#7B5FCC' : '#9B8F88', fontWeight: isActive ? 600 : 400 }}>{item.label}</span>
