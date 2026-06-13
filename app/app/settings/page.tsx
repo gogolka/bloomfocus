@@ -27,6 +27,8 @@ export default function SettingsPage() {
   const [savedName, setSavedName] = useState('')
   const [savingName, setSavingName] = useState(false)
   const [nameMsg, setNameMsg] = useState('')
+  const [frozenUntil, setFrozenUntil] = useState<string | null>(null)
+  const [freezeBusy, setFreezeBusy] = useState(false)
 
   useEffect(() => { load() }, [])
 
@@ -42,7 +44,27 @@ export default function SettingsPage() {
     setIsPro(!!profile.data?.is_pro)
     const pn = plant.data?.plant_name || 'My Brain Plant'
     setPlantName(pn); setSavedName(pn)
+    const { data: xpRow } = await supabase.from('user_xp').select('streak_frozen_until').eq('user_id', user.id).single()
+    setFrozenUntil(xpRow?.streak_frozen_until || null)
     setLoading(false)
+  }
+
+  async function activateFreeze() {
+    if (!uid) return
+    setFreezeBusy(true)
+    const until = new Date(); until.setDate(until.getDate() + 14)
+    const iso = until.toISOString().split('T')[0]
+    const { error } = await supabase.from('user_xp').update({ streak_frozen_until: iso }).eq('user_id', uid)
+    if (!error) setFrozenUntil(iso)
+    setFreezeBusy(false)
+  }
+
+  async function cancelFreeze() {
+    if (!uid) return
+    setFreezeBusy(true)
+    const { error } = await supabase.from('user_xp').update({ streak_frozen_until: null }).eq('user_id', uid)
+    if (!error) setFrozenUntil(null)
+    setFreezeBusy(false)
   }
 
   async function savePlantName() {
@@ -134,6 +156,37 @@ export default function SettingsPage() {
           Export my data ⬇
         </button>
       </div>
+
+      {/* Streak freeze */}
+      <div style={card}>
+        <div style={labelStyle}>Streak freeze</div>
+        {frozenUntil && Date.parse(frozenUntil) >= Date.parse(new Date().toISOString().split('T')[0]) ? (
+          <>
+            <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Your streak is protected until {new Date(frozenUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. Take the time you need — missed days in this window won't break it.</div>
+            <button onClick={cancelFreeze} disabled={freezeBusy} style={{ background: 'transparent', border: `1.5px solid ${C.lav}`, color: C.purple, borderRadius: 100, padding: '9px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
+              Cancel freeze
+            </button>
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Going away or having a hard stretch? Freeze your streak for two weeks so a few missed days don't reset it.</div>
+            <button onClick={activateFreeze} disabled={freezeBusy} style={{ background: C.purpleSoft, border: 'none', color: 'white', borderRadius: 100, padding: '9px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
+              {freezeBusy ? 'Saving…' : 'Freeze my streak (14 days) ❄️'}
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Garden link */}
+      <Link href="/app/garden" style={{ textDecoration: 'none', display: 'block' }}>
+        <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>Your garden 🌷</div>
+            <div style={{ fontSize: 12, color: C.soft }}>See your blooms and change your plant's style.</div>
+          </div>
+          <span style={{ color: C.purple, fontSize: 18 }}>→</span>
+        </div>
+      </Link>
 
       {/* Pro */}
       <div style={{ ...card, background: 'linear-gradient(150deg, #F3EEFF, #FFF3EC)', border: '1px solid rgba(123,95,204,0.2)' }}>

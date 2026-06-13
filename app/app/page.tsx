@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getLevelFromXP, getXPToNextLevel, PLANT_STAGES } from '@/lib/gamification'
 import { stageFromXP, PLANT_STAGE_XP } from '@/lib/xp'
+import { skinEmoji } from '@/lib/skins'
 import { plantStatus } from '@/lib/plant'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 
@@ -26,7 +27,7 @@ export default function AppDashboard() {
     const [profile, xp, plant, achievements] = await Promise.all([
       supabase.from('profiles').select('display_name, avatar_emoji, is_pro').eq('id', user.id).single(),
       supabase.from('user_xp').select('total_xp, level, gems, streak_days').eq('user_id', user.id).single(),
-      supabase.from('user_plant').select('stage, health, plant_name, last_watered_at, bloomed_count, xp_base').eq('user_id', user.id).single(),
+      supabase.from('user_plant').select('stage, health, plant_name, last_watered_at, bloomed_count, xp_base, skin').eq('user_id', user.id).single(),
       supabase.from('user_achievements').select('achievement_id, achievements(title, emoji)').eq('user_id', user.id).order('earned_at', { ascending: false }).limit(3),
     ])
 
@@ -90,7 +91,7 @@ export default function AppDashboard() {
       <div style={{ background: 'linear-gradient(135deg, #E8DEFF 0%, #FFD6C4 100%)', borderRadius: 24, padding: '28px 24px', marginBottom: 16, textAlign: 'center', border: '1.5px solid #D4C5F9', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', pointerEvents: 'none' }} />
         <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
-          <div style={{ fontSize: 80, lineHeight: 1, opacity: status.mood === 'napping' ? 0.7 : 1, transition: 'opacity 0.4s' }}>{plantStage.emoji}</div>
+          <div style={{ fontSize: 80, lineHeight: 1, opacity: status.mood === 'napping' ? 0.7 : 1, transition: 'opacity 0.4s' }}>{skinEmoji(data.plant?.skin, plantStageNum)}</div>
           {status.badge && <div style={{ position: 'absolute', top: -6, right: -14, fontSize: 26 }}>{status.badge}</div>}
         </div>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 4 }}>{data.plant?.plant_name || 'My Brain Plant'}</div>
@@ -119,12 +120,13 @@ export default function AppDashboard() {
           </div>
         )}
 
-        {bloomedCount > 0 && (
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.5)', marginTop: 14, paddingTop: 12 }}>
-            <div style={{ fontSize: 10, color: '#6B5F58', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Your garden · {bloomedCount} bloomed</div>
-            <div style={{ fontSize: 22, lineHeight: 1.3 }}>{Array.from({ length: bloomedCount }).map((_, i) => '🌺').join(' ')}</div>
+        <Link href="/app/garden" style={{ textDecoration: 'none', display: 'block', borderTop: '1px solid rgba(255,255,255,0.5)', marginTop: 14, paddingTop: 12 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: bloomedCount > 0 ? 6 : 0 }}>
+            <span style={{ fontSize: 10, color: '#6B5F58', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Your garden{bloomedCount > 0 ? ` · ${bloomedCount} bloomed` : ''}</span>
+            <span style={{ fontSize: 11, color: '#7B5FCC', fontWeight: 600 }}>Visit 🌷 →</span>
           </div>
-        )}
+          {bloomedCount > 0 && <div style={{ fontSize: 22, lineHeight: 1.3 }}>{Array.from({ length: Math.min(bloomedCount, 30) }).map(() => '🌺').join(' ')}</div>}
+        </Link>
       </div>
 
       {/* XP + LEVEL */}

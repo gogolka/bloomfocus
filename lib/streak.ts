@@ -25,12 +25,13 @@ export async function computeStreak(uid: string): Promise<{
 
   const { data } = await supabase
     .from('user_xp')
-    .select('streak_days, last_active_date')
+    .select('streak_days, last_active_date, streak_frozen_until')
     .eq('user_id', uid)
     .single()
 
   const prev = data?.streak_days || 0
   const last = (data?.last_active_date as string | null) || null
+  const frozenUntil = (data?.streak_frozen_until as string | null) || null
 
   let streak: number
   if (!last) {
@@ -39,6 +40,9 @@ export async function computeStreak(uid: string): Promise<{
     const gap = Math.round((Date.parse(today) - Date.parse(last)) / 86400000)
     if (gap === 0) streak = prev || 1
     else if (gap === 1 || gap === 2) streak = prev + 1 // 1 grace day
+    // A streak freeze set to cover the away period (on/after the last active
+    // day) protects against a longer gap — the streak survives instead of reset.
+    else if (frozenUntil && Date.parse(frozenUntil) >= Date.parse(last)) streak = prev + 1
     else streak = 1
   }
 
