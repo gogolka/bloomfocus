@@ -50,9 +50,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <style dangerouslySetInnerHTML={{ __html: `
         .bf-desktop-nav { display: none; }
         .bf-bottom-nav { display: flex; }
+        .bf-back-to-site { display: none; }
         @media (min-width: 768px) {
           .bf-desktop-nav { display: flex; }
           .bf-bottom-nav { display: none; }
+          .bf-back-to-site { display: inline-flex; }
           .bf-content { padding-bottom: 48px !important; }
         }
       `}} />
@@ -80,6 +82,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+          <Link href="/" className="bf-back-to-site" aria-label="Back to site" style={{ textDecoration: 'none', alignItems: 'center', gap: 5, fontSize: 13, color: '#9B8F88', whiteSpace: 'nowrap' }}>
+            ← Back to site
+          </Link>
           <InstallButton />
           <Link href="/app/settings" aria-label="Settings" style={{ textDecoration: 'none', fontSize: 18, lineHeight: 1, color: '#6B5F58' }}>⚙</Link>
         </div>
