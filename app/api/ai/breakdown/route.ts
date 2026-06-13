@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (!resp.ok) {
       const detail = await resp.text()
       console.error('ai/breakdown anthropic error', resp.status, detail)
-      return NextResponse.json({ error: 'AI could not respond right now' }, { status: 502 })
+      return NextResponse.json({ error: 'AI could not respond right now', detail: `${resp.status}: ${detail.slice(0, 300)}` }, { status: 502 })
     }
 
     const data = await resp.json()
@@ -74,6 +74,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ steps })
   } catch (e: any) {
     console.error('ai/breakdown threw', e?.message)
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })
+    return NextResponse.json({ error: 'Something went wrong', detail: e?.message || String(e) }, { status: 500 })
   }
 }

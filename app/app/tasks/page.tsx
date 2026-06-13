@@ -147,7 +147,7 @@ export default function TasksPage() {
       })
       const data = await res.json()
       if (!res.ok || !data.steps) {
-        setAiMsg(data.notConfigured ? 'AI is being set up — try again shortly' : (data.error || 'Could not break that down'))
+        setAiMsg(data.notConfigured ? 'AI is being set up — try again shortly' : ((data.error || 'Could not break that down') + (data.detail ? `: ${data.detail}` : '')))
         setAiBusy(null); return
       }
       const aiSteps = data.steps.map((s: string) => ({ text: s, done: false }))
