@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         email: clean,
         updateEnabled: true,
-        attributes: { FIRSTNAME: name || '', SOURCE: 'newsletter', LANG: loc },
+        attributes: { FIRSTNAME: name || '', SOURCE: 'newsletter', LANG: loc, QUIZ_COMPLETED: false },
       }),
     }).catch(() => {})
 

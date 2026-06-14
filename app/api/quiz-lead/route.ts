@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         email,
         updateEnabled: true,
-        attributes: { FIRSTNAME: name || '', ADHD_TYPE: canonicalLabel, SOURCE: 'adhd-quiz', LANG: loc },
+        attributes: { FIRSTNAME: name || '', ADHD_TYPE: canonicalLabel, SOURCE: 'adhd-quiz', LANG: loc, QUIZ_COMPLETED: true },
       }),
     }).catch(() => {})
 
