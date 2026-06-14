@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
   const { data: files } = await supabaseAdmin
     .from('product_files')
-    .select('lang')
+    .select('lang, file_path, file_path_lowink')
     .eq('product_id', order.product_id)
     .order('lang')
 
@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
     multilingual: true,
     orderLang: order.lang,
     langs: files?.map(f => f.lang) ?? [],
+    hasLowink: files?.some(f => f.file_path_lowink) ?? false,
   })
 }
 
