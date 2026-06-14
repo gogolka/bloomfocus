@@ -1,7 +1,16 @@
 import type { Metadata, Viewport } from 'next'
+import { DM_Sans } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  display: 'swap',
+  variable: '--font-dm-sans',
+  preload: true,
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bloomfocus.org'),
@@ -53,8 +62,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={dmSans.variable}>
+      <body className={dmSans.className}>
         <Navbar />
         <main>{children}</main>
         <Footer />
