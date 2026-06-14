@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function GET(req: NextRequest) {
   try {
     const token = req.nextUrl.searchParams.get('token')
+    const lang  = req.nextUrl.searchParams.get('lang') // optional: en|de|fr|es
 
     if (!token) {
       return NextResponse.json({ error: 'Missing token' }, { status: 400 })
@@ -22,8 +23,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Check token expiry
-    const expiresAt = new Date(order.download_token_expires_at)
-    if (expiresAt < new Date()) {
+    if (new Date(order.download_token_expires_at) < new Date()) {
       return NextResponse.json({ error: 'Download link has expired' }, { status: 410 })
     }
 
@@ -32,16 +32,49 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Download limit reached. Please contact support.' }, { status: 429 })
     }
 
-    // Check file exists
-    if (!order.products?.file_path) {
+    let filePath: string | null = null
+    let fileName: string | null = null
+
+    // Multilingual product: look up per-language file
+    if (order.products?.is_multilingual) {
+      const targetLang = lang || order.lang || 'en'
+      const { data: pf } = await supabaseAdmin
+        .from('product_files')
+        .select('file_path, file_name')
+        .eq('product_id', order.products.id)
+        .eq('lang', targetLang)
+        .single()
+
+      if (pf) {
+        filePath = pf.file_path
+        fileName = pf.file_name
+      } else {
+        // fallback to English
+        const { data: pfEn } = await supabaseAdmin
+          .from('product_files')
+          .select('file_path, file_name')
+          .eq('product_id', order.products.id)
+          .eq('lang', 'en')
+          .single()
+        filePath = pfEn?.file_path ?? null
+        fileName = pfEn?.file_name ?? null
+      }
+    } else {
+      filePath = order.products?.file_path ?? null
+      fileName = order.products?.file_name ?? null
+    }
+
+    if (!filePath) {
       return NextResponse.json({ error: 'File not available yet' }, { status: 404 })
     }
 
-    // Generate signed URL from Supabase Storage (valid for 1 hour)
+    // Generate signed URL (1 hour)
     const { data: signedUrl, error: storageError } = await supabaseAdmin
       .storage
       .from('bloom-products')
-      .createSignedUrl(order.products.file_path, 3600)
+      .createSignedUrl(filePath, 3600, {
+        download: fileName || true,
+      })
 
     if (storageError || !signedUrl) {
       console.error('Storage error:', storageError)
@@ -54,7 +87,6 @@ export async function GET(req: NextRequest) {
       .update({ download_count: order.download_count + 1 })
       .eq('id', order.id)
 
-    // Redirect to signed URL
     return NextResponse.redirect(signedUrl.signedUrl)
 
   } catch (error) {
