@@ -28,13 +28,33 @@ export async function POST(req: NextRequest) {
     const brevoApiKey = process.env.BREVO_API_KEY
     if (!brevoApiKey) return NextResponse.json({ ok: true, subscribed: true, emailed: false })
 
+    // Check if contact already exists in Brevo and has completed the quiz.
+    // If so, don't overwrite QUIZ_COMPLETED: true → false.
+    let alreadyCompletedQuiz = false
+    try {
+      const existing = await fetch(
+        `https://api.brevo.com/v3/contacts/${encodeURIComponent(clean)}`,
+        { headers: { 'api-key': brevoApiKey } }
+      )
+      if (existing.ok) {
+        const data = await existing.json()
+        alreadyCompletedQuiz = data?.attributes?.QUIZ_COMPLETED === true
+      }
+    } catch {}
+
     await fetch('https://api.brevo.com/v3/contacts', {
       method: 'POST',
       headers: { 'api-key': brevoApiKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: clean,
         updateEnabled: true,
-        attributes: { FIRSTNAME: name || '', SOURCE: 'newsletter', LANG: loc, QUIZ_COMPLETED: false },
+        attributes: {
+          FIRSTNAME: name || '',
+          SOURCE: 'newsletter',
+          LANG: loc,
+          // Only set false if they haven't already completed the quiz
+          ...(!alreadyCompletedQuiz && { QUIZ_COMPLETED: false }),
+        },
       }),
     }).catch(() => {})
 
