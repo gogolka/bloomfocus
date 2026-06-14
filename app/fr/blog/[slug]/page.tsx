@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
 import { blogTitle, blogExcerpt } from '@/lib/articles-i18n'
@@ -31,5 +32,28 @@ export function generateStaticParams() {
 }
 
 export default function BlogArticlePage({ params }: { params: { slug: string } }) {
-  return <BlogArticle lang="fr" slug={params.slug} />
+  const article = articles.find(a => a.slug === params.slug)
+  const title = article ? blogTitle(params.slug, 'fr', article.title) : ''
+  const description = article ? blogExcerpt(params.slug, 'fr', article.excerpt) : ''
+  const jsonLd = article ? {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: { '@type': 'Organization', name: 'bloom focus', url: 'https://bloomfocus.org' },
+    publisher: { '@type': 'Organization', name: 'bloom focus', url: 'https://bloomfocus.org', logo: { '@type': 'ImageObject', url: 'https://bloomfocus.org/icons/icon-192.png' } },
+    datePublished: article.date,
+    dateModified: article.date,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://bloomfocus.org/fr/blog/${params.slug}` },
+    url: `https://bloomfocus.org/fr/blog/${params.slug}`,
+    inLanguage: 'fr',
+  } : null
+  return (
+    <>
+      {jsonLd && (
+        <Script id="article-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      )}
+      <BlogArticle lang="fr" slug={params.slug} />
+    </>
+  )
 }

@@ -1,4 +1,5 @@
 import BuyButton from '@/components/BuyButton'
+import Script from 'next/script'
 import type { Lang } from '@/lib/i18n'
 import { shopChrome, tagMap, productDesc } from '@/lib/i18n-shop'
 
@@ -58,6 +59,39 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
           })}
         </div>
       </section>
+
+      {products.length > 0 && (
+        <Script
+          id="shop-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'ItemList',
+              name: 'bloom focus — ADHD Toolkit & Planners',
+              url: 'https://bloomfocus.org/shop',
+              itemListElement: products.map((p: any, i: number) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                item: {
+                  '@type': 'Product',
+                  name: p.title,
+                  description: p.description,
+                  url: `https://bloomfocus.org/shop#${p.slug}`,
+                  brand: { '@type': 'Brand', name: 'bloom focus' },
+                  offers: {
+                    '@type': 'Offer',
+                    price: Number(p.price_usd).toFixed(2),
+                    priceCurrency: 'USD',
+                    availability: 'https://schema.org/InStock',
+                    seller: { '@type': 'Organization', name: 'bloom focus' },
+                  },
+                },
+              })),
+            }),
+          }}
+        />
+      )}
     </div>
   )
 }
