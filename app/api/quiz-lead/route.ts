@@ -60,8 +60,30 @@ const EMAILS: Record<Lang, {
   },
 }
 
-function resultEmail(lang: Lang, name: string, label: string) {
+function resultEmail(lang: Lang, name: string, label: string, result: string) {
   const e = EMAILS[lang]
+  const isPositive = result !== 'negative'
+
+  const workbookBlock = isPositive ? `
+      <div style="background:#F5F0FF; border-radius:14px; padding:24px; margin-bottom:24px; border:1.5px solid #B8A4E8;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7B5FCC; margin-bottom:8px;">
+          ${lang==='fr'?'Guide recommandé':'Recommended guide'}
+        </div>
+        <p style="font-size:16px; font-weight:700; color:#2D2926; margin:0 0 8px;">
+          ${lang==='fr'?'Nouveau diagnostic de TDAH — Tes 30 premiers jours':'New ADHD Diagnosis: Your First 30 Days'}
+        </p>
+        <p style="font-size:13px; color:#6B5F58; line-height:1.7; margin:0 0 16px;">
+          ${lang==='fr'
+            ?'Un cahier doux de 44 pages pour les 30 premiers jours après le diagnostic. 4 semaines · 30 actions · basé sur la TCC.'
+            :'A gentle 44-page workbook for the first month after an ADHD diagnosis. 4 weeks · 30 daily actions · CBT-based.'
+          }
+        </p>
+        <a href="https://bloomfocus.org/${lang==='en'?'':lang+'/'}shop#new-adhd-diagnosis-30-days"
+          style="display:inline-block; background:#7B5FCC; color:white; padding:12px 26px; border-radius:100px; text-decoration:none; font-size:14px; font-weight:600;">
+          ${lang==='fr'?'Obtenir le guide — $8.99':'Get the workbook — $8.99'}
+        </a>
+      </div>` : ''
+
   return `
   <!DOCTYPE html><html><body style="font-family: Georgia, serif; background: #FFF8F0; margin: 0; padding: 40px 20px;">
     <div style="max-width: 560px; margin: 0 auto; background: #FEFCFA; border-radius: 20px; padding: 40px; border: 1px solid rgba(45,41,38,0.08);">
@@ -71,6 +93,7 @@ function resultEmail(lang: Lang, name: string, label: string) {
       </div>
       <h1 style="font-size: 22px; color:#2D2926; margin-bottom: 10px;">${e.heading(label)}</h1>
       <p style="font-size: 15px; color:#6B5F58; line-height: 1.7; margin-bottom: 20px;">${e.intro(name)}</p>
+      ${workbookBlock}
       <div style="background:#E8DEFF; border-radius: 14px; padding: 24px; text-align:center; margin-bottom: 24px;">
         <p style="font-size: 13px; color:#6B5F58; margin: 0 0 8px;">${e.discountLabel}</p>
         <p style="font-size: 26px; font-weight: 700; letter-spacing: 0.12em; color:#7B5FCC; margin: 0 0 12px;">BLOOM15</p>
@@ -126,7 +149,7 @@ export async function POST(req: NextRequest) {
         sender: { name: 'bloom focus', email: 'hello.bloomfocus@gmail.com' },
         to: [{ email, name: name || email }],
         subject: EMAILS[loc].subject(localizedLabel),
-        htmlContent: resultEmail(loc, name || '', localizedLabel),
+        htmlContent: resultEmail(loc, name || '', localizedLabel, result || 'negative'),
       }),
     }).catch(() => {})
 

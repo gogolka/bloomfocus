@@ -257,6 +257,34 @@ export default function ADHDQuiz({ lang = "en" as Lang }: { lang?: Lang }) {
               </div>
             )}
 
+            {result !== 'negative' && (
+              <div style={{background:'#F5F0FF',borderRadius:20,padding:'28px 36px',border:'1.5px solid #B8A4E8',position:'relative',overflow:'hidden'}}>
+                <div style={{position:'absolute',top:0,right:0,background:'#B8A4E8',borderRadius:'0 20px 0 20px',padding:'6px 16px',fontSize:11,fontWeight:700,letterSpacing:'.08em',color:'#fff',textTransform:'uppercase'}}>
+                  {lang==='fr'?'Nouveau':'New'}
+                </div>
+                <div style={{fontSize:28,marginBottom:12}}>📓</div>
+                <div style={{fontSize:11,fontWeight:700,letterSpacing:'.1em',textTransform:'uppercase',color:'#7B5FCC',marginBottom:8}}>
+                  {lang==='fr'?'Guide recommandé':'Recommended guide'}
+                </div>
+                <h3 style={{fontSize:18,fontWeight:700,color:'#2D2926',lineHeight:1.3,marginBottom:8}}>
+                  {lang==='fr'
+                    ? 'Nouveau diagnostic de TDAH — Tes 30 premiers jours'
+                    : 'New ADHD Diagnosis: Your First 30 Days'
+                  }
+                </h3>
+                <p style={{fontSize:14,color:'#6B5F58',lineHeight:1.7,marginBottom:20}}>
+                  {lang==='fr'
+                    ? 'Un cahier doux de 44 pages pour les 30 premiers jours après le diagnostic. 4 semaines · 30 actions · basé sur la TCC.'
+                    : 'A gentle 44-page workbook for the first month after diagnosis. 4 weeks · 30 daily actions · CBT-based.'
+                  }
+                </p>
+                <a href={lang==='en'?'/shop#new-adhd-diagnosis-30-days':`/${lang}/shop#new-adhd-diagnosis-30-days`}
+                  style={{display:'block',background:'#7B5FCC',color:'#fff',borderRadius:12,padding:'14px',fontSize:15,fontWeight:600,textAlign:'center',textDecoration:'none'}}>
+                  {lang==='fr'?'Obtenir le guide — $8.99':'Get the workbook — $8.99'}
+                </a>
+              </div>
+            )}
+
             {meta.products.length>0 && (
               <div style={{background:C.purpleLight,borderRadius:20,padding:"28px 36px",border:`1px solid ${C.purpleDark}22`}}>
                 <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:C.purpleDark,marginBottom:16}}>
