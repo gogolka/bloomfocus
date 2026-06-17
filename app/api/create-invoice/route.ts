@@ -72,20 +72,22 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Create Monobank invoice
+    const unitLabel: Record<string, string> = { en: 'pcs', de: 'Stk', fr: 'pcs', es: 'uds' }
     const monoPayload = {
       amount: amount,
-      ccy: 980,
+      ccy: 980, // UAH only supported by Monobank
       merchantPaymInfo: {
         reference: orderNumber,
         destination: `bloom focus — ${product.title}`,
         basketOrder: [
-          { name: product.title, qty: 1, sum: amount, icon: product.emoji || '🌸', unit: 'шт' },
+          { name: product.title, qty: 1, sum: amount, icon: product.emoji || '🌸', unit: unitLabel[loc] || 'pcs' },
         ],
       },
       redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order=${orderNumber}`,
       webHookUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/mono-webhook`,
       validity: 3600,
       paymentType: 'debit',
+      // Note: Monobank checkout language is auto-detected from buyer's browser
     }
 
     const monoResponse = await fetch('https://api.monobank.ua/api/merchant/invoice/create', {
