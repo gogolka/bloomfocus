@@ -93,6 +93,26 @@ export async function POST(req: NextRequest) {
         })
         .eq('id', order.id)
 
+      // If Pro product — activate Pro for user account
+      const slug = order.products?.slug || ''
+      if (slug === 'pro-monthly' || slug === 'pro-annual') {
+        // Find user by email and set is_pro = true
+        const { data: profile } = await supabaseAdmin
+          .from('profiles')
+          .select('id')
+          .eq('email', order.customer_email)
+          .single()
+        if (profile?.id) {
+          const proUntil = slug === 'pro-annual'
+            ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          await supabaseAdmin
+            .from('profiles')
+            .update({ is_pro: true, pro_until: proUntil })
+            .eq('id', profile.id)
+        }
+      }
+
       const downloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/download?token=${downloadToken}`
 
       await sendDownloadEmail(

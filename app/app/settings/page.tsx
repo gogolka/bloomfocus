@@ -28,6 +28,8 @@ export default function SettingsPage() {
   const [savingName, setSavingName] = useState(false)
   const [nameMsg, setNameMsg] = useState('')
   const [frozenUntil, setFrozenUntil] = useState<string | null>(null)
+  const [upgrading, setUpgrading] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('annual')
   const [freezeBusy, setFreezeBusy] = useState(false)
 
   useEffect(() => { load() }, [])
@@ -97,6 +99,29 @@ export default function SettingsPage() {
     a.download = `bloom-focus-export-${new Date().toISOString().split('T')[0]}.json`
     document.body.appendChild(a); a.click(); a.remove()
     URL.revokeObjectURL(url)
+  }
+
+  async function handleUpgrade() {
+    if (!email || upgrading) return
+    setUpgrading(true)
+    try {
+      const slug = selectedPlan === 'annual' ? 'pro-annual' : 'pro-monthly'
+      const res = await fetch('/api/create-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productSlug: slug, customerEmail: email, lang: 'en' }),
+      })
+      const data = await res.json()
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl
+      } else {
+        alert('Payment error: ' + (data.error || 'Unknown error'))
+      }
+    } catch (e) {
+      alert('Something went wrong. Please try again.')
+    } finally {
+      setUpgrading(false)
+    }
   }
 
   const card: React.CSSProperties = { background: C.card, border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '20px', marginBottom: 16 }
@@ -227,22 +252,27 @@ export default function SettingsPage() {
         {!isPro && (
           <>
             <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
-              <div style={{ flex: 1, background: 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: '1px solid rgba(123,95,204,0.15)' }}>
+              <div
+                onClick={() => setSelectedPlan('monthly')}
+                style={{ flex: 1, background: selectedPlan === 'monthly' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: selectedPlan === 'monthly' ? `1.5px solid ${C.purpleSoft}` : '1px solid rgba(123,95,204,0.15)', cursor: 'pointer' }}>
                 <div style={{ fontSize: 11, color: C.soft, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Monthly</div>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$5</div>
                 <div style={{ fontSize: 10, color: C.soft }}>per month</div>
               </div>
-              <div style={{ flex: 1, background: 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: `1.5px solid ${C.purpleSoft}`, position: 'relative' }}>
+              <div
+                onClick={() => setSelectedPlan('annual')}
+                style={{ flex: 1, background: selectedPlan === 'annual' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: selectedPlan === 'annual' ? `1.5px solid ${C.purpleSoft}` : '1px solid rgba(123,95,204,0.15)', cursor: 'pointer', position: 'relative' }}>
                 <div style={{ fontSize: 11, color: C.purple, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>Annual</div>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$48</div>
                 <div style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>2 months free</div>
               </div>
             </div>
             <button
-              disabled
-              style={{ width: '100%', background: C.lav, color: C.purple, border: 'none', borderRadius: 100, padding: '13px', fontSize: 14, fontWeight: 600, cursor: 'default', opacity: 0.85 }}
+              onClick={handleUpgrade}
+              disabled={upgrading}
+              style={{ width: '100%', background: upgrading ? C.lav : C.purple, color: 'white', border: 'none', borderRadius: 100, padding: '13px', fontSize: 14, fontWeight: 600, cursor: upgrading ? 'default' : 'pointer', transition: 'background 0.2s' }}
             >
-              Coming soon — free for now ✨
+              {upgrading ? 'Preparing payment…' : `Upgrade to Pro — $${selectedPlan === 'annual' ? '48/year' : '5/month'}`}
             </button>
           </>
         )}
