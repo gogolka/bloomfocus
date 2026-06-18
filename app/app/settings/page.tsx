@@ -23,6 +23,10 @@ export default function SettingsPage() {
   const [email, setEmail] = useState('')
   const [uid, setUid] = useState<string | null>(null)
   const [isPro, setIsPro] = useState(false)
+  const [proUntil, setProUntil] = useState<string | null>(null)
+  const [subStatus, setSubStatus] = useState<string | null>(null)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelMsg, setCancelMsg] = useState('')
   const [plantName, setPlantName] = useState('')
   const [savedName, setSavedName] = useState('')
   const [savingName, setSavingName] = useState(false)
@@ -39,11 +43,14 @@ export default function SettingsPage() {
     if (!user) { setLoading(false); return }
     setUid(user.id)
     setEmail(user.email || '')
-    const [profile, plant] = await Promise.all([
-      supabase.from('profiles').select('is_pro').eq('id', user.id).single(),
+    const [profile, plant, sub] = await Promise.all([
+      supabase.from('profiles').select('is_pro, pro_until').eq('id', user.id).single(),
       supabase.from('user_plant').select('plant_name').eq('user_id', user.id).single(),
+      supabase.from('subscriptions').select('status, current_period_end').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).single(),
     ])
     setIsPro(!!profile.data?.is_pro)
+    setProUntil(profile.data?.pro_until || null)
+    setSubStatus(sub.data?.status || null)
     const pn = plant.data?.plant_name || 'My Brain Plant'
     setPlantName(pn); setSavedName(pn)
     const { data: xpRow } = await supabase.from('user_xp').select('streak_frozen_until').eq('user_id', user.id).single()
@@ -121,6 +128,31 @@ export default function SettingsPage() {
       alert('Something went wrong. Please try again.')
     } finally {
       setUpgrading(false)
+    }
+  }
+
+  async function handleCancel() {
+    if (cancelling) return
+    const confirmed = window.confirm('Cancel your subscription? You\'ll keep Pro access until the end of your current billing period.')
+    if (!confirmed) return
+    setCancelling(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${session?.access_token}` },
+      })
+      const data = await res.json()
+      if (data.ok) {
+        setSubStatus('cancelled')
+        setCancelMsg(data.message)
+      } else {
+        alert(data.error || 'Something went wrong')
+      }
+    } catch {
+      alert('Something went wrong. Please try again.')
+    } finally {
+      setCancelling(false)
     }
   }
 
@@ -232,7 +264,30 @@ export default function SettingsPage() {
         </div>
 
         {isPro ? (
-          <div style={{ fontSize: 14, color: C.mid, marginBottom: 16 }}>You have full access to everything below. Thank you for supporting bloom focus 💜</div>
+          <div>
+            <div style={{ fontSize: 14, color: C.mid, marginBottom: 12 }}>You have full access to everything. Thank you for supporting bloom focus 💜</div>
+            {proUntil && (
+              <div style={{ fontSize: 12, color: C.soft, marginBottom: 12 }}>
+                {subStatus === 'cancelled'
+                  ? `Access until ${new Date(proUntil).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`
+                  : `Renews ${new Date(proUntil).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`
+                }
+              </div>
+            )}
+            {cancelMsg && <div style={{ fontSize: 12, color: C.green, marginBottom: 12 }}>{cancelMsg}</div>}
+            {subStatus === 'active' && (
+              <button
+                onClick={handleCancel}
+                disabled={cancelling}
+                style={{ background: 'transparent', border: '1px solid rgba(45,41,38,0.15)', color: C.soft, borderRadius: 100, padding: '8px 16px', fontSize: 12, cursor: 'pointer' }}
+              >
+                {cancelling ? 'Cancelling…' : 'Cancel subscription'}
+              </button>
+            )}
+            {subStatus === 'cancelled' && (
+              <div style={{ fontSize: 12, color: C.soft, fontStyle: 'italic' }}>Subscription cancelled — no further charges.</div>
+            )}
+          </div>
         ) : (
           <div style={{ fontSize: 14, color: C.mid, marginBottom: 16 }}>Right now everything here is free while we're in early access. Paid plans are coming soon — here's what Pro will include.</div>
         )}
