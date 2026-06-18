@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import crypto from 'crypto'
 
 export const dynamic = 'force-dynamic'
+
+// WayForPay signature: HMAC_MD5 of joined fields
+function wfpSignature(fields: string[], secret: string): string {
+  return crypto.createHmac('md5', secret).update(fields.join(';')).digest('hex')
+}
+
+// WayForPay language mapping
+const WFP_LANG: Record<string, string> = { en: 'EN', de: 'EN', fr: 'EN', es: 'ES' }
+
+// WayForPay currency — show USD to international buyers
+const WFP_CURRENCY = 'USD'
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,10 +26,9 @@ export async function POST(req: NextRequest) {
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
     const supabase = createClient(url, anonKey)
 
-    // 1. Read product (public RLS allows)
+    // 1. Read product
     const { data: product, error: productError } = await supabase
       .from('products')
       .select('*')
@@ -26,15 +37,14 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (productError || !product) {
-      console.error('create-invoice: product read failed', productError?.message)
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // 1b. Apply promo code if provided — ALWAYS re-validated server-side so the
-    // charged amount can never be tampered with from the client.
-    let amount = product.price_uah
+    // 2. Apply promo code if provided
+    let amountUsd = product.price_usd
     let discount = 0
     let appliedCode: string | null = null
+
     if (promoCode && typeof promoCode === 'string' && promoCode.trim()) {
       const { data: promo } = await supabase.rpc('validate_promo', { p_code: promoCode })
       const row = Array.isArray(promo) ? promo[0] : promo
@@ -42,13 +52,14 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'This promo code is no longer valid' }, { status: 400 })
       }
       const pct = Math.min(100, Math.max(0, row.discount_percent || 0))
-      amount = Math.max(1, Math.round(product.price_uah * (100 - pct) / 100))
-      discount = product.price_uah - amount
+      amountUsd = Math.max(0.5, parseFloat((product.price_usd * (100 - pct) / 100).toFixed(2)))
+      discount = parseFloat((product.price_usd - amountUsd).toFixed(2))
       appliedCode = promoCode.trim().toUpperCase()
     }
 
-    // 2. Create order (anon INSERT policy allows)
+    // 3. Create order
     const orderNumber = `BF-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
+    const orderDate = Math.floor(Date.now() / 1000)
 
     const { data: order, error: orderError } = await supabase
       .from('orders')
@@ -57,9 +68,9 @@ export async function POST(req: NextRequest) {
         product_id: product.id,
         customer_email: customerEmail,
         customer_name: customerName || null,
-        amount_uah: amount,
+        amount_uah: Math.round(amountUsd * 100), // store cents
         promo_code: appliedCode,
-        discount_uah: discount,
+        discount_uah: Math.round(discount * 100),
         status: 'pending',
         lang: loc,
       })
@@ -67,52 +78,77 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (orderError || !order) {
-      console.error('create-invoice: order insert failed', orderError?.message, orderError?.code)
       return NextResponse.json({ error: 'Failed to create order', detail: orderError?.message }, { status: 500 })
     }
 
-    // 3. Create Monobank invoice
-    const unitLabel: Record<string, string> = { en: 'pcs', de: 'Stk', fr: 'pcs', es: 'uds' }
-    const monoPayload = {
-      amount: amount,
-      ccy: 980, // UAH only supported by Monobank
-      merchantPaymInfo: {
-        reference: orderNumber,
-        destination: `bloom focus — ${product.title}`,
-        basketOrder: [
-          { name: product.title, qty: 1, sum: amount, icon: product.emoji || '🌸', unit: unitLabel[loc] || 'pcs' },
-        ],
-      },
-      redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order=${orderNumber}`,
-      webHookUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/mono-webhook`,
-      validity: 3600,
-      paymentType: 'debit',
-      // Note: Monobank checkout language is auto-detected from buyer's browser
+    // 4. Create WayForPay invoice
+    const merchantLogin = process.env.WFP_MERCHANT_LOGIN!
+    const merchantSecret = process.env.WFP_MERCHANT_SECRET!
+    const domain = 'bloomfocus.org'
+
+    const signatureFields = [
+      merchantLogin,
+      domain,
+      orderNumber,
+      String(orderDate),
+      String(amountUsd),
+      WFP_CURRENCY,
+      product.title,
+      '1',
+      String(amountUsd),
+    ]
+
+    const merchantSignature = wfpSignature(signatureFields, merchantSecret)
+
+    const wfpPayload = {
+      merchantAccount: merchantLogin,
+      merchantAuthType: 'SimpleSignature',
+      merchantDomainName: domain,
+      merchantSignature,
+      orderReference: orderNumber,
+      orderDate,
+      amount: amountUsd,
+      currency: WFP_CURRENCY,
+      orderTimeout: 49000,
+      productName: [product.title],
+      productPrice: [amountUsd],
+      productCount: [1],
+      clientEmail: customerEmail,
+      clientFirstName: customerName || '',
+      returnUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order=${orderNumber}`,
+      serviceUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/wfp-webhook`,
+      language: WFP_LANG[loc] || 'EN',
     }
 
-    const monoResponse = await fetch('https://api.monobank.ua/api/merchant/invoice/create', {
+    const wfpResponse = await fetch('https://secure.wayforpay.com/pay?behavior=offline', {
       method: 'POST',
-      headers: { 'X-Token': process.env.MONO_TOKEN!, 'Content-Type': 'application/json' },
-      body: JSON.stringify(monoPayload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(wfpPayload),
     })
 
-    if (!monoResponse.ok) {
-      const monoError = await monoResponse.text()
-      console.error('create-invoice: monobank error', monoResponse.status, monoError)
-      return NextResponse.json({ error: 'Payment system error', detail: monoError }, { status: 500 })
+    if (!wfpResponse.ok) {
+      const err = await wfpResponse.text()
+      console.error('WayForPay error', wfpResponse.status, err)
+      return NextResponse.json({ error: 'Payment system error', detail: err }, { status: 500 })
     }
 
-    const monoData = await monoResponse.json()
+    const wfpData = await wfpResponse.json()
 
+    if (wfpData.reasonCode !== 1100) {
+      console.error('WayForPay rejected', wfpData)
+      return NextResponse.json({ error: 'Payment rejected', detail: wfpData.reason }, { status: 500 })
+    }
+
+    // Save WFP order reference
     await supabase
       .from('orders')
-      .update({ mono_invoice_id: monoData.invoiceId })
+      .update({ mono_invoice_id: orderNumber }) // reuse field for WFP order ref
       .eq('id', order.id)
 
-    return NextResponse.json({ success: true, paymentUrl: monoData.pageUrl, orderNumber })
+    return NextResponse.json({ success: true, paymentUrl: wfpData.invoiceUrl, orderNumber })
 
   } catch (error: any) {
-    console.error('create-invoice: threw', error?.message)
+    console.error('create-invoice threw', error?.message)
     return NextResponse.json({ error: 'Internal server error', detail: error?.message }, { status: 500 })
   }
 }
