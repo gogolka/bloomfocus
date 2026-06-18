@@ -84,7 +84,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 
         return
       }
 
-      // Redirect to Monobank payment page
+      // Redirect to WayForPay payment page
       window.location.href = data.paymentUrl
 
     } catch {
