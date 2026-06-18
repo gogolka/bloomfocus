@@ -93,23 +93,44 @@ export async function POST(req: NextRequest) {
         })
         .eq('id', order.id)
 
-      // If Pro product — activate Pro for user account
+      // If Pro product — activate Pro and create subscription
       const slug = order.products?.slug || ''
       if (slug === 'pro-monthly' || slug === 'pro-annual') {
-        // Find user by email and set is_pro = true
+        const isAnnual = slug === 'pro-annual'
+        const periodDays = isAnnual ? 365 : 30
+        const periodEnd = new Date(Date.now() + periodDays * 24 * 60 * 60 * 1000)
+        const nextCharge = new Date(periodEnd.getTime() - 3 * 24 * 60 * 60 * 1000) // 3 days before
+
+        // Find user profile by email
         const { data: profile } = await supabaseAdmin
           .from('profiles')
           .select('id')
           .eq('email', order.customer_email)
           .single()
+
         if (profile?.id) {
-          const proUntil = slug === 'pro-annual'
-            ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           await supabaseAdmin
             .from('profiles')
-            .update({ is_pro: true, pro_until: proUntil })
+            .update({
+              is_pro: true,
+              pro_until: periodEnd.toISOString(),
+              rec_token: body.recToken || null,
+              subscription_plan: isAnnual ? 'annual' : 'monthly',
+            })
             .eq('id', profile.id)
+
+          // Create subscription record
+          await supabaseAdmin.from('subscriptions').insert({
+            user_id: profile.id,
+            customer_email: order.customer_email,
+            plan: isAnnual ? 'annual' : 'monthly',
+            status: 'active',
+            rec_token: body.recToken || null,
+            amount_usd: isAnnual ? 19.99 : 1.99,
+            current_period_start: new Date().toISOString(),
+            current_period_end: periodEnd.toISOString(),
+            next_charge_at: nextCharge.toISOString(),
+          })
         }
       }
 

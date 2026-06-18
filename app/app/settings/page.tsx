@@ -256,15 +256,15 @@ export default function SettingsPage() {
                 onClick={() => setSelectedPlan('monthly')}
                 style={{ flex: 1, background: selectedPlan === 'monthly' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: selectedPlan === 'monthly' ? `1.5px solid ${C.purpleSoft}` : '1px solid rgba(123,95,204,0.15)', cursor: 'pointer' }}>
                 <div style={{ fontSize: 11, color: C.soft, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Monthly</div>
-                <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$5</div>
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$1.99</div>
                 <div style={{ fontSize: 10, color: C.soft }}>per month</div>
               </div>
               <div
                 onClick={() => setSelectedPlan('annual')}
                 style={{ flex: 1, background: selectedPlan === 'annual' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: selectedPlan === 'annual' ? `1.5px solid ${C.purpleSoft}` : '1px solid rgba(123,95,204,0.15)', cursor: 'pointer', position: 'relative' }}>
                 <div style={{ fontSize: 11, color: C.purple, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>Annual</div>
-                <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$48</div>
-                <div style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>2 months free</div>
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$19.99</div>
+                <div style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>save 16%</div>
               </div>
             </div>
             <button
@@ -272,7 +272,7 @@ export default function SettingsPage() {
               disabled={upgrading}
               style={{ width: '100%', background: upgrading ? C.lav : C.purple, color: 'white', border: 'none', borderRadius: 100, padding: '13px', fontSize: 14, fontWeight: 600, cursor: upgrading ? 'default' : 'pointer', transition: 'background 0.2s' }}
             >
-              {upgrading ? 'Preparing payment…' : `Upgrade to Pro — $${selectedPlan === 'annual' ? '48/year' : '5/month'}`}
+              {upgrading ? 'Preparing payment…' : `Upgrade to Pro — $${selectedPlan === 'annual' ? '19.99/year' : '1.99/month'}`}
             </button>
           </>
         )}
