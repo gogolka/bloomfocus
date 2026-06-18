@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
         method: 'POST',
         headers: { 'api-key': brevoApiKey, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sender: { name: 'bloom focus', email: 'hello.bloomfocus@gmail.com' },
+          sender: { name: 'bloom focus', email: 'hello@bloomfocus.org' },
           to: [{ email: user.email, name: name || user.email }],
           subject: `🔥 ${milestone}-day streak — look at you go!`,
           htmlContent: emailHtml(name, milestone),
