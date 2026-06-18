@@ -1,16 +1,18 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import DownloadAppButton from '@/components/DownloadAppButton'
 import { LOCALES, LANG_LABEL, LANG_PATH, chrome } from '@/lib/i18n'
 
+const FLAG: Record<string, string> = { en: '🇬🇧', de: '🇩🇪', fr: '🇫🇷', es: '🇪🇸' }
+
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 
-  // The /app section is a standalone toolkit with its own header and nav —
-  // the marketing chrome would just double up and cover the content.
   if (pathname?.startsWith('/app')) return null
 
   const cur = pathname?.startsWith('/de') ? 'de' : pathname?.startsWith('/fr') ? 'fr' : pathname?.startsWith('/es') ? 'es' : 'en'
@@ -25,6 +27,74 @@ export default function Navbar() {
     { href: shopPath, label: c.navShop },
     { href: blogPath, label: c.navBlog },
   ]
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const LangDropdown = ({ mobile = false }: { mobile?: boolean }) => (
+    <div ref={!mobile ? langRef : undefined} style={{ position: 'relative' }}>
+      <button
+        onClick={() => setLangOpen(v => !v)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: 'none', border: '1px solid rgba(45,41,38,0.15)',
+          borderRadius: 100, padding: '6px 12px', cursor: 'pointer',
+          fontSize: 13, color: '#6B5F58', fontWeight: 500,
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+      >
+        <span>{FLAG[cur]}</span>
+        <span>{LANG_LABEL[cur]}</span>
+        <span style={{ fontSize: 10, opacity: 0.6 }}>{langOpen ? '▲' : '▼'}</span>
+      </button>
+
+      {langOpen && (
+        <div style={{
+          position: mobile ? 'relative' : 'absolute',
+          top: mobile ? 0 : 'calc(100% + 8px)',
+          right: mobile ? 'auto' : 0,
+          background: 'white',
+          borderRadius: 14,
+          border: '1px solid rgba(45,41,38,0.1)',
+          boxShadow: '0 8px 24px rgba(45,41,38,0.1)',
+          overflow: 'hidden',
+          minWidth: 140,
+          zIndex: 200,
+          marginTop: mobile ? 8 : 0,
+        }}>
+          {LOCALES.map(l => (
+            <Link
+              key={l}
+              href={LANG_PATH[l]}
+              onClick={() => { setLangOpen(false); setOpen(false) }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '11px 16px', textDecoration: 'none',
+                fontSize: 14, color: l === cur ? '#7B5FCC' : '#2D2926',
+                fontWeight: l === cur ? 600 : 400,
+                background: l === cur ? '#F5F0FF' : 'transparent',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => { if (l !== cur) e.currentTarget.style.background = '#FAFAFA' }}
+              onMouseLeave={e => { if (l !== cur) e.currentTarget.style.background = 'transparent' }}
+            >
+              <span>{FLAG[l]}</span>
+              <span>{LANG_LABEL[l]}</span>
+              {l === cur && <span style={{ marginLeft: 'auto', fontSize: 12 }}>✓</span>}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <nav style={{
@@ -54,11 +124,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div style={{ display: 'flex', gap: 4, alignItems: 'center', borderRight: '1px solid rgba(45,41,38,0.12)', paddingRight: 18, marginRight: -8 }}>
-            {LOCALES.map(l => (
-              <Link key={l} href={LANG_PATH[l]} style={{ textDecoration: 'none', fontSize: 12, fontWeight: cur === l ? 700 : 500, color: cur === l ? '#7B5FCC' : '#9B8F88', padding: '2px 5px', borderRadius: 6 }}>{LANG_LABEL[l]}</Link>
-            ))}
-          </div>
+          <LangDropdown />
           <DownloadAppButton />
           <Link href={shopPath} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
@@ -87,11 +153,7 @@ export default function Navbar() {
             </Link>
           ))}
           <DownloadAppButton variant="block" />
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', paddingTop: 4 }}>
-            {LOCALES.map(l => (
-              <Link key={l} href={LANG_PATH[l]} onClick={() => setOpen(false)} style={{ textDecoration: 'none', fontSize: 14, fontWeight: cur === l ? 700 : 500, color: cur === l ? '#7B5FCC' : '#9B8F88', border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 12px' }}>{LANG_LABEL[l]}</Link>
-            ))}
-          </div>
+          <LangDropdown mobile />
           <Link href={shopPath} onClick={() => setOpen(false)} style={{
             textDecoration: 'none', background: '#B8A4E8', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',
@@ -108,3 +170,4 @@ export default function Navbar() {
     </nav>
   )
 }
+
