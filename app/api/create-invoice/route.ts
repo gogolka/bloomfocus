@@ -101,10 +101,12 @@ export async function POST(req: NextRequest) {
     const merchantSignature = wfpSignature(signatureFields, merchantSecret)
 
     const wfpPayload = {
+      transactionType: 'CREATE_INVOICE',
       merchantAccount: merchantLogin,
       merchantAuthType: 'SimpleSignature',
       merchantDomainName: domain,
       merchantSignature,
+      apiVersion: 1,
       orderReference: orderNumber,
       orderDate,
       amount: amountUsd,
@@ -120,7 +122,7 @@ export async function POST(req: NextRequest) {
       language: WFP_LANG[loc] || 'EN',
     }
 
-    const wfpResponse = await fetch('https://secure.wayforpay.com/pay?behavior=offline', {
+    const wfpResponse = await fetch('https://api.wayforpay.com/api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(wfpPayload),
@@ -133,19 +135,21 @@ export async function POST(req: NextRequest) {
     }
 
     const wfpData = await wfpResponse.json()
+    console.log('WFP response:', JSON.stringify(wfpData))
 
-    if (wfpData.reasonCode !== 1100) {
+    if (wfpData.reasonCode !== 1100 && wfpData.reason !== 'Ok') {
       console.error('WayForPay rejected', wfpData)
       return NextResponse.json({ error: 'Payment rejected', detail: wfpData.reason }, { status: 500 })
     }
 
-    // Save WFP order reference
+    const paymentUrl = wfpData.invoiceUrl || wfpData.url
+
     await supabase
       .from('orders')
-      .update({ mono_invoice_id: orderNumber }) // reuse field for WFP order ref
+      .update({ mono_invoice_id: orderNumber })
       .eq('id', order.id)
 
-    return NextResponse.json({ success: true, paymentUrl: wfpData.invoiceUrl, orderNumber })
+    return NextResponse.json({ success: true, paymentUrl, orderNumber })
 
   } catch (error: any) {
     console.error('create-invoice threw', error?.message)
