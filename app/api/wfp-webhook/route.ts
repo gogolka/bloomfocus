@@ -42,7 +42,23 @@ async function sendDownloadEmail(
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const contentType = req.headers.get('content-type') || ''
+    let body: any
+
+    if (contentType.includes('application/json')) {
+      body = await req.json()
+    } else {
+      // WayForPay may send form-encoded
+      const text = await req.text()
+      try {
+        body = JSON.parse(text)
+      } catch {
+        const params = new URLSearchParams(text)
+        body = Object.fromEntries(params.entries())
+      }
+    }
+
+    console.log('WFP webhook body:', JSON.stringify(body))
 
     const {
       merchantAccount,
