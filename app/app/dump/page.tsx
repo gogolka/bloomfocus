@@ -1,4 +1,5 @@
 'use client'
+import { useAppTranslations } from '@/app/app/layout'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { BRAIN_DUMP_XP, levelFromXP, stageFromXP } from '@/lib/xp'
@@ -25,6 +26,7 @@ async function awardDumpXP(uid: string) {
 }
 
 export default function DumpPage() {
+  const { tr } = useAppTranslations()
   const [content, setContent] = useState('')
   const [dumps, setDumps] = useState<any[]>([])
   const [xpToast, setXpToast] = useState('')
@@ -122,7 +124,7 @@ export default function DumpPage() {
     <div>
       {xpToast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, maxWidth: 'calc(100vw - 32px)', textAlign: 'center' }}>{xpToast}</div>}
 
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Brain Dump</div>
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>{tr.brainDump}</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>Empty your head. No judgment, no structure. +20 XP each dump 🧠</div>
 
       <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '16px', marginBottom: 20 }}>
@@ -175,7 +177,7 @@ export default function DumpPage() {
       {/* Previous dumps */}
       {dumps.length > 0 && (
         <div>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>Previous dumps</div>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>{tr.previousDumps}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {dumps.map(dump => (
               <div key={dump.id} style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 14, padding: '14px 16px' }}>

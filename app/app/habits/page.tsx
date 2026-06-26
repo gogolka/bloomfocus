@@ -1,4 +1,5 @@
 'use client'
+import { useAppTranslations } from '@/app/app/layout'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { HABIT_XP, levelFromXP, stageFromXP } from '@/lib/xp'
@@ -40,6 +41,7 @@ async function adjustHabitXP(uid: string, complete: boolean) {
 }
 
 export default function HabitsPage() {
+  const { tr } = useAppTranslations()
   const [habits, setHabits] = useState<any[]>([])
   const [completions, setCompletions] = useState<Record<string, boolean>>({})
   const [newHabit, setNewHabit] = useState('')
@@ -130,16 +132,16 @@ export default function HabitsPage() {
 
       {/* Add habit */}
       <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '16px' }}>
-        <div style={{ fontSize: 13, color: '#6B5F58', fontWeight: 500, marginBottom: 10 }}>Add a new habit</div>
-        <div style={{ fontSize: 11, color: '#9B8F88', marginBottom: 6 }}>Pick an icon</div>
+        <div style={{ fontSize: 13, color: '#6B5F58', fontWeight: 500, marginBottom: 10 }}>{tr.addHabit}</div>
+        <div style={{ fontSize: 11, color: '#9B8F88', marginBottom: 6 }}>{tr.pickIcon}</div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
           {EMOJIS.map(e => (
             <button key={e} onClick={() => setSelectedEmoji(e)} style={{ fontSize: 18, padding: '4px 8px', borderRadius: 8, border: `1.5px solid ${selectedEmoji === e ? '#B8A4E8' : 'transparent'}`, background: selectedEmoji === e ? '#E8DEFF' : 'transparent', cursor: 'pointer' }}>{e}</button>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <input value={newHabit} onChange={e => setNewHabit(e.target.value)} onKeyDown={e => e.key === 'Enter' && addHabit()} placeholder="e.g. Drink water, Move 10 min..." style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 10, padding: '10px 14px', fontSize: 14, color: '#2D2926', background: '#FFF8F0', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
-          <button onClick={addHabit} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 10, padding: '10px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Add</button>
+          <input value={newHabit} onChange={e => setNewHabit(e.target.value)} onKeyDown={e => e.key === 'Enter' && addHabit()} placeholder={tr.habitPlaceholder} style={{ flex: 1, border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 10, padding: '10px 14px', fontSize: 14, color: '#2D2926', background: '#FFF8F0', outline: 'none', fontFamily: "'DM Sans', sans-serif" }} />
+          <button onClick={addHabit} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 10, padding: '10px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{tr.add}</button>
         </div>
       </div>
     </div>

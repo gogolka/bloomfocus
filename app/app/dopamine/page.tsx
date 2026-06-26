@@ -1,4 +1,5 @@
 'use client'
+import { useAppTranslations } from '@/app/app/layout'
 import { useState, useEffect } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { useCountdown, ensureNotificationPermission, notify, parseMinutes } from '@/lib/timer'
@@ -40,6 +41,7 @@ interface CustomReward {
 }
 
 export default function DopaminePage() {
+  const { tr } = useAppTranslations()
   const [open, setOpen] = useState<string | null>('quick')
   const [picked, setPicked] = useState<string | null>(null)
   const [selected, setSelected] = useState<{ icon: string; text: string; time: string } | null>(null)
@@ -142,8 +144,8 @@ export default function DopaminePage() {
     <div>
       {toast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, maxWidth: 'calc(100vw - 32px)', textAlign: 'center' }}>{toast}</div>}
 
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Dopamine Menu</div>
-      <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>When motivation disappears, pick a reward. You deserve it.</div>
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>{tr.dopamineMenu}</div>
+      <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>{tr.whenMotivation}</div>
 
       {/* Selected reward — confirmation + optional break timer */}
       {selected && (
@@ -199,8 +201,8 @@ export default function DopaminePage() {
           </div>
 
           {/* Text */}
-          <div style={{ fontSize: 12, color: '#6B5F58', fontWeight: 500, marginBottom: 6 }}>Reward</div>
-          <input value={formText} onChange={e => setFormText(e.target.value)} placeholder="e.g. Watch an episode of my show"
+          <div style={{ fontSize: 12, color: '#6B5F58', fontWeight: 500, marginBottom: 6 }}>{tr.reward}</div>
+          <input value={formText} onChange={e => setFormText(e.target.value)} placeholder={tr.rewardPlaceholder}
             onKeyDown={e => e.key === 'Enter' && addReward()}
             style={{ width: '100%', border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 10, padding: '10px 14px', fontSize: 14, color: '#2D2926', background: '#FFF8F0', outline: 'none', fontFamily: "'DM Sans', sans-serif", marginBottom: 14 }} />
 

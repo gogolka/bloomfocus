@@ -1,4 +1,5 @@
 'use client'
+import { useAppTranslations } from '@/app/app/layout'
 import { useState, useEffect, useRef } from 'react'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
 import { POMODORO_XP, levelFromXP, stageFromXP } from '@/lib/xp'
@@ -32,6 +33,7 @@ async function awardPomodoroXP(uid: string) {
 }
 
 export default function TimerPage() {
+  const { tr } = useAppTranslations()
   const [mode, setMode] = useState<Mode>('focus')
   const [focusMin, setFocusMin] = useState(25)
   const [task, setTask] = useState('')
@@ -137,11 +139,11 @@ export default function TimerPage() {
     <div>
       {xpToast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, maxWidth: 'calc(100vw - 32px)', textAlign: 'center' }}>{xpToast}</div>}
 
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Focus Timer</div>
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>{tr.focusTimer}</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>Each pomodoro = +40 XP · {pomodoros} done today 🍅</div>
 
       {/* Task input */}
-      <input value={task} onChange={e => setTask(e.target.value)} placeholder="What are you focusing on?" style={{ width: '100%', border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: '#FEFCFA', outline: 'none', marginBottom: 16, fontFamily: "'DM Sans', sans-serif", boxSizing: 'border-box' }} />
+      <input value={task} onChange={e => setTask(e.target.value)} placeholder={tr.focusOn} style={{ width: '100%', border: '1.5px solid rgba(45,41,38,0.12)', borderRadius: 12, padding: '11px 14px', fontSize: 14, color: '#2D2926', background: '#FEFCFA', outline: 'none', marginBottom: 16, fontFamily: "'DM Sans', sans-serif", boxSizing: 'border-box' }} />
 
       {/* Mode buttons */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
@@ -154,7 +156,7 @@ export default function TimerPage() {
 
       {/* Focus-length presets (Pro) */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ fontSize: 11, color: '#9B8F88' }}>Focus length:</span>
+        <span style={{ fontSize: 11, color: '#9B8F88' }}>{tr.focusLength}</span>
         {[25, 50, 90].map(min => (
           <button key={min} onClick={() => setFocusLength(min)} disabled={running} style={{ background: focusMin === min ? '#E8DEFF' : 'transparent', color: focusMin === min ? '#7B5FCC' : '#9B8F88', border: '1px solid rgba(123,95,204,0.25)', borderRadius: 100, padding: '5px 12px', fontSize: 12, fontWeight: focusMin === min ? 600 : 400, cursor: running ? 'default' : 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
             {min}m

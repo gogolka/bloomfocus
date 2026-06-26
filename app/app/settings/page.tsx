@@ -1,4 +1,5 @@
 'use client'
+import { useAppTranslations } from '@/app/app/layout'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
@@ -9,16 +10,18 @@ const C = {
   cream: '#FFF8F0', card: '#FEFCFA', peach: '#FFD6C4', green: '#7FB069',
 }
 
-const PRO_BENEFITS = [
+const PRO_BENEFITS_STATIC = [
   ['✨', 'AI that does the hard parts', 'Break a task into tiny steps, sort your brain dump, suggest rewards.'],
   ['📊', 'Full insights & history', 'All-time trends and patterns, not just the last two weeks.'],
-  ['🔥', 'Streak freeze', 'Skip a day without losing your streak.'],
+  ['🔥', 'STREAK_FREEZE', 'Skip a day without losing your streak.'],
   ['🌸', 'More plants, garden & themes', 'Extra plant types, garden views and app colour themes — added regularly.'],
   ['📔', 'All printables included', 'Every planner and tracker from the shop, plus new drops.'],
   ['🛠️', 'Power features', 'Recurring tasks, timer presets and data export.'],
 ]
 
 export default function SettingsPage() {
+  const { tr, lang, setLang } = useAppTranslations()
+  const PRO_BENEFITS = PRO_BENEFITS_STATIC.map(b => b[1] === 'STREAK_FREEZE' ? [b[0], tr.streakFreeze, b[2]] : b)
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
   const [uid, setUid] = useState<string | null>(null)
@@ -170,7 +173,7 @@ export default function SettingsPage() {
 
       {/* Account */}
       <div style={card}>
-        <div style={labelStyle}>Account</div>
+        <div style={labelStyle}>{tr.account}</div>
         <div style={{ fontSize: 14, color: C.text, marginBottom: 16 }}>{email || '—'}</div>
         <button
           onClick={() => supabase.auth.signOut()}
@@ -182,7 +185,7 @@ export default function SettingsPage() {
 
       {/* Plant */}
       <div style={card}>
-        <div style={labelStyle}>Your plant's name</div>
+        <div style={labelStyle}>{tr.plantName}</div>
         <div style={{ display: 'flex', gap: 8 }}>
           <input
             value={plantName}
@@ -204,7 +207,7 @@ export default function SettingsPage() {
 
       {/* Export */}
       <div style={card}>
-        <div style={labelStyle}>Your data</div>
+        <div style={labelStyle}>{tr.yourData}</div>
         <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Download everything you've created — tasks, habits and brain dumps — as a file you keep.</div>
         <button
           onClick={exportData}
@@ -216,7 +219,7 @@ export default function SettingsPage() {
 
       {/* Streak freeze */}
       <div style={card}>
-        <div style={labelStyle}>Streak freeze</div>
+        <div style={labelStyle}>{tr.streakFreeze}</div>
         {frozenUntil && Date.parse(frozenUntil) >= Date.parse(new Date().toISOString().split('T')[0]) ? (
           <>
             <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Your streak is protected until {new Date(frozenUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. Take the time you need — missed days in this window won't break it.</div>
@@ -226,7 +229,7 @@ export default function SettingsPage() {
           </>
         ) : (
           <>
-            <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Going away or having a hard stretch? Freeze your streak for two weeks so a few missed days don't reset it.</div>
+            <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>{tr.streakFreezeDesc} Freeze your streak for two weeks so a few missed days don't reset it.</div>
             <button onClick={activateFreeze} disabled={freezeBusy} style={{ background: C.purpleSoft, border: 'none', color: 'white', borderRadius: 100, padding: '9px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}>
               {freezeBusy ? 'Saving…' : 'Freeze my streak (14 days) ❄️'}
             </button>
@@ -238,7 +241,7 @@ export default function SettingsPage() {
       <Link href="/app/garden" style={{ textDecoration: 'none', display: 'block' }}>
         <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>Your garden 🌷</div>
+            <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>{tr.yourGarden}</div>
             <div style={{ fontSize: 12, color: C.soft }}>See your blooms and change your plant's style.</div>
           </div>
           <span style={{ color: C.purple, fontSize: 18 }}>→</span>
@@ -249,7 +252,7 @@ export default function SettingsPage() {
       <Link href="/app/library" style={{ textDecoration: 'none', display: 'block' }}>
         <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>Printables library 📔</div>
+            <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>{tr.printables}</div>
             <div style={{ fontSize: 12, color: C.soft }}>Download the printables included with Pro.</div>
           </div>
           <span style={{ color: C.purple, fontSize: 18 }}>→</span>
@@ -259,7 +262,7 @@ export default function SettingsPage() {
       {/* Pro */}
       <div style={{ ...card, background: 'linear-gradient(150deg, #F3EEFF, #FFF3EC)', border: '1px solid rgba(123,95,204,0.2)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-          <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: C.text }}>bloom focus <em style={{ color: C.purple }}>Pro</em></span>
+          <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: C.text }}>bloom focus <em style={{ color: C.purple }}>{tr.pro}</em></span>
           {isPro && <span style={{ fontSize: 11, background: C.purple, color: 'white', borderRadius: 100, padding: '4px 10px', fontWeight: 600 }}>ACTIVE</span>}
         </div>
 
@@ -281,7 +284,7 @@ export default function SettingsPage() {
                 disabled={cancelling}
                 style={{ background: 'transparent', border: '1px solid rgba(45,41,38,0.15)', color: C.soft, borderRadius: 100, padding: '8px 16px', fontSize: 12, cursor: 'pointer' }}
               >
-                {cancelling ? 'Cancelling…' : 'Cancel subscription'}
+                {cancelling ? tr.cancelSub2 : tr.cancelSub}
               </button>
             )}
             {subStatus === 'cancelled' && (

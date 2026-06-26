@@ -6,17 +6,19 @@ import { stageFromXP, PLANT_STAGE_XP } from '@/lib/xp'
 import { skinEmoji } from '@/lib/skins'
 import { plantStatus } from '@/lib/plant'
 import { supabaseBrowser as supabase } from '@/lib/supabaseBrowser'
+import { useAppTranslations } from '@/app/app/layout'
 
 export default function AppDashboard() {
+  const { tr } = useAppTranslations()
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [greeting, setGreeting] = useState('')
 
   useEffect(() => {
     const hour = new Date().getHours()
-    if (hour < 12) setGreeting('Good morning')
-    else if (hour < 17) setGreeting('Good afternoon')
-    else setGreeting('Good evening')
+    if (hour < 12) setGreeting('goodMorning')
+    else if (hour < 17) setGreeting('goodAfternoon')
+    else setGreeting('goodEvening')
     loadData()
   }, [])
 
@@ -83,7 +85,7 @@ export default function AppDashboard() {
   return (
     <div>
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 4 }}>{greeting} 👋</div>
+        <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 4 }}>{tr[greeting as keyof typeof tr] as string || tr.goodMorning} 👋</div>
         <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926' }}>{data.profile?.display_name || 'Friend'}</div>
       </div>
 
@@ -99,7 +101,7 @@ export default function AppDashboard() {
 
         {fullyBloomed ? (
           <div style={{ background: 'rgba(255,255,255,0.55)', borderRadius: 16, padding: '16px', marginBottom: 8 }}>
-            <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 6 }}>Full bloom! 🎉</div>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 6 }}>{tr.fullBloom}</div>
             <div style={{ fontSize: 12, color: '#6B5F58', lineHeight: 1.6, marginBottom: 14 }}>
               This plant grew all the way. Move it into your garden and plant a fresh seed — your progress keeps going.
             </div>
@@ -110,7 +112,7 @@ export default function AppDashboard() {
         ) : (
           <div style={{ marginBottom: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#6B5F58', marginBottom: 4 }}>
-              <span>Plant health</span><span>{status.health}%</span>
+              <span>{tr.plantHealth}</span><span>{status.health}%</span>
             </div>
             <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${status.health}%`, background: status.mood === 'awake' ? '#5BA85B' : status.mood === 'resting' ? '#E0B870' : '#C9A2D4', borderRadius: 100, transition: 'width 0.5s' }} />
@@ -122,8 +124,8 @@ export default function AppDashboard() {
 
         <Link href="/app/garden" style={{ textDecoration: 'none', display: 'block', borderTop: '1px solid rgba(255,255,255,0.5)', marginTop: 14, paddingTop: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: bloomedCount > 0 ? 6 : 0 }}>
-            <span style={{ fontSize: 10, color: '#6B5F58', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Your garden{bloomedCount > 0 ? ` · ${bloomedCount} bloomed` : ''}</span>
-            <span style={{ fontSize: 11, color: '#7B5FCC', fontWeight: 600 }}>Visit 🌷 →</span>
+            <span style={{ fontSize: 10, color: '#6B5F58', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{tr.yourGarden}{bloomedCount > 0 ? ` · ${bloomedCount} bloomed` : ''}</span>
+            <span style={{ fontSize: 11, color: '#7B5FCC', fontWeight: 600 }}>{tr.visitGarden}</span>
           </div>
           {bloomedCount > 0 && <div style={{ fontSize: 22, lineHeight: 1.3 }}>{Array.from({ length: Math.min(bloomedCount, 30) }).map(() => '🌺').join(' ')}</div>}
         </Link>
@@ -133,7 +135,7 @@ export default function AppDashboard() {
       <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '20px', marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div>
-            <div style={{ fontSize: 11, color: '#9B8F88', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>Level</div>
+            <div style={{ fontSize: 11, color: '#9B8F88', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>{tr.level}</div>
             <div style={{ fontFamily: 'Georgia, serif', fontSize: 28, color: '#2D2926', lineHeight: 1 }}>{level} <span style={{ fontSize: 14, color: '#9B8F88' }}>ADHD Brain</span></div>
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
@@ -186,14 +188,14 @@ export default function AppDashboard() {
       </div>
 
       {/* QUICK ACTIONS */}
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>Quick start</div>
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>{tr.quickStart}</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {[
-          { href: '/app/tasks', emoji: '✅', label: 'Add or complete a task', desc: '+50 XP · waters your plant', color: '#E8DEFF' },
-          { href: '/app/habits', emoji: '🌱', label: 'Check your habits', desc: '+30 XP each habit', color: '#D4E8D4' },
-          { href: '/app/timer', emoji: '🍅', label: 'Start a focus session', desc: '+40 XP per pomodoro', color: '#FFD6C4' },
-          { href: '/app/dump', emoji: '🧠', label: 'Brain dump', desc: '+20 XP · clear your head', color: '#D4EEFF' },
-          { href: '/app/dopamine', emoji: '🍬', label: 'Pick a reward', desc: 'You deserve it', color: '#FFE8E8' },
+          { href: '/app/tasks', emoji: '✅', label: tr.qs1, desc: tr.qs1desc, color: '#E8DEFF' },
+          { href: '/app/habits', emoji: '🌱', label: tr.qs2, desc: tr.qs2desc, color: '#D4E8D4' },
+          { href: '/app/timer', emoji: '🍅', label: tr.qs4, desc: tr.qs4desc, color: '#FFD6C4' },
+          { href: '/app/dump', emoji: '🧠', label: tr.qs3, desc: tr.qs3desc, color: '#D4EEFF' },
+          { href: '/app/dopamine', emoji: '🍬', label: tr.qs5, desc: tr.qs5desc, color: '#FFE8E8' },
         ].map((action, i) => (
           <Link key={i} href={action.href} style={{ textDecoration: 'none' }}>
             <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -210,7 +212,7 @@ export default function AppDashboard() {
 
       {data.achievements?.length > 0 && (
         <div style={{ marginTop: 20 }}>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>Recent achievements</div>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', marginBottom: 12 }}>{tr.recentAchievements}</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {data.achievements.map((a: any, i: number) => (
               <div key={i} style={{ background: '#FFF8F0', border: '1px solid #E8E0D8', borderRadius: 12, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
