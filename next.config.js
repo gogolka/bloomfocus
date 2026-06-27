@@ -4,9 +4,6 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
   },
-  turbopack: {
-    root: __dirname,
-  },
   async headers() {
     return [
       {
