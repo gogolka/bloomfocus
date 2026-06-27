@@ -62,6 +62,8 @@ export const t = {
     qs1: 'Add or complete a task', qs1desc: '+50 XP · waters your plant',
     qs2: 'Check your habits', qs2desc: '+30 XP each habit',
     qs3: 'Brain dump', qs3desc: '+20 XP · clear your head',
+    qs4: 'Start a focus session', qs4desc: '+40 XP per pomodoro',
+    qs5: 'Pick a reward', qs5desc: 'You deserve it',
     finishedTasks: 'Finished tasks will gather here so you can look back on them.',
     adhdBrain: 'ADHD Brain',
   },
