@@ -14,6 +14,7 @@ const card: React.CSSProperties = {
 type Stats = {
   quizCount: number
   ordersCount: number
+  paidOrdersCount: number
   totalRevenue: string
   subsCount: number
   profilesCount: number
@@ -50,7 +51,8 @@ export default function AdminDashboard({ stats }: { stats: Stats }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 24 }}>
           {[
             { label: 'Quiz completions', value: stats.quizCount, emoji: '🧠', color: C.lav },
-            { label: 'Paid orders', value: stats.ordersCount, emoji: '💳', color: '#D4E8D4' },
+            { label: 'Total orders', value: stats.ordersCount, emoji: '📋', color: '#D4EEFF' },
+            { label: 'Paid orders', value: stats.paidOrdersCount ?? 0, emoji: '💳', color: '#D4E8D4' },
             { label: 'Revenue (USD)', value: `$${stats.totalRevenue}`, emoji: '💰', color: C.peach },
             { label: 'Active Pro subs', value: stats.subsCount, emoji: '💜', color: C.lav },
             { label: 'App accounts', value: stats.profilesCount, emoji: '👤', color: '#D4EEFF' },
@@ -94,7 +96,7 @@ export default function AdminDashboard({ stats }: { stats: Stats }) {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                    {['Order', 'Email', 'Product', 'Amount', 'Date'].map(h => (
+                    {['Order', 'Email', 'Product', 'Amount', 'Status', 'Date'].map(h => (
                       <th key={h} style={{ textAlign: 'left', padding: '8px 12px', color: C.soft, fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</th>
                     ))}
                   </tr>
@@ -106,6 +108,11 @@ export default function AdminDashboard({ stats }: { stats: Stats }) {
                       <td style={{ padding: '10px 12px', color: C.mid }}>{o.customer_email}</td>
                       <td style={{ padding: '10px 12px', color: C.text }}>{o.products?.title || '—'}</td>
                       <td style={{ padding: '10px 12px', color: C.text, fontWeight: 600 }}>${(Number(o.amount_uah) / 100).toFixed(2)}</td>
+                      <td style={{ padding: '10px 12px' }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 100, background: o.status === 'paid' ? '#D4E8D4' : '#FFF3EC', color: o.status === 'paid' ? '#7FB069' : '#C07A3E' }}>
+                          {o.status}
+                        </span>
+                      </td>
                       <td style={{ padding: '10px 12px', color: C.soft }}>{new Date(o.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</td>
                     </tr>
                   ))}
