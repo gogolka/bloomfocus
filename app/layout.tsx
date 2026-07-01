@@ -43,6 +43,7 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
   verification: { google: 'QMxuRFiF-DiD1O_5eOnkqtOdYYD6Rr9Zrud3BfmdXsU' },
+  other: { 'p:domain_verify': '73147a2aefe96c186421436f327ae87c' },
   alternates: { canonical: 'https://bloomfocus.org' },
   manifest: '/manifest.json',
   appleWebApp: {
