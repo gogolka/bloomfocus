@@ -50,5 +50,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   })
 
-  return [...staticEntries, ...blogEntries]
+  const legalEntries: MetadataRoute.Sitemap = [
+    { url: 'https://bloomfocus.org/privacy', lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: 'https://bloomfocus.org/terms', lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+  ]
+
+  return [...staticEntries, ...blogEntries, ...legalEntries]
 }

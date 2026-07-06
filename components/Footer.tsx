@@ -59,7 +59,11 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <div style={{ fontSize: 12, color: '#9B8F88' }}>{c.rights}</div>
-          <div style={{ height: 3, width: 120, background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8, #B8D4B8)', borderRadius: 100 }} />
+          <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
+            <Link href="/privacy" style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>Privacy</Link>
+            <Link href="/terms" style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>Terms</Link>
+            <div style={{ height: 3, width: 120, background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8, #B8D4B8)', borderRadius: 100 }} />
+          </div>
         </div>
       </div>
     </footer>
