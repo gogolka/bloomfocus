@@ -39,9 +39,24 @@ export default function HomeContent({ lang }: { lang: Lang }) {
 
       {/* HERO */}
       <section style={{ position: 'relative', overflow: 'hidden', padding: '80px 24px 100px', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', top: -100, right: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,222,255,0.7) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,214,196,0.5) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div className="bf-float-slow" style={{ position: 'absolute', top: -100, right: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,222,255,0.7) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div className="bf-float-slow bf-delay-2" style={{ position: 'absolute', bottom: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,214,196,0.5) 0%, transparent 65%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', top: 100, left: '15%', width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,232,212,0.4) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        {/* Floating stickers — language-neutral, desktop only */}
+        <div className="hero-sticker bf-float" style={{ top: '22%', left: '9%', ['--r' as any]: '-6deg' }}>
+          <span style={{ width: 18, height: 18, borderRadius: 6, background: '#B8A4E8', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 11 }}>✓</span>
+          <span style={{ width: 72, height: 7, borderRadius: 100, background: '#E8DEFF', display: 'inline-block' }} />
+        </div>
+        <div className="hero-sticker bf-float bf-delay-1" style={{ top: '48%', left: '13%', ['--r' as any]: '4deg', fontWeight: 600 }}>
+          🌱 +50 XP
+        </div>
+        <div className="hero-sticker bf-float bf-delay-2" style={{ top: '26%', right: '10%', ['--r' as any]: '5deg', fontWeight: 600 }}>
+          🔥 ×3
+        </div>
+        <div className="hero-sticker bf-float bf-delay-3" style={{ top: '54%', right: '13%', ['--r' as any]: '-4deg', fontSize: 26, padding: '10px 14px' }}>
+          🌸
+        </div>
+
         <div style={{ position: 'relative', maxWidth: 680, margin: '0 auto' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#D4C5F9', border: '1.5px solid #B8A4E8', borderRadius: 100, padding: '5px 16px', fontSize: 11, letterSpacing: '0.18em', color: '#7B5FCC', fontWeight: 700, textTransform: 'uppercase', marginBottom: 28 }}>
             {t.badge}
@@ -71,7 +86,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
 
       {/* PAIN */}
       <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <div className="reveal" style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.painEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926', lineHeight: 1.2 }}>
@@ -96,7 +111,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
 
       {/* PRODUCTS */}
       <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div className="reveal" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.productsEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
@@ -124,7 +139,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
 
       {/* HOW IT WORKS */}
       <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <div className="reveal" style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.howEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
@@ -147,7 +162,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px', background: '#2D2926', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -80, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(184,164,232,0.15) 0%, transparent 65%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,191,168,0.1) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+        <div className="reveal" style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.appEyebrow}</div>
@@ -205,7 +220,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
 
       {/* BLOG PREVIEW */}
       <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div className="reveal" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40, flexWrap: 'wrap', gap: 16 }}>
             <div>
               <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 8 }}>{t.blogEyebrow}</div>
@@ -241,7 +256,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px', background: '#2D2926', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(184,164,232,0.2) 0%, transparent 65%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: -40, left: -40, width: 240, height: 240, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,191,168,0.15) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'relative', maxWidth: 600, margin: '0 auto' }}>
+        <div className="reveal" style={{ position: 'relative', maxWidth: 600, margin: '0 auto' }}>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 42px)', color: '#FEFCFA', lineHeight: 1.2, marginBottom: 16 }}>
             {t.ctaPre}<em style={{ color: '#B8A4E8' }}>{t.ctaEm}</em>
           </h2>

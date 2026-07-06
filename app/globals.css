@@ -96,3 +96,75 @@ body {
   background: rgba(45,41,38,0.04) !important;
   transform: translateY(-1px);
 }
+
+/* ===== Motion system (2026-06 polish) ===== */
+
+/* Gentle float for hero stickers + orbs */
+@keyframes bf-float {
+  0%   { transform: translateY(0) rotate(var(--r, 0deg)); }
+  100% { transform: translateY(-14px) rotate(var(--r, 0deg)); }
+}
+.bf-float {
+  animation: bf-float 5.5s ease-in-out infinite alternate;
+}
+.bf-float-slow {
+  animation: bf-float 8s ease-in-out infinite alternate;
+}
+.bf-delay-1 { animation-delay: 0.8s; }
+.bf-delay-2 { animation-delay: 1.6s; }
+.bf-delay-3 { animation-delay: 2.4s; }
+
+/* Scroll-driven reveal — progressive enhancement, no JS.
+   Browsers without support simply show content as-is. */
+@keyframes bf-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: bf-fade-up 1ms linear both;
+    animation-timeline: view();
+    animation-range: entry 5% entry 35%;
+  }
+}
+
+/* Button micro-interactions */
+.btn-primary { transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease; }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(184,164,232,0.5) !important;
+  background: #a892e0 !important;
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-outline { transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease; }
+.btn-outline:hover {
+  transform: translateY(-2px);
+  border-color: rgba(45,41,38,0.3) !important;
+  background: rgba(255,255,255,0.6) !important;
+}
+
+/* Hero sticker cards — desktop only */
+.hero-sticker {
+  position: absolute;
+  background: #FEFCFA;
+  border: 1px solid rgba(45,41,38,0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(45,41,38,0.1);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #2D2926;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 960px) {
+  .hero-sticker { display: flex; align-items: center; gap: 8px; }
+}
+
+/* Accessibility: honour reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bf-float, .bf-float-slow, .reveal, .hover-card, .btn-primary, .btn-outline {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -58,7 +58,7 @@ export default function ShopFAQ({ lang }: { lang: Lang }) {
 
   return (
     <section style={{ padding: '64px 24px 80px', background: '#FEFCFA' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto' }}>
+      <div className="reveal" style={{ maxWidth: 680, margin: '0 auto' }}>
         <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(24px, 3.5vw, 32px)', color: '#2D2926', textAlign: 'center', marginBottom: 36 }}>
           {t.title}
         </h2>

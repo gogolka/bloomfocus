@@ -33,7 +33,7 @@ export default async function Testimonials({ lang }: { lang: Lang }) {
 
   return (
     <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
-      <div style={{ maxWidth: 980, margin: '0 auto' }}>
+      <div className="reveal" style={{ maxWidth: 980, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 44 }}>
           <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.eyebrow}</div>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926', lineHeight: 1.2 }}>{t.title}</h2>
