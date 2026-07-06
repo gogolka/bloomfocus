@@ -3,8 +3,6 @@ import Script from 'next/script'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
 
-export const dynamic = 'force-dynamic'
-
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const article = articles.find(a => a.slug === params.slug)
   if (!article) return { title: 'Article not found' }
@@ -20,7 +18,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
         es: `https://bloomfocus.org/es/blog/${params.slug}`,
       },
     },
-    openGraph: { title: article.title, description: article.excerpt, type: 'article', publishedTime: article.date },
+    openGraph: { title: article.title, description: article.excerpt, type: 'article', publishedTime: new Date(article.date).toISOString() },
   }
 }
 
@@ -37,16 +35,29 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     description: article.excerpt,
     author: { '@type': 'Organization', name: 'bloom focus', url: 'https://bloomfocus.org' },
     publisher: { '@type': 'Organization', name: 'bloom focus', url: 'https://bloomfocus.org', logo: { '@type': 'ImageObject', url: 'https://bloomfocus.org/icons/icon-192.png' } },
-    datePublished: article.date,
-    dateModified: article.date,
+    datePublished: new Date(article.date).toISOString(),
+    dateModified: new Date(article.date).toISOString(),
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://bloomfocus.org/blog/${params.slug}` },
     url: `https://bloomfocus.org/blog/${params.slug}`,
     inLanguage: 'en',
+  } : null
+
+  const breadcrumbLd = article ? {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://bloomfocus.org' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://bloomfocus.org/blog' },
+      { '@type': 'ListItem', position: 3, name: article.title, item: `https://bloomfocus.org/blog/${params.slug}` },
+    ],
   } : null
   return (
     <>
       {jsonLd && (
         <Script id="article-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      )}
+      {breadcrumbLd && (
+        <Script id="breadcrumb-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       )}
       <BlogArticle lang="en" slug={params.slug} />
     </>

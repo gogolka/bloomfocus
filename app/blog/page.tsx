@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import BlogList from '@/components/BlogList'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: 'ADHD Blog — Tips, Guides & Understanding Your Brain',
   description: 'Articles about ADHD, neurodivergence, productivity systems that actually work, and gentle approaches to planning and organization.',

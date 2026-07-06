@@ -40,10 +40,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   )
 
   const blogEntries: MetadataRoute.Sitemap = articles.flatMap(article => {
+    const articleDate = new Date(article.date)
     const path = `/blog/${article.slug}`
     return LOCALES.map(locale => ({
       url: urlFor(locale, path),
-      lastModified: now,
+      lastModified: articleDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
       alternates: { languages: altLanguages(path) },

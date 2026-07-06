@@ -65,6 +65,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={dmSans.variable}>
       <body className={dmSans.className}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [
+              { '@type': 'Organization', '@id': 'https://bloomfocus.org/#org',
+                name: 'bloom focus', url: 'https://bloomfocus.org',
+                logo: 'https://bloomfocus.org/icons/icon-192.png' },
+              { '@type': 'WebSite', '@id': 'https://bloomfocus.org/#site',
+                name: 'bloom focus', url: 'https://bloomfocus.org',
+                publisher: { '@id': 'https://bloomfocus.org/#org' },
+                inLanguage: ['en', 'de', 'fr', 'es'] },
+            ],
+          }) }}
+        />
         <Navbar />
         <main>{children}</main>
         <Footer />

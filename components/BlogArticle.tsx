@@ -60,7 +60,10 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
         <div style={{ marginTop: 56 }}>
           <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 20 }}>{c.more}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {articles.filter(a => a.slug !== slug).slice(0, 2).map((a, i) => (
+            {(() => {
+              const idx = articles.findIndex(a => a.slug === slug)
+              const related = [1, 2, 3].map(o => articles[(idx + o) % articles.length]).filter(a => a && a.slug !== slug)
+              return related.map((a, i) => (
               <Link key={i} href={`${base}/blog/${a.slug}`} style={{ textDecoration: 'none' }}>
                 <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 14, padding: '16px 20px', display: 'flex', gap: 14, alignItems: 'center' }}>
                   <span style={{ fontSize: 28 }}>{a.emoji}</span>
@@ -70,7 +73,8 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
                   </div>
                 </div>
               </Link>
-            ))}
+              ))
+            })()}
           </div>
         </div>
       </article>
