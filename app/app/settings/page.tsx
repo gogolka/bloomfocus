@@ -168,7 +168,7 @@ export default function SettingsPage() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
         <Link href="/app" style={{ textDecoration: 'none', color: C.soft, fontSize: 20 }}>←</Link>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 26, color: C.text, margin: 0 }}>Settings</h1>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 26, color: C.text, margin: 0 }}>{tr.settings}</h1>
       </div>
 
       {/* Account */}
@@ -208,7 +208,7 @@ export default function SettingsPage() {
       {/* Export */}
       <div style={card}>
         <div style={labelStyle}>{tr.yourData}</div>
-        <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>Download everything you've created — tasks, habits and brain dumps — as a file you keep.</div>
+        <div style={{ fontSize: 13, color: C.mid, marginBottom: 14, lineHeight: 1.5 }}>{tr.exportData}</div>
         <button
           onClick={exportData}
           style={{ background: 'transparent', border: `1.5px solid ${C.lav}`, color: C.purple, borderRadius: 100, padding: '9px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}
@@ -242,7 +242,7 @@ export default function SettingsPage() {
         <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>{tr.yourGarden}</div>
-            <div style={{ fontSize: 12, color: C.soft }}>See your blooms and change your plant's style.</div>
+            <div style={{ fontSize: 12, color: C.soft }}>{tr.gardenDesc}</div>
           </div>
           <span style={{ color: C.purple, fontSize: 18 }}>→</span>
         </div>
@@ -253,7 +253,7 @@ export default function SettingsPage() {
         <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>{tr.printables}</div>
-            <div style={{ fontSize: 12, color: C.soft }}>Download the printables included with Pro.</div>
+            <div style={{ fontSize: 12, color: C.soft }}>{tr.printablesDesc}</div>
           </div>
           <span style={{ color: C.purple, fontSize: 18 }}>→</span>
         </div>
@@ -268,7 +268,7 @@ export default function SettingsPage() {
 
         {isPro ? (
           <div>
-            <div style={{ fontSize: 14, color: C.mid, marginBottom: 12 }}>You have full access to everything. Thank you for supporting bloom focus 💜</div>
+            <div style={{ fontSize: 14, color: C.mid, marginBottom: 12 }}>{tr.proActive}</div>
             {proUntil && (
               <div style={{ fontSize: 12, color: C.soft, marginBottom: 12 }}>
                 {subStatus === 'cancelled'
@@ -288,11 +288,11 @@ export default function SettingsPage() {
               </button>
             )}
             {subStatus === 'cancelled' && (
-              <div style={{ fontSize: 12, color: C.soft, fontStyle: 'italic' }}>Subscription cancelled — no further charges.</div>
+              <div style={{ fontSize: 12, color: C.soft, fontStyle: 'italic' }}>{tr.subCancelled}</div>
             )}
           </div>
         ) : (
-          <div style={{ fontSize: 14, color: C.mid, marginBottom: 16 }}>Right now everything here is free while we're in early access. Paid plans are coming soon — here's what Pro will include.</div>
+          <div style={{ fontSize: 14, color: C.mid, marginBottom: 16 }}>{tr.proDesc}</div>
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 18 }}>
@@ -313,16 +313,16 @@ export default function SettingsPage() {
               <div
                 onClick={() => setSelectedPlan('monthly')}
                 style={{ flex: 1, background: selectedPlan === 'monthly' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: selectedPlan === 'monthly' ? `1.5px solid ${C.purpleSoft}` : '1px solid rgba(123,95,204,0.15)', cursor: 'pointer' }}>
-                <div style={{ fontSize: 11, color: C.soft, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Monthly</div>
+                <div style={{ fontSize: 11, color: C.soft, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{tr.planMonthly}</div>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$1.99</div>
                 <div style={{ fontSize: 10, color: C.soft }}>per month</div>
               </div>
               <div
                 onClick={() => setSelectedPlan('annual')}
                 style={{ flex: 1, background: selectedPlan === 'annual' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px', textAlign: 'center', border: selectedPlan === 'annual' ? `1.5px solid ${C.purpleSoft}` : '1px solid rgba(123,95,204,0.15)', cursor: 'pointer', position: 'relative' }}>
-                <div style={{ fontSize: 11, color: C.purple, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>Annual</div>
+                <div style={{ fontSize: 11, color: C.purple, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>{tr.planAnnual}</div>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.text }}>$19.99</div>
-                <div style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>save 16%</div>
+                <div style={{ fontSize: 10, color: C.green, fontWeight: 600 }}>{tr.savePercent}</div>
               </div>
             </div>
             <button

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import Testimonials from '@/components/Testimonials'
 import { home, type Lang } from '@/lib/i18n'
 
 const PRODUCT_META = [
@@ -227,6 +228,9 @@ export default function HomeContent({ lang }: { lang: Lang }) {
           </div>
         </div>
       </section>
+
+      {/* TESTIMONIALS — renders only when reviews exist in DB */}
+      <Testimonials lang={lang} />
 
       {/* NEWSLETTER */}
       <section style={{ padding: '20px 24px 72px', background: '#FFF8F0' }}>

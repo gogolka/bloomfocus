@@ -11,7 +11,7 @@ async function getProducts() {
   if (!url) { console.error('Shop: NEXT_PUBLIC_SUPABASE_URL is missing'); return [] }
   const key = anonKey || serviceKey
   if (!key) { console.error('Shop: no Supabase key available'); return [] }
-  const endpoint = `${url}/rest/v1/products?select=slug,title,description,price_usd,tag,emoji,color,border_color&is_active=eq.true&order=created_at.asc`
+  const endpoint = `${url}/rest/v1/products?select=*&is_active=eq.true&order=created_at.asc`
   try {
     const res = await fetch(endpoint, { headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store' })
     if (!res.ok) { console.error('Shop: REST fetch failed', res.status, await res.text()); return [] }
@@ -47,7 +47,14 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
             const description = lang === 'en' ? p.description : (productDesc[p.slug]?.[lang] || p.description)
             return (
               <div key={p.slug} id={p.slug} className="hover-card" style={{ background: p.color, border: `1.5px solid ${p.border_color}`, borderRadius: 20, padding: '28px 24px', display: 'flex', flexDirection: 'column', scrollMarginTop: 80 }}>
-                <div style={{ fontSize: 44, marginBottom: 16 }}>{p.emoji}</div>
+                {p.preview_url ? (
+                  <div style={{ margin: '-28px -24px 16px', borderRadius: '20px 20px 0 0', overflow: 'hidden', aspectRatio: '4 / 3', background: 'rgba(255,255,255,0.4)' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.preview_url} alt={p.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 44, marginBottom: 16 }}>{p.emoji}</div>
+                )}
                 <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6B5F58', display: 'inline-block', marginBottom: 12, alignSelf: 'flex-start' }}>{tag}</div>
                 <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 10 }}>{p.title}</h2>
                 <p style={{ fontSize: 13, color: '#6B5F58', lineHeight: 1.6, flex: 1, marginBottom: 20 }}>{description}</p>

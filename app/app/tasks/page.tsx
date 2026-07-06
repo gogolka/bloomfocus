@@ -237,7 +237,7 @@ export default function TasksPage() {
     <div>
       {xpToast && <div style={{ position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', background: '#2D2926', color: 'white', padding: '10px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600, zIndex: 200, maxWidth: 'calc(100vw - 32px)', textAlign: 'center' }}>{xpToast}</div>}
 
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>Tasks</div>
+      <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 4 }}>{tr.tasks}</div>
       <div style={{ fontSize: 13, color: '#9B8F88', marginBottom: 20 }}>Each task = +50 XP + waters your plant 💧</div>
 
       {/* To do / Done toggle */}
@@ -269,10 +269,10 @@ export default function TasksPage() {
           <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#9B8F88' }}>
             <span>🔁</span>
             <select value={newRecurrence} onChange={e => setNewRecurrence(e.target.value)} style={{ border: '1px solid rgba(45,41,38,0.12)', borderRadius: 8, padding: '6px 10px', fontSize: 12, color: '#2D2926', background: 'white', outline: 'none', fontFamily: "'DM Sans', sans-serif" }}>
-              <option value="none">Doesn't repeat</option>
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
+              <option value="none">{tr.doesntRepeat}</option>
+              <option value="daily">{tr.daily}</option>
+              <option value="weekly">{tr.weekly}</option>
+              <option value="monthly">{tr.monthly}</option>
             </select>
           </label>
 
