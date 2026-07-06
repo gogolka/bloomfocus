@@ -45,7 +45,7 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
             const tag = lang === 'en' ? p.tag : (tagMap[lang][p.tag] || p.tag)
             const description = lang === 'en' ? p.description : (productDesc[p.slug]?.[lang] || p.description)
             return (
-              <div key={p.slug} className="hover-card" style={{ background: p.color, border: `1.5px solid ${p.border_color}`, borderRadius: 20, padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
+              <div key={p.slug} id={p.slug} className="hover-card" style={{ background: p.color, border: `1.5px solid ${p.border_color}`, borderRadius: 20, padding: '28px 24px', display: 'flex', flexDirection: 'column', scrollMarginTop: 80 }}>
                 <div style={{ fontSize: 44, marginBottom: 16 }}>{p.emoji}</div>
                 <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6B5F58', display: 'inline-block', marginBottom: 12, alignSelf: 'flex-start' }}>{tag}</div>
                 <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 10 }}>{p.title}</h2>
