@@ -6,6 +6,7 @@ export interface ShopChromeDict {
   h1em: string
   sub: string
   loading: string
+  trust: string
 }
 
 export const shopChrome: Record<Lang, ShopChromeDict> = {
@@ -15,6 +16,7 @@ export const shopChrome: Record<Lang, ShopChromeDict> = {
     h1em: `actually wants to use`,
     sub: `Every product is designed around real ADHD patterns — no shame, no overwhelm, just gentle structure.`,
     loading: `Loading products...`,
+    trust: `🔒 Secure checkout · ⚡ Instant download · 💌 Delivered by email`,
   },
   de: {
     eyebrow: `bloom focus Shop`,
@@ -22,6 +24,7 @@ export const shopChrome: Record<Lang, ShopChromeDict> = {
     h1em: `wirklich nutzen will`,
     sub: `Jedes Produkt ist um echte ADHS-Muster herum gestaltet – ohne Scham, ohne Überforderung, einfach sanfte Struktur.`,
     loading: `Produkte werden geladen…`,
+    trust: `🔒 Sichere Zahlung · ⚡ Sofortiger Download · 💌 Lieferung per E-Mail`,
   },
   fr: {
     eyebrow: `boutique bloom focus`,
@@ -29,6 +32,7 @@ export const shopChrome: Record<Lang, ShopChromeDict> = {
     h1em: `veut vraiment utiliser`,
     sub: `Chaque produit est pensé autour de vrais schémas TDAH – sans honte, sans surcharge, juste une structure douce.`,
     loading: `Chargement des produits…`,
+    trust: `🔒 Paiement sécurisé · ⚡ Téléchargement instantané · 💌 Livré par e-mail`,
   },
   es: {
     eyebrow: `tienda bloom focus`,
@@ -36,6 +40,7 @@ export const shopChrome: Record<Lang, ShopChromeDict> = {
     h1em: `sí quiere usar`,
     sub: `Cada producto está diseñado en torno a patrones reales del TDAH: sin culpa, sin agobio, solo estructura suave.`,
     loading: `Cargando productos…`,
+    trust: `🔒 Pago seguro · ⚡ Descarga instantánea · 💌 Entrega por correo`,
   },
 }
 

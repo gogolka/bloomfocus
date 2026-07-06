@@ -1,4 +1,5 @@
 import BuyButton from '@/components/BuyButton'
+import ShopFAQ from '@/components/ShopFAQ'
 import Script from 'next/script'
 import type { Lang } from '@/lib/i18n'
 import { shopChrome, tagMap, productDesc } from '@/lib/i18n-shop'
@@ -53,6 +54,7 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <span style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926' }}>${Number(p.price_usd).toFixed(2)}</span>
                   <BuyButton productSlug={p.slug} productTitle={p.title} priceUsd={`$${Number(p.price_usd).toFixed(2)}`} lang={lang} />
+                  <div style={{ fontSize: 10.5, color: '#6B5F58', opacity: 0.85, textAlign: 'center', lineHeight: 1.5 }}>{c.trust}</div>
                 </div>
               </div>
             )
@@ -92,6 +94,8 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
           }}
         />
       )}
+
+      <ShopFAQ lang={lang} />
     </div>
   )
 }
