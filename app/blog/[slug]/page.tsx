@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
+import { articleFAQs } from '@/lib/article-faqs'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const article = articles.find(a => a.slug === params.slug)
@@ -28,6 +29,20 @@ export function generateStaticParams() {
 
 export default function BlogArticlePage({ params }: { params: { slug: string } }) {
   const article = articles.find(a => a.slug === params.slug)
+  const faqs = articleFAQs[params.slug]
+  const faqLd = faqs?.length ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        // Schema text uses the same answer with inline link labels as plain text.
+        text: f.answer.replace(/\[([^\]]+)\]\(\/blog\/[a-z0-9-]+\)/g, '$1'),
+      },
+    })),
+  } : null
   const jsonLd = article ? {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -58,6 +73,9 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       )}
       {breadcrumbLd && (
         <Script id="breadcrumb-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      )}
+      {faqLd && (
+        <Script id="faq-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd).replace(/</g, '\\u003c') }} />
       )}
       <BlogArticle lang="en" slug={params.slug} />
     </>

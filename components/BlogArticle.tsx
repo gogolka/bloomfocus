@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { articles } from '@/lib/articles'
+import { articleFAQs } from '@/lib/article-faqs'
+import { articleSources } from '@/lib/article-sources'
+import BlogArticleText, { BlogInlineText } from '@/components/BlogArticleText'
 import type { Lang } from '@/lib/i18n'
 import { blogChrome, blogTitle, blogExcerpt, blogTag, blogBody, readTimeLabel } from '@/lib/articles-i18n'
 
@@ -10,6 +13,8 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
   const c = blogChrome[lang]
   const base = lang === 'en' ? '' : `/${lang}`
   const content = blogBody(slug, lang)
+  const faqs = lang === 'en' ? articleFAQs[slug] : undefined
+  const sources = lang === 'en' ? articleSources[slug] : undefined
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
@@ -35,10 +40,29 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
 
       <article style={{ padding: '48px 24px 80px', maxWidth: 720, margin: '0 auto' }}>
         {content.map((paragraph, i) => (
-          <p key={i} style={{ fontSize: 16, color: '#2D2926', lineHeight: 1.85, marginBottom: 24 }}>
-            {paragraph}
-          </p>
+          <BlogArticleText key={i} text={paragraph} />
         ))}
+
+        {!!faqs?.length && (
+          <section aria-labelledby="article-faq-heading" style={{ marginTop: 40 }}>
+            <h2 id="article-faq-heading" style={{ fontFamily: 'Georgia, serif', fontSize: 24, color: '#2D2926', marginBottom: 24 }}>Frequently Asked Questions</h2>
+            {faqs.map(faq => (
+              <div key={faq.question}>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: '#2D2926', lineHeight: 1.5, marginBottom: 8 }}>{faq.question}</h3>
+                <BlogArticleText text={faq.answer} />
+              </div>
+            ))}
+          </section>
+        )}
+
+        {!!sources?.length && (
+          <section aria-labelledby="article-sources-heading" style={{ marginTop: 40, color: '#6B5F58' }}>
+            <h2 id="article-sources-heading" style={{ fontFamily: 'Georgia, serif', fontSize: 20, marginBottom: 16 }}>Sources</h2>
+            <ul style={{ fontSize: 13, lineHeight: 1.7, paddingLeft: 20, listStyleType: 'disc' }}>
+              {sources.map((source, i) => <li key={i} style={{ marginBottom: 8 }}><BlogInlineText text={source} /></li>)}
+            </ul>
+          </section>
+        )}
 
         <div style={{ marginTop: 56, padding: '32px', background: '#E8DEFF', border: '1.5px solid #D4C5F9', borderRadius: 20, textAlign: 'center' }}>
           <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 12 }}>
