@@ -408,8 +408,8 @@ export const articles = [
   },
   {
     slug: 'is-adhd-curable',
-    title: 'Is ADHD Curable? Here\'\'s the Honest Answer',
-    excerpt: 'Is ADHD curable? Not in the way people usually mean by that question — and understanding why actually changes what \\"getting better\\" looks like.',
+    title: 'Is ADHD Curable? Here\'s the Honest Answer',
+    excerpt: 'Is ADHD curable? Not in the way people usually mean by that question — and understanding why actually changes what "getting better" looks like.',
     date: 'October 3, 2026',
     readTime: '5 min read',
     tag: 'Understanding ADHD',
@@ -431,7 +431,7 @@ export const articles = [
   {
     slug: 'adhd-in-children',
     title: 'ADHD in Children: Signs, Support, and What Helps',
-    excerpt: 'What ADHD in children actually looks like beyond the \\"can\'t sit still\\" stereotype, and practical ways parents and teachers can help.',
+    excerpt: 'What ADHD in children actually looks like beyond the "can\'t sit still" stereotype, and practical ways parents and teachers can help.',
     date: 'October 7, 2026',
     readTime: '6 min read',
     tag: 'Understanding ADHD',
@@ -452,7 +452,7 @@ export const articles = [
   },
   {
     slug: 'adhd-and-ocd',
-    title: 'ADHD and OCD: How They Overlap (and How They Don\'\'t)',
+    title: 'ADHD and OCD: How They Overlap (and How They Don\'t)',
     excerpt: 'ADHD and OCD can look surprisingly similar from the outside, and sometimes show up in the same person. Here\'s how to tell them apart.',
     date: 'October 11, 2026',
     readTime: '6 min read',
