@@ -2,13 +2,13 @@ import type { Metadata } from 'next'
 import PrivacyContent from '@/components/PrivacyContent'
 import { privacyDict } from '@/lib/privacy-i18n'
 
-const t = privacyDict['en']
+const t = privacyDict['es']
 
 export const metadata: Metadata = {
   title: t.metaTitle,
   description: t.metaDescription,
   alternates: {
-    canonical: 'https://bloomfocus.org/privacy',
+    canonical: 'https://bloomfocus.org/es/privacy',
     languages: {
       en: 'https://bloomfocus.org/privacy',
       de: 'https://bloomfocus.org/de/privacy',
@@ -19,5 +19,5 @@ export const metadata: Metadata = {
 }
 
 export default function PrivacyPage() {
-  return <PrivacyContent lang="en" />
+  return <PrivacyContent lang="es" />
 }

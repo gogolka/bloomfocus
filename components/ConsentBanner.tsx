@@ -42,9 +42,7 @@ export default function ConsentBanner() {
     setConsent(writeConsent(choice))
   }
 
-  // The Privacy Policy exists at /privacy only — there are no translated legal
-  // routes yet, so every locale points at the English page.
-  const privacyHref = '/privacy'
+  const privacyHref = lang === 'en' ? '/privacy' : `/${lang}/privacy`
 
   return (
     <div

@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import NewsletterSignup from './NewsletterSignup'
 import CookieSettingsLink from './CookieSettingsLink'
 import { chrome, langFromPath } from '@/lib/i18n'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 export default function Footer() {
   const pathname = usePathname()
@@ -43,7 +44,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <div style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 16 }}>{c.connect}</div>
-            <a href="mailto:hello.bloomfocus@gmail.com" style={{ display: 'block', fontSize: 14, color: '#FEFCFA', opacity: 0.8, marginBottom: 10, textDecoration: 'none', wordBreak: 'break-word' }}>hello.bloomfocus@gmail.com</a>
+            <a href={`mailto:${CONTACT_EMAIL}`} style={{ display: 'block', fontSize: 14, color: '#FEFCFA', opacity: 0.8, marginBottom: 10, textDecoration: 'none', wordBreak: 'break-word' }}>{CONTACT_EMAIL}</a>
             <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
               {[
                 { label: 'Etsy', href: 'https://bloomfocusshop.etsy.com' },
@@ -64,7 +65,7 @@ export default function Footer() {
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <div style={{ fontSize: 12, color: '#9B8F88' }}>{c.rights}</div>
           <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
-            <Link href="/privacy" style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>Privacy</Link>
+            <Link href={lang === 'en' ? '/privacy' : `/${lang}/privacy`} style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>{c.privacy}</Link>
             <Link href="/terms" style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>Terms</Link>
             <CookieSettingsLink />
             <div style={{ height: 3, width: 120, background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8, #B8D4B8)', borderRadius: 100 }} />

@@ -51,13 +51,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   })
 
-  // English-only pages: About/Contact and the legal pages have no localized routes.
+  // The Privacy Policy is translated, so it gets one entry per locale with
+  // hreflang alternates. About/Contact/Terms are still English-only.
+  const privacyEntries: MetadataRoute.Sitemap = LOCALES.map(locale => ({
+    url: urlFor(locale, '/privacy'),
+    lastModified: now,
+    changeFrequency: 'yearly' as const,
+    priority: 0.3,
+    alternates: { languages: altLanguages('/privacy') },
+  }))
+
   const legalEntries: MetadataRoute.Sitemap = [
     { url: `${BASE}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${BASE}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ]
 
-  return [...staticEntries, ...blogEntries, ...legalEntries]
+  return [...staticEntries, ...blogEntries, ...privacyEntries, ...legalEntries]
 }

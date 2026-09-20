@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Contact bloom focus',
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://bloomfocus.org/contact' },
 }
 
-const EMAIL = 'hello.bloomfocus@gmail.com'
+const EMAIL = CONTACT_EMAIL
 
 const S = {
   h2: { fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', margin: '36px 0 12px' } as React.CSSProperties,
