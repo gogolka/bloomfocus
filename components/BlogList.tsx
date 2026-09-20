@@ -1,7 +1,9 @@
 import Link from 'next/link'
-import { publishedArticles } from '@/lib/articles'
+import { publishedArticles, topicOf } from '@/lib/articles'
 import type { Lang } from '@/lib/i18n'
-import { blogChrome, blogTitle, blogExcerpt, blogTag, readTimeLabel } from '@/lib/articles-i18n'
+import { blogChrome, blogTitle, blogExcerpt, readTimeLabel } from '@/lib/articles-i18n'
+import { topicLabel } from '@/lib/topics'
+import TopicNav from './TopicNav'
 
 export default function BlogList({ lang }: { lang: Lang }) {
   const c = blogChrome[lang]
@@ -24,6 +26,10 @@ export default function BlogList({ lang }: { lang: Lang }) {
       </section>
 
       <section style={{ padding: '48px 24px 80px', maxWidth: 900, margin: '0 auto' }}>
+        {/* Browse-by-topic, in every locale — each hub exists per language. */}
+        <div style={{ marginBottom: 32 }}>
+          <TopicNav lang={lang} />
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {articles.map((article, i) => (
             <Link key={i} href={`${base}/blog/${article.slug}`} style={{ textDecoration: 'none' }}>
@@ -31,7 +37,7 @@ export default function BlogList({ lang }: { lang: Lang }) {
                 <div style={{ fontSize: 40, flexShrink: 0 }}>{article.emoji}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
-                    <div style={{ background: article.tagColor, borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: article.tagTextColor }}>{blogTag(article.tag, lang)}</div>
+                    <TopicPill article={article} lang={lang} />
                     <div style={{ fontSize: 12, color: '#9B8F88' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
                   </div>
                   <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', lineHeight: 1.3, marginBottom: 10 }}>{blogTitle(article.slug, lang, article.title)}</h2>
@@ -42,6 +48,16 @@ export default function BlogList({ lang }: { lang: Lang }) {
           ))}
         </div>
       </section>
+    </div>
+  )
+}
+
+/** Topic pill. Colours come from the topic, so they cannot drift per article. */
+function TopicPill({ article, lang }: { article: ReturnType<typeof publishedArticles>[number]; lang: Lang }) {
+  const topic = topicOf(article)
+  return (
+    <div style={{ background: topic.color, borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: topic.textColor }}>
+      {topicLabel(topic.slug, lang)}
     </div>
   )
 }

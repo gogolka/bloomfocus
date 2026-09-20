@@ -1,4 +1,5 @@
 import { isPublished } from '@/lib/publish-status'
+import { topics, topicBySlug, type Topic, type TopicSlug } from '@/lib/topics'
 
 export const articles = [
   {
@@ -10,6 +11,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🧠',
   },
   {
@@ -21,6 +23,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#FFD6C4',
     tagTextColor: '#E8956A',
+    topic: 'tools-and-systems',
     emoji: '🍬',
   },
   {
@@ -32,6 +35,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '⏰',
   },
   {
@@ -43,6 +47,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#D4E8D4',
     tagTextColor: '#5BA85B',
+    topic: 'tools-and-systems',
     emoji: '🌱',
   },
   {
@@ -54,6 +59,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '🧠',
   },
   {
@@ -65,6 +71,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🧊',
   },
   {
@@ -76,6 +83,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#FFD6C4',
     tagTextColor: '#E8956A',
+    topic: 'tools-and-systems',
     emoji: '📔',
   },
   {
@@ -87,6 +95,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '🌷',
   },
   {
@@ -98,6 +107,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `💔`,
   },
   {
@@ -109,6 +119,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'daily-life',
     emoji: `😴`,
   },
   {
@@ -120,6 +131,7 @@ export const articles = [
     tag: `Tools & Tips`,
     tagColor: `#D4E8D4`,
     tagTextColor: `#5BA85B`,
+    topic: 'tools-and-systems',
     emoji: `👯`,
   },
   {
@@ -131,6 +143,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `🔋`,
   },
   {
@@ -142,6 +155,7 @@ export const articles = [
     tag: `Tools & Tips`,
     tagColor: `#FFD6C4`,
     tagTextColor: `#E8956A`,
+    topic: 'daily-life',
     emoji: `🧹`,
   },
   {
@@ -153,6 +167,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `🌊`,
   },
   {
@@ -164,6 +179,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'focus-and-executive-function',
     emoji: `🔬`,
   },
   {
@@ -175,6 +191,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'focus-and-executive-function',
     emoji: `🧠`,
   },
   {
@@ -186,6 +203,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `💙`,
   },
   {
@@ -197,6 +215,7 @@ export const articles = [
     tag: `Understanding ADHD`,
     tagColor: `#E8DEFF`,
     tagTextColor: `#7B5FCC`,
+    topic: 'co-occurring-and-sensory',
     emoji: `✨`,
   },
   {
@@ -208,6 +227,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#FFD6C4',
     tagTextColor: '#C07A3E',
+    topic: 'daily-life',
     emoji: '💸',
   },
   {
@@ -219,6 +239,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '⏳',
   },
   {
@@ -230,6 +251,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#FFD6C4',
     tagTextColor: '#C07A3E',
+    topic: 'daily-life',
     emoji: '📦',
   },
   {
@@ -241,6 +263,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🫥',
   },
   {
@@ -252,6 +275,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'daily-life',
     emoji: '📱',
   },
   {
@@ -263,6 +287,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '🎓',
   },
   {
@@ -274,6 +299,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'emotions-and-burnout',
     emoji: '🎭',
   },
   {
@@ -285,6 +311,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'daily-life',
     emoji: '🌙',
   },
   {
@@ -296,6 +323,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🚪',
   },
   {
@@ -307,6 +335,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'daily-life',
     emoji: '🎨',
   },
   {
@@ -318,6 +347,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#FFD6C4',
     tagTextColor: '#C07A3E',
+    topic: 'daily-life',
     emoji: '🍜',
   },
   {
@@ -329,6 +359,7 @@ export const articles = [
     tag: 'Tools & Tips',
     tagColor: '#FFD6C4',
     tagTextColor: '#C07A3E',
+    topic: 'focus-and-executive-function',
     emoji: '🤯',
   },
   {
@@ -340,6 +371,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🧠',
   },
   {
@@ -351,6 +383,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🔍',
   },
   {
@@ -362,6 +395,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '📋',
   },
   {
@@ -373,6 +407,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '💊',
   },
   {
@@ -384,6 +419,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'co-occurring-and-sensory',
     emoji: '🔗',
   },
   {
@@ -395,6 +431,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '💼',
   },
   {
@@ -406,6 +443,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🧩',
   },
   {
@@ -417,6 +455,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '🔍',
   },
   {
@@ -428,6 +467,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🧬',
   },
   {
@@ -439,6 +479,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '🎒',
   },
   {
@@ -450,6 +491,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🎭',
   },
   {
@@ -461,6 +503,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'co-occurring-and-sensory',
     emoji: '🔁',
   },
   {
@@ -472,6 +515,7 @@ export const articles = [
     tag: 'Understanding ADHD',
     tagColor: '#E8DEFF',
     tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '🇬🇧',
   },
 ]
@@ -514,44 +558,121 @@ export function isArticleHrefPublished(href: string, now: number = Date.now()): 
 }
 
 /**
+ * The topic an article belongs to.
+ *
+ * Throws on an unknown slug rather than falling back. This is a developer typo,
+ * not content data — unlike an unparseable publish date, silently degrading
+ * here would hide a broken hub link behind a plausible-looking page.
+ */
+export function topicOf(article: Article): Topic {
+  const topic = topicBySlug(article.topic)
+  if (!topic) throw new Error(`Unknown topic "${article.topic}" on article "${article.slug}"`)
+  return topic
+}
+
+/** Published articles in a topic, in catalogue order. */
+export function publishedArticlesInTopic(topicSlug: TopicSlug | string, now: number = Date.now()): Article[] {
+  return publishedArticles(now).filter(a => a.topic === topicSlug)
+}
+
+/**
  * Related articles for the bottom of an article page.
  *
- * Same-tag articles first, topped up from the other tags when a tag has fewer
- * than `count` siblings.
+ * Same-topic first, topped up from other topics. Two properties matter and pull
+ * against each other: suggestions should be topically relevant, and every
+ * article should receive a roughly equal number of inbound links so none is
+ * orphaned.
  *
- * Within each pool the starting point rotates by the article's position *within
- * its own tag* (not its index in the full list, which bunches up once the list
- * is filtered). That keeps the even inbound-link distribution the previous
- * index-adjacency logic was built for — every article is currently linked from
- * exactly three others, no orphans — while making the picks topical.
+ * Splitting the old two tags into eight topics broke the plain rotation that
+ * used to balance this: small topics all started their fallback at the same
+ * point in the same list, so three articles ended up with no inbound links at
+ * all while others collected eight. Same-topic picks still rotate, but the
+ * fallback now goes to whichever eligible article currently has the fewest
+ * inbound links, with catalogue order as the tie-break. That restores the
+ * balance (2-4 inbound each, no orphans) and keeps 86% of suggestions on topic.
+ *
+ * The whole assignment is computed at once because a single article's fallback
+ * depends on what every other article has already taken. It is deterministic,
+ * so every page and every build agrees.
  */
-export function relatedArticles(slug: string, count = 3): Article[] {
-  const current = articles.find(a => a.slug === slug)
-  if (!current) return []
+function buildRelatedMap(live: Article[], count: number): Map<string, Article[]> {
+  // Every article hands out `count` links and there are `live.length` articles,
+  // so a perfectly even assignment gives each article exactly `count` inbound
+  // links. That evenness matters — it is what stops a handful of articles
+  // absorbing most of the internal link equity — and a greedy "pick the
+  // least-linked peer" pass does not guarantee it: the articles processed last
+  // find every good peer already full.
+  //
+  // A cyclic assignment does guarantee it: walk a ring and take the next
+  // `count` entries, and every entry is taken exactly `count` times, by
+  // construction. So the precision comes from choosing the rings rather than
+  // from the picking.
+  //
+  // One ring per topic keeps every suggestion inside the topic, but a ring
+  // needs more than `count` members to hand out `count` distinct links. Topics
+  // still filling up under the publishing schedule are merged into the next
+  // ring until they clear that bar, so a three-article topic borrows its
+  // neighbours instead of producing duplicate or self-referential suggestions.
+  const order = new Map(articles.map((a, i) => [a.slug, i]))
+  // Topic order is fixed by the taxonomy, so buckets are built by walking it
+  // rather than by iterating a Map (this tsconfig has no `target`, so Map
+  // iteration would need downlevelIteration).
+  const topicOrder = topics.map(t => t.slug) as readonly string[]
+  const extras = live.map(a => a.topic).filter(t => !topicOrder.includes(t))
+  const buckets: Article[][] = topicOrder
+    .concat(extras.filter((t, i) => extras.indexOf(t) === i))
+    .map(slug =>
+      live
+        .filter(a => a.topic === slug)
+        .sort((x, y) => order.get(x.slug)! - order.get(y.slug)!))
 
-  // Suggest only live articles. `current` itself is looked up in the full list,
-  // so an unpublished article reached by direct URL still gets suggestions.
-  const live = publishedArticles()
-  const tagPeers = live.filter(a => a.tag === current.tag)
-
-  // An unpublished article is absent from `live`, so findIndex returns -1 —
-  // which would make the rotation below read pool[-1] and crash. Fall back to
-  // its position among all same-tag articles, which is always >= 0.
-  const livePos = tagPeers.findIndex(a => a.slug === slug)
-  const posInTag = livePos >= 0
-    ? livePos
-    : articles.filter(a => a.tag === current.tag).findIndex(a => a.slug === slug)
-
-  const sameTag = tagPeers.filter(a => a.slug !== slug)
-  const otherTags = live.filter(a => a.slug !== slug && a.tag !== current.tag)
-
-  const picked: Article[] = []
-  for (const pool of [sameTag, otherTags]) {
-    if (picked.length >= count || pool.length === 0) continue
-    const start = posInTag % pool.length
-    for (let i = 0; i < pool.length && picked.length < count; i++) {
-      picked.push(pool[(start + i) % pool.length])
+  const rings: Article[][] = []
+  let pending: Article[] = []
+  for (const bucket of buckets) {
+    if (!bucket.length) continue
+    pending = pending.concat(bucket)
+    if (pending.length > count) {
+      rings.push(pending)
+      pending = []
     }
   }
-  return picked.slice(0, count)
+  // A leftover too small to stand alone joins the previous ring rather than
+  // forming a short one; with no previous ring the whole set is the ring.
+  if (pending.length) {
+    if (rings.length) rings[rings.length - 1] = rings[rings.length - 1].concat(pending)
+    else rings.push(pending)
+  }
+
+  const result = new Map<string, Article[]>()
+  for (const ring of rings) {
+    const n = ring.length
+    for (let i = 0; i < n; i++) {
+      const picked: Article[] = []
+      for (let step = 1; step <= count && step < n; step++) picked.push(ring[(i + step) % n])
+      result.set(ring[i].slug, picked)
+    }
+  }
+  return result
+}
+
+let relatedCache: { key: string; count: number; map: Map<string, Article[]> } | null = null
+
+export function relatedArticles(slug: string, count = 3): Article[] {
+  const live = publishedArticles()
+  // The assignment depends only on which articles are live, so it is rebuilt
+  // when the publishing schedule moves and reused across pages otherwise.
+  const key = live.map(a => a.slug).join(',')
+  if (!relatedCache || relatedCache.key !== key || relatedCache.count !== count) {
+    relatedCache = { key, count, map: buildRelatedMap(live, count) }
+  }
+  const hit = relatedCache.map.get(slug)
+  if (hit) return hit
+
+  // An unpublished article reached by direct URL is not in the assignment;
+  // give it same-topic-first suggestions without disturbing the balance.
+  const current = articles.find(a => a.slug === slug)
+  if (!current) return []
+  const sameTopic = live.filter(a => a.topic === current.topic)
+  const others = live.filter(a => a.topic !== current.topic)
+  return [...sameTopic, ...others].slice(0, count)
 }

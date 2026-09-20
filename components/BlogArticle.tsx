@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { articles, relatedArticles } from '@/lib/articles'
+import { articles, relatedArticles, topicOf } from '@/lib/articles'
 import { articleFAQs } from '@/lib/article-faqs'
 import { articleSources } from '@/lib/article-sources'
 import type { Lang } from '@/lib/i18n'
-import { blogChrome, blogTitle, blogExcerpt, blogTag, blogBody, readTimeLabel } from '@/lib/articles-i18n'
+import { blogChrome, blogTitle, blogExcerpt, blogBody, readTimeLabel } from '@/lib/articles-i18n'
+import { topicLabel } from '@/lib/topics'
 import { toBlocks, type ArticleBlock } from '@/lib/article-blocks'
 import RichText from './RichText'
+
+const CTA_LINK = { color: '#7B5FCC', textDecoration: 'underline', textDecorationColor: '#D4C5F9', textUnderlineOffset: 3 } as const
 
 export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }) {
   const article = articles.find(a => a.slug === slug)
@@ -26,9 +29,17 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
             {c.backToBlog}
           </Link>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
-            <div style={{ background: article.tagColor, borderRadius: 100, padding: '4px 14px', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: article.tagTextColor }}>
-              {blogTag(article.tag, lang)}
-            </div>
+            {(() => {
+              const topic = topicOf(article)
+              const pill = (
+                <div style={{ background: topic.color, borderRadius: 100, padding: '4px 14px', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: topic.textColor }}>
+                  {topicLabel(topic.slug, lang)}
+                </div>
+              )
+              // Every locale has its own hub now, so the pill always links —
+              // this is the article -> hub half of the two-way link.
+              return <Link href={`${base}/blog/topic/${topic.slug}`} style={{ textDecoration: 'none' }}>{pill}</Link>
+            })()}
             <div style={{ fontSize: 13, color: '#9B8F88' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
           </div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 40px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 20 }}>
@@ -69,23 +80,6 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
           </section>
         )}
 
-        <div style={{ marginTop: 56, padding: '32px', background: '#E8DEFF', border: '1.5px solid #D4C5F9', borderRadius: 20, textAlign: 'center' }}>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 12 }}>
-            {c.ctaTitle}
-          </div>
-          <p style={{ fontSize: 14, color: '#6B5F58', lineHeight: 1.6, marginBottom: 24, maxWidth: 400, margin: '0 auto 24px' }}>
-            {c.ctaSub}
-          </p>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href={`${base}/shop`} style={{ textDecoration: 'none', background: '#7B5FCC', color: 'white', padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>
-              {c.ctaShop}
-            </Link>
-            <Link href={`${base}/quiz`} style={{ textDecoration: 'none', background: 'white', color: '#7B5FCC', border: '1.5px solid #D4C5F9', padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>
-              {c.ctaQuiz}
-            </Link>
-          </div>
-        </div>
-
         <div style={{ marginTop: 56 }}>
           {/* h2, not h3: the only other heading on the page is the h1, and the
               article body can now emit its own h2s. */}
@@ -103,6 +97,18 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
               </Link>
             ))}
           </div>
+        </div>
+
+        {/* Cross-promotion, deliberately quiet: a footer line after the
+            related-article list rather than a banner interrupting the read.
+            Blog-only — the shop and quiz pages keep their own presentation. */}
+        <div style={{ marginTop: 48, paddingTop: 20, borderTop: '1px solid rgba(45,41,38,0.1)' }}>
+          <p style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.7, margin: 0 }}>
+            {c.ctaSub}{' '}
+            <Link href={`${base}/shop`} style={CTA_LINK}>{c.ctaShop}</Link>
+            <span style={{ margin: '0 6px', opacity: 0.6 }}>·</span>
+            <Link href={`${base}/quiz`} style={CTA_LINK}>{c.ctaQuiz}</Link>
+          </p>
         </div>
       </article>
     </div>
