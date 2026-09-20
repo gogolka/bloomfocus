@@ -1,5 +1,5 @@
 import { isPublished } from '@/lib/publish-status'
-import { topicBySlug, type Topic, type TopicSlug } from '@/lib/topics'
+import { topics, topicBySlug, type Topic, type TopicSlug } from '@/lib/topics'
 
 export const articles = [
   {
@@ -467,38 +467,60 @@ export function publishedArticlesInTopic(topicSlug: TopicSlug | string, now: num
  * so every page and every build agrees.
  */
 function buildRelatedMap(live: Article[], count: number): Map<string, Article[]> {
-  const inbound = new Map(live.map(a => [a.slug, 0]))
-  const bump = (slug: string) => inbound.set(slug, (inbound.get(slug) ?? 0) + 1)
+  // Every article hands out `count` links and there are `live.length` articles,
+  // so a perfectly even assignment gives each article exactly `count` inbound
+  // links. That evenness matters — it is what stops a handful of articles
+  // absorbing most of the internal link equity — and a greedy "pick the
+  // least-linked peer" pass does not guarantee it: the articles processed last
+  // find every good peer already full.
+  //
+  // A cyclic assignment does guarantee it: walk a ring and take the next
+  // `count` entries, and every entry is taken exactly `count` times, by
+  // construction. So the precision comes from choosing the rings rather than
+  // from the picking.
+  //
+  // One ring per topic keeps every suggestion inside the topic, but a ring
+  // needs more than `count` members to hand out `count` distinct links. Topics
+  // still filling up under the publishing schedule are merged into the next
+  // ring until they clear that bar, so a three-article topic borrows its
+  // neighbours instead of producing duplicate or self-referential suggestions.
   const order = new Map(articles.map((a, i) => [a.slug, i]))
-  const result = new Map<string, Article[]>()
+  // Topic order is fixed by the taxonomy, so buckets are built by walking it
+  // rather than by iterating a Map (this tsconfig has no `target`, so Map
+  // iteration would need downlevelIteration).
+  const topicOrder = topics.map(t => t.slug) as readonly string[]
+  const extras = live.map(a => a.topic).filter(t => !topicOrder.includes(t))
+  const buckets: Article[][] = topicOrder
+    .concat(extras.filter((t, i) => extras.indexOf(t) === i))
+    .map(slug =>
+      live
+        .filter(a => a.topic === slug)
+        .sort((x, y) => order.get(x.slug)! - order.get(y.slug)!))
 
-  for (const current of live) {
-    const peers = live.filter(a => a.topic === current.topic)
-    const pos = Math.max(0, peers.findIndex(a => a.slug === current.slug))
-    const sameTopic = peers.filter(a => a.slug !== current.slug)
-    const picked: Article[] = []
-    if (sameTopic.length) {
-      const start = pos % sameTopic.length
-      for (let i = 0; i < sameTopic.length && picked.length < count; i++) {
-        picked.push(sameTopic[(start + i) % sameTopic.length])
-      }
+  const rings: Article[][] = []
+  let pending: Article[] = []
+  for (const bucket of buckets) {
+    if (!bucket.length) continue
+    pending = pending.concat(bucket)
+    if (pending.length > count) {
+      rings.push(pending)
+      pending = []
     }
-    picked.forEach(p => bump(p.slug))
-    result.set(current.slug, picked)
+  }
+  // A leftover too small to stand alone joins the previous ring rather than
+  // forming a short one; with no previous ring the whole set is the ring.
+  if (pending.length) {
+    if (rings.length) rings[rings.length - 1] = rings[rings.length - 1].concat(pending)
+    else rings.push(pending)
   }
 
-  for (const current of live) {
-    const picked = result.get(current.slug)!
-    while (picked.length < count) {
-      const taken = new Set(picked.map(p => p.slug))
-      const candidates = live.filter(a =>
-        a.slug !== current.slug && a.topic !== current.topic && !taken.has(a.slug))
-      if (!candidates.length) break
-      candidates.sort((x, y) =>
-        (inbound.get(x.slug)! - inbound.get(y.slug)!) ||
-        (order.get(x.slug)! - order.get(y.slug)!))
-      picked.push(candidates[0])
-      bump(candidates[0].slug)
+  const result = new Map<string, Article[]>()
+  for (const ring of rings) {
+    const n = ring.length
+    for (let i = 0; i < n; i++) {
+      const picked: Article[] = []
+      for (let step = 1; step <= count && step < n; step++) picked.push(ring[(i + step) % n])
+      result.set(ring[i].slug, picked)
     }
   }
   return result

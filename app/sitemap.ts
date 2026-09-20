@@ -70,17 +70,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   })
 
-  // Topic hubs, English-only for now. A hub below the indexing threshold is
-  // marked noindex, so listing it here would advertise a page we are asking
-  // search engines to skip.
+  // Topic hubs, one entry per locale with hreflang alternates. A hub below the
+  // indexing threshold is marked noindex, so listing it here would advertise a
+  // page we are asking search engines to skip.
   const topicEntries: MetadataRoute.Sitemap = topics
     .filter(t => publishedArticlesInTopic(t.slug).length >= MIN_ARTICLES_FOR_INDEXING)
-    .map(t => ({
-      url: `${BASE}/blog/topic/${t.slug}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    }))
+    .flatMap(t =>
+      LOCALES.map(locale => ({
+        url: urlFor(locale, `/blog/topic/${t.slug}`),
+        lastModified: now,
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+        alternates: { languages: altLanguages(`/blog/topic/${t.slug}`) },
+      }))
+    )
 
   // The Privacy Policy is translated, so it gets one entry per locale with
   // hreflang alternates. About/Contact/Terms are still English-only.

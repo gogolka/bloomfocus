@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { publishedArticlesInTopic } from '@/lib/articles'
-import { topics } from '@/lib/topics'
+import { topics, topicLabel } from '@/lib/topics'
+import type { Lang } from '@/lib/i18n'
 
 /**
  * Links to every topic hub, with its live article count.
@@ -10,9 +11,11 @@ import { topics } from '@/lib/topics'
  * come from the published set, so a scheduled article is not advertised here
  * before its date.
  *
- * English-only, like the hubs themselves.
+ * Locale-aware: every locale has its own hubs, so the pills stay inside the
+ * reader's language instead of dropping them into English.
  */
-export default function TopicNav({ activeSlug }: { activeSlug?: string }) {
+export default function TopicNav({ activeSlug, lang = 'en' }: { activeSlug?: string; lang?: Lang }) {
+  const base = lang === 'en' ? '' : `/${lang}`
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
       {topics.map(t => {
@@ -21,7 +24,7 @@ export default function TopicNav({ activeSlug }: { activeSlug?: string }) {
         return (
           <Link
             key={t.slug}
-            href={`/blog/topic/${t.slug}`}
+            href={`${base}/blog/topic/${t.slug}`}
             style={{
               textDecoration: 'none',
               background: active ? t.color : '#FEFCFA',
@@ -33,7 +36,7 @@ export default function TopicNav({ activeSlug }: { activeSlug?: string }) {
               fontWeight: active ? 600 : 400,
             }}
           >
-            {t.label}
+            {topicLabel(t.slug, lang)}
             <span style={{ opacity: 0.7, marginLeft: 6 }}>{count}</span>
           </Link>
         )

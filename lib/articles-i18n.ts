@@ -9,7 +9,6 @@ export interface BlogChromeDict {
   h1em: string
   sub: string
   backToBlog: string
-  ctaTitle: string
   ctaSub: string
   ctaShop: string
   ctaQuiz: string
@@ -20,30 +19,30 @@ export const blogChrome: Record<Lang, BlogChromeDict> = {
   en: {
     eyebrow: `bloom focus blog`, h1pre: `Understanding your `, h1em: `ADHD brain`,
     sub: `No jargon, no shame, no "just try harder." Real information about how neurodivergent brains work — and what actually helps.`,
-    backToBlog: `← Back to blog`, ctaTitle: `Ready to try tools that actually work?`,
-    ctaSub: `Browse the bloom focus toolkit — designed for ADHD brains, built with care.`,
-    ctaShop: `Shop the toolkit ✨`, ctaQuiz: `Take the free ADHD test 🧠`, more: `More from the blog`,
+    backToBlog: `← Back to blog`,
+    ctaSub: `If any of this was useful, bloom focus makes planners and a free self-assessment for ADHD brains.`,
+    ctaShop: `See the planners`, ctaQuiz: `Take the free test`, more: `More from the blog`,
   },
   de: {
     eyebrow: `bloom focus Blog`, h1pre: `Verstehe dein `, h1em: `ADHS-Gehirn`,
     sub: `Kein Fachjargon, keine Scham, kein „streng dich einfach mehr an". Echte Informationen darüber, wie neurodivergente Gehirne funktionieren – und was wirklich hilft.`,
-    backToBlog: `← Zurück zum Blog`, ctaTitle: `Bereit für Werkzeuge, die wirklich funktionieren?`,
-    ctaSub: `Entdecke das bloom focus Toolkit – für ADHS-Köpfe gestaltet, mit Sorgfalt gemacht.`,
-    ctaShop: `Zum Toolkit ✨`, ctaQuiz: `Kostenlosen ADHS-Test machen 🧠`, more: `Mehr aus dem Blog`,
+    backToBlog: `← Zurück zum Blog`,
+    ctaSub: `Falls davon etwas nützlich war: bloom focus macht Planer und einen kostenlosen Selbsttest für ADHS-Köpfe.`,
+    ctaShop: `Planer ansehen`, ctaQuiz: `Kostenlosen Test machen`, more: `Mehr aus dem Blog`,
   },
   fr: {
     eyebrow: `blog bloom focus`, h1pre: `Comprendre ton `, h1em: `cerveau TDAH`,
     sub: `Pas de jargon, pas de honte, pas de « fais juste plus d'efforts ». De vraies informations sur le fonctionnement des cerveaux neurodivergents – et ce qui aide vraiment.`,
-    backToBlog: `← Retour au blog`, ctaTitle: `Prêt·e à essayer des outils qui marchent vraiment ?`,
-    ctaSub: `Découvre la boîte à outils bloom focus – pensée pour les cerveaux TDAH, conçue avec soin.`,
-    ctaShop: `Découvrir les outils ✨`, ctaQuiz: `Faire le test TDAH gratuit 🧠`, more: `Plus d'articles du blog`,
+    backToBlog: `← Retour au blog`,
+    ctaSub: `Si quelque chose ici vous a été utile : bloom focus propose des agendas et un auto-test gratuit pensés pour les cerveaux TDAH.`,
+    ctaShop: `Voir les agendas`, ctaQuiz: `Faire le test gratuit`, more: `Plus d'articles du blog`,
   },
   es: {
     eyebrow: `blog bloom focus`, h1pre: `Entender tu `, h1em: `cerebro con TDAH`,
     sub: `Sin jerga, sin culpa, sin «solo esfuérzate más». Información real sobre cómo funcionan los cerebros neurodivergentes, y qué ayuda de verdad.`,
-    backToBlog: `← Volver al blog`, ctaTitle: `¿Listo·a para probar herramientas que de verdad funcionan?`,
-    ctaSub: `Explora el kit bloom focus: diseñado para cerebros con TDAH, hecho con cariño.`,
-    ctaShop: `Ver las herramientas ✨`, ctaQuiz: `Hacer el test TDAH gratis 🧠`, more: `Más del blog`,
+    backToBlog: `← Volver al blog`,
+    ctaSub: `Si algo de esto te ha servido: bloom focus hace agendas y un autotest gratuito pensados para cerebros con TDAH.`,
+    ctaShop: `Ver las agendas`, ctaQuiz: `Hacer el test gratuito`, more: `Más del blog`,
   },
 }
 
