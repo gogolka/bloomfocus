@@ -1,5 +1,6 @@
 import type { Lang } from '@/lib/i18n'
 import { articleContentEN } from '@/lib/article-content'
+import type { ArticleBody } from '@/lib/article-blocks'
 
 export interface BlogChromeDict {
   eyebrow: string
@@ -149,7 +150,7 @@ export const articleMeta: Record<string, Partial<Record<Lang, { title: string; e
 
 // Localized article bodies (paragraph arrays) per slug. Filled in language by
 // language; any slug/lang not present here falls back to the English body.
-export const articleBody: Record<string, Partial<Record<Lang, string[]>>> = {
+export const articleBody: Record<string, Partial<Record<Lang, ArticleBody>>> = {
   'adhd-rejection-sensitive-dysphoria': {
     de: [
       `Rejection Sensitive Dysphoria, kurz RSD, ist der intensive emotionale Schmerz, der auf echte oder vermeintliche Ablehnung, Kritik oder Misserfolg folgt. Für viele Menschen mit ADHS ist es das störendste Symptom von allen, und doch wird fast niemand bei der Diagnose davor gewarnt. Eine beiläufige Bemerkung einer Kollegin, eine Nachricht, die unbeantwortet bleibt, oder ein winziger Fehler bei der Arbeit kann jeweils eine Welle von Schmerz auslösen, die sich körperlich anfühlt und in keinem Verhältnis zu dem steht, was tatsächlich passiert ist.`,
@@ -295,7 +296,7 @@ export function blogTag(enTag: string, lang: Lang) {
   if (lang === 'en') return enTag
   return blogTagMap[lang][enTag] || enTag
 }
-export function blogBody(slug: string, lang: Lang): string[] {
+export function blogBody(slug: string, lang: Lang): ArticleBody {
   if (lang !== 'en') {
     const t = articleBody[slug]?.[lang]
     if (t && t.length) return t
@@ -322,7 +323,7 @@ for (const [slug, m] of Object.entries(FR_META)) {
   articleMeta[slug] = { ...(articleMeta[slug] || {}), fr: m }
 }
 
-const FR_BODY: Record<string, string[]> = {
+const FR_BODY: Record<string, ArticleBody> = {
   'why-adhd-brains-struggle-with-planning': [
     `Si tu as un TDAH, planifier te donne probablement l'impression d'essayer de retenir de l'eau dans tes mains. Tu commences avec de bonnes intentions – un agenda tout neuf, un nouveau système, un lundi matin optimiste – et, on ne sait comment, dès le mardi tout s'est déjà effondré. Ce n'est pas un défaut de caractère. C'est de la neuroscience.`,
     `Le TDAH touche le cortex préfrontal, la partie du cerveau responsable des fonctions exécutives – planifier, prioriser, gérer le temps et démarrer les tâches. Quand ce système ne fonctionne pas comme chez les personnes neurotypiques, les méthodes de planification classiques ne se contentent pas d'être inutiles. Elles aggravent activement les choses.`,
@@ -432,7 +433,7 @@ for (const [slug, paras] of Object.entries(FR_BODY)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), fr: paras }
 }
 
-const ES_BODY: Record<string, string[]> = {
+const ES_BODY: Record<string, ArticleBody> = {
   'why-adhd-brains-struggle-with-planning': [
     `Si tienes TDAH, planificar probablemente se siente como intentar retener agua en las manos. Empiezas con buenas intenciones — un planificador nuevo, un sistema fresco, un optimista lunes por la mañana — y de algún modo, para el martes ya se ha desmoronado todo. Eso no es un defecto de carácter. Es neurociencia.`,
     `El TDAH afecta al córtex prefrontal, la parte del cerebro responsable de las funciones ejecutivas: planificar, priorizar, gestionar el tiempo e iniciar tareas. Cuando ese sistema no funciona como en los cerebros neurotípicos, los métodos de planificación convencionales no solo no ayudan. Empeoran las cosas.`,
@@ -541,7 +542,7 @@ for (const [slug, paras] of Object.entries(ES_BODY)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), es: paras }
 }
 
-const NEW5_DE: Record<string, string[]> = {
+const NEW5_DE: Record<string, ArticleBody> = {
   'adhd-emotional-dysregulation': [
     `Wenn du ADHS hast, wurdest du wahrscheinlich irgendwann als zu empfindlich, zu intensiv oder überreagierend bezeichnet. Was die meisten Menschen – und viele Kliniker – nicht erkennen, ist, dass emotionale Dysregulation kein Charakterzug ist, der dem ADHS aufgesetzt ist. Sie ist eines seiner zentralsten und am wenigsten diskutierten Merkmale. Das ADHS-Gehirn kämpft nicht nur mit Aufmerksamkeit und Impulskontrolle. Es kämpft damit, Größe und Dauer emotionaler Reaktionen zu regulieren, was bedeutet, dass Gefühle schneller ankommen, härter treffen und länger anhalten als bei den meisten Menschen.`,
     `Die Neurowissenschaft hilft zu erklären, warum. Der präfrontale Kortex – der Teil des Gehirns, der dafür zuständig ist, emotionale Reaktionen zu moderieren, vor dem Reagieren innezuhalten und Gefühle in einen Kontext zu setzen – ist derselbe Bereich, der bei ADHS am stärksten betroffen ist. Wenn dieses System zu schwach arbeitet, feuern die emotionalen Zentren des Gehirns, insbesondere die Amygdala, ohne ausreichendes Bremsen. Das Ergebnis ist nicht, dass ADHS-Gehirne mehr fühlen als andere. Es ist, dass sie fühlen, ohne den üblichen Puffer zwischen Fühlen und Reagieren.`,
@@ -587,7 +588,7 @@ for (const [slug, paras] of Object.entries(NEW5_DE)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), de: paras }
 }
 
-const NEW5_FR: Record<string, string[]> = {
+const NEW5_FR: Record<string, ArticleBody> = {
   'adhd-emotional-dysregulation': [
     `Si tu as un TDAH, on t'a probablement dit à un moment ou un autre que tu étais trop sensible, trop intense, ou que tu surréagissais. Ce que la plupart des gens — et beaucoup de cliniciens — ne réalisent pas, c'est que la dysrégulation émotionnelle n'est pas un trait de caractère superposé au TDAH. C'est l'une de ses caractéristiques les plus centrales et les moins discutées. Le cerveau TDAH ne lutte pas seulement avec l'attention et le contrôle des impulsions. Il lutte pour réguler l'ampleur et la durée des réponses émotionnelles, ce qui signifie que les sentiments arrivent plus vite, frappent plus fort et durent plus longtemps que chez la plupart des gens.`,
     `La neuroscience aide à expliquer pourquoi. Le cortex préfrontal — la partie du cerveau responsable de modérer les réponses émotionnelles, de faire une pause avant de réagir et de contextualiser les sentiments — est la même zone la plus touchée par le TDAH. Quand ce système est sous-actif, les centres émotionnels du cerveau, notamment l'amygdale, s'activent sans freinage adéquat. Le résultat n'est pas que les cerveaux TDAH ressentent plus que les autres. C'est qu'ils ressentent sans le tampon habituel entre sentir et réagir.`,
@@ -633,7 +634,7 @@ for (const [slug, paras] of Object.entries(NEW5_FR)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), fr: paras }
 }
 
-const NEW5_ES: Record<string, string[]> = {
+const NEW5_ES: Record<string, ArticleBody> = {
   'adhd-emotional-dysregulation': [
     `Si tienes TDAH, probablemente te hayan dicho en algún momento que eres demasiado sensible·a, demasiado intenso·a, o que reaccionas de forma exagerada. Lo que la mayoría de las personas, y muchos clínicos, no se dan cuenta es que la desregulación emocional no es un rasgo de personalidad superpuesto al TDAH. Es una de sus características más centrales y menos discutidas. El cerebro con TDAH no solo lucha con la atención y el control de impulsos. Lucha para regular el tamaño y la duración de las respuestas emocionales, lo que significa que los sentimientos llegan más rápido, golpean más fuerte y duran más que en la mayoría de las personas.`,
     `La neurociencia ayuda a explicar por qué. El córtex prefrontal, la parte del cerebro responsable de moderar las respuestas emocionales, de hacer una pausa antes de reaccionar y de poner los sentimientos en contexto, es la misma zona más afectada por el TDAH. Cuando ese sistema está poco activo, los centros emocionales del cerebro, en particular la amígdala, se activan sin freno adecuado. El resultado no es que los cerebros con TDAH sientan más que los demás. Es que sienten sin el amortiguador habitual entre sentir y reaccionar.`,
@@ -716,7 +717,7 @@ for (const [slug, langs] of Object.entries(NEW6_META)) {
   articleMeta[slug] = { ...(articleMeta[slug] || {}), ...langs }
 }
 
-const NEW6_DE: Record<string, string[]> = {
+const NEW6_DE: Record<string, ArticleBody> = {
   'adhd-tax': [
     `Du zahlst für das Fitnessstudio, in dem du seit Februar nicht warst. Du hast ein zweites Ladekabel gekauft, weil das erste irgendwo ist. Die Mahngebühr, die Kreditkartenzinsen, die du wirklich zahlen wolltest, die Lebensmittel, die abgelaufen sind, weil du vergessen hast, dass sie existieren. Einzeln sind das Kleinigkeiten. Zusammen haben sie einen Namen: die ADHS-Steuer — und für viele summiert sie sich still auf Hunderte oder Tausende im Jahr.`,
     `Die ADHS-Steuer ist keine Nachlässigkeit mit Geld. Sie ist der direkte, vorhersehbare Preis dafür, dass exekutive Dysfunktion auf eine Welt voller Fristen, Verlängerungen und Kleingedrucktem trifft. Das Arbeitsgedächtnis lässt die Rechnung fallen, die du zahlen wolltest. Zeitblindheit macht aus „nächste Woche fällig" ein „gestern überfällig". Aufgabenlähmung lässt eine Zwei-Minuten-Kündigungsmail drei Monate lang unmöglich wirken — für 12,99 im Monat. Nichts davon ist ein Werteproblem. Es ist ein Systemproblem mit Preisschild.`,
@@ -770,7 +771,7 @@ for (const [slug, paras] of Object.entries(NEW6_DE)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), de: paras }
 }
 
-const NEW6_FR: Record<string, string[]> = {
+const NEW6_FR: Record<string, ArticleBody> = {
   'adhd-tax': [
     `Tu paies pour la salle de sport où tu n'es pas allé·e depuis février. Tu as acheté un deuxième chargeur parce que le premier est quelque part. L'amende de bibliothèque, les frais de retard sur la carte que tu comptais vraiment payer, les courses périmées parce que tu avais oublié leur existence. Individuellement, ce sont des broutilles. Ensemble, elles ont un nom : la taxe TDAH — et pour beaucoup, elle grimpe discrètement à des centaines, voire des milliers par an.`,
     `La taxe TDAH n'est pas de la négligence financière. C'est le coût direct et prévisible de la dysfonction exécutive face à un monde rempli d'échéances, de renouvellements et de petites lignes. La mémoire de travail laisse tomber la facture que tu voulais payer. La cécité temporelle transforme « à payer la semaine prochaine » en « en retard depuis hier ». La paralysie des tâches rend un e-mail de résiliation de deux minutes impossible pendant trois mois — à 12,99 par mois. Rien de tout ça n'est un problème de valeurs. C'est un problème de systèmes avec une étiquette de prix.`,
@@ -824,7 +825,7 @@ for (const [slug, paras] of Object.entries(NEW6_FR)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), fr: paras }
 }
 
-const NEW6_ES: Record<string, string[]> = {
+const NEW6_ES: Record<string, ArticleBody> = {
   'adhd-tax': [
     `Pagas por el gimnasio al que no vas desde febrero. Compraste un segundo cargador porque el primero está en alguna parte. La multa de la biblioteca, el recargo de la tarjeta que de verdad pensabas pagar, la comida caducada porque olvidaste que existía. Por separado son pequeñeces. Juntas tienen un nombre: el impuesto TDAH — y para muchas personas suma en silencio cientos o incluso miles al año.`,
     `El impuesto TDAH no es descuido con el dinero. Es el costo directo y predecible de la disfunción ejecutiva chocando con un mundo lleno de plazos, renovaciones y letra pequeña. La memoria de trabajo deja caer la factura que ibas a pagar. La ceguera temporal convierte "vence la semana que viene" en "venció ayer". La parálisis de tareas hace que un correo de cancelación de dos minutos parezca imposible durante tres meses — a 12,99 al mes. Nada de esto es un problema de valores. Es un problema de sistemas con etiqueta de precio.`,
@@ -915,7 +916,7 @@ for (const [slug, langs] of Object.entries(NEW7_META)) {
   articleMeta[slug] = { ...(articleMeta[slug] || {}), ...langs }
 }
 
-const NEW7_DE: Record<string, string[]> = {
+const NEW7_DE: Record<string, ArticleBody> = {
   'adhd-masking': [
     `Du lachst an den richtigen Stellen. Du schreibst „gar kein Problem!", während deine Brust eng ist. Du hast eine ganze zweite Persönlichkeit gebaut, deren einziger Job es ist, wie jemand auszusehen, der alles im Griff hat — Erinnerungen versteckt, Panik wegtrainiert, Chaos ordentlich außer Sichtweite gefaltet. Das ist Masking: die ständige, meist unbewusste Performance von Neurotypikalität. Und wenn du gut darin bist — Glückwunsch und Beileid, denn je besser die Maske, desto höher die Rechnung.`,
     `Masking entsteht aus einem völlig rationalen Grund: Die Welt hat die unmaskierte Version von dir bestraft. Das Kind, das Antworten herausplatzte, wurde zum Schweigen gebracht. Der Teenager, der Dinge vergaß, hieß nachlässig. Der Erwachsene, der eine Frist verpasste, bekam Diesen Blick. Jede Korrektur lehrte dieselbe Lektion — das echte Betriebssystem ist inakzeptabel, also lass einen Emulator laufen. Niemand wählt Masking als Lebensstil. Es sammelt sich an, eine kleine Korrektur nach der anderen, bis du nicht mehr weißt, welche Reaktionen deine eigenen sind.`,
@@ -969,7 +970,7 @@ for (const [slug, paras] of Object.entries(NEW7_DE)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), de: paras }
 }
 
-const NEW7_FR: Record<string, string[]> = {
+const NEW7_FR: Record<string, ArticleBody> = {
   'adhd-masking': [
     `Tu ris aux bons moments. Tu écris « aucun souci ! » alors que ta poitrine est serrée. Tu as construit toute une seconde personnalité dont le seul travail est de ressembler à quelqu'un qui gère — rappels cachés, panique répétée en coulisses, chaos soigneusement plié hors de vue. C'est le masking : la performance constante, largement inconsciente, de la neurotypicité. Et si tu y excelles, félicitations et condoléances, car meilleur est le masque, plus haute est la facture.`,
     `Le masking se développe pour une raison parfaitement rationnelle : le monde a puni la version non masquée de toi. L'enfant qui lâchait les réponses s'est fait taire. L'ado qui oubliait des choses s'est fait traiter de négligent. L'adulte qui a raté une échéance a reçu Ce Regard. Chaque correction a enseigné la même leçon — le vrai système d'exploitation est inacceptable, alors fais tourner un émulateur. Personne ne choisit le masking comme style de vie. Il s'accumule, une petite correction à la fois, jusqu'à ce que tu ne saches plus quelles réactions sont les tiennes.`,
@@ -1023,7 +1024,7 @@ for (const [slug, paras] of Object.entries(NEW7_FR)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), fr: paras }
 }
 
-const NEW7_ES: Record<string, string[]> = {
+const NEW7_ES: Record<string, ArticleBody> = {
   'adhd-masking': [
     `Te ríes en los momentos correctos. Escribes "¡sin problema!" mientras tienes el pecho apretado. Has construido toda una segunda personalidad cuyo único trabajo es parecer alguien que lo tiene todo bajo control — recordatorios escondidos, pánico ensayado hasta desaparecer, caos doblado con cuidado fuera de la vista. Esto es el masking: la actuación constante, mayormente inconsciente, de neurotipicidad. Y si se te da bien, felicidades y condolencias, porque cuanto mejor la máscara, más alta la factura.`,
     `El masking se desarrolla por una razón completamente racional: el mundo castigó a tu versión sin máscara. Al niño que soltaba las respuestas lo mandaron callar. A la adolescente que olvidaba cosas la llamaron descuidada. Al adulto que falló un plazo le dedicaron Esa Mirada. Cada corrección enseñó la misma lección — el sistema operativo real es inaceptable, así que ejecuta un emulador. Nadie elige el masking como estilo de vida. Se acumula, una pequeña corrección a la vez, hasta que no recuerdas qué reacciones son tuyas.`,

@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { articles } from '@/lib/articles'
+import { articles, relatedArticles } from '@/lib/articles'
 import type { Lang } from '@/lib/i18n'
 import { blogChrome, blogTitle, blogExcerpt, blogTag, blogBody, readTimeLabel } from '@/lib/articles-i18n'
+import { toBlocks, type ArticleBlock } from '@/lib/article-blocks'
+import RichText from './RichText'
 
 export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }) {
   const article = articles.find(a => a.slug === slug)
@@ -34,10 +36,8 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
       </section>
 
       <article style={{ padding: '48px 24px 80px', maxWidth: 720, margin: '0 auto' }}>
-        {content.map((paragraph, i) => (
-          <p key={i} style={{ fontSize: 16, color: '#2D2926', lineHeight: 1.85, marginBottom: 24 }}>
-            {paragraph}
-          </p>
+        {toBlocks(content).map((block, i) => (
+          <Block key={i} block={block} lang={lang} />
         ))}
 
         <div style={{ marginTop: 56, padding: '32px', background: '#E8DEFF', border: '1.5px solid #D4C5F9', borderRadius: 20, textAlign: 'center' }}>
@@ -58,13 +58,12 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
         </div>
 
         <div style={{ marginTop: 56 }}>
-          <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 20 }}>{c.more}</h3>
+          {/* h2, not h3: the only other heading on the page is the h1, and the
+              article body can now emit its own h2s. */}
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 20 }}>{c.more}</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {(() => {
-              const idx = articles.findIndex(a => a.slug === slug)
-              const related = [1, 2, 3].map(o => articles[(idx + o) % articles.length]).filter(a => a && a.slug !== slug)
-              return related.map((a, i) => (
-              <Link key={i} href={`${base}/blog/${a.slug}`} style={{ textDecoration: 'none' }}>
+            {relatedArticles(slug).map(a => (
+              <Link key={a.slug} href={`${base}/blog/${a.slug}`} style={{ textDecoration: 'none' }}>
                 <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 14, padding: '16px 20px', display: 'flex', gap: 14, alignItems: 'center' }}>
                   <span style={{ fontSize: 28 }}>{a.emoji}</span>
                   <div>
@@ -73,11 +72,50 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
                   </div>
                 </div>
               </Link>
-              ))
-            })()}
+            ))}
           </div>
         </div>
       </article>
     </div>
   )
+}
+
+/**
+ * One article block. Styles continue the existing scale — body text was 16px /
+ * 1.85 line-height, and headings reuse the Georgia serif already used for h1.
+ */
+function Block({ block, lang }: { block: ArticleBlock; lang: Lang }) {
+  switch (block.type) {
+    case 'h2':
+      return (
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 25, color: '#2D2926', lineHeight: 1.3, margin: '44px 0 16px' }}>
+          <RichText text={block.text} lang={lang} />
+        </h2>
+      )
+    case 'h3':
+      return (
+        <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', lineHeight: 1.35, margin: '32px 0 12px' }}>
+          <RichText text={block.text} lang={lang} />
+        </h3>
+      )
+    case 'ul':
+    case 'ol': {
+      const List = block.type === 'ul' ? 'ul' : 'ol'
+      return (
+        <List style={{ fontSize: 16, color: '#2D2926', lineHeight: 1.85, marginBottom: 24, paddingLeft: 26 }}>
+          {block.items.map((item, i) => (
+            <li key={i} style={{ marginBottom: 8 }}>
+              <RichText text={item} lang={lang} />
+            </li>
+          ))}
+        </List>
+      )
+    }
+    default:
+      return (
+        <p style={{ fontSize: 16, color: '#2D2926', lineHeight: 1.85, marginBottom: 24 }}>
+          <RichText text={block.text} lang={lang} />
+        </p>
+      )
+  }
 }

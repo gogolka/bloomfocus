@@ -330,3 +330,38 @@ export const articles = [
     emoji: '🤯',
   },
 ]
+
+export type Article = (typeof articles)[number]
+
+/**
+ * Related articles for the bottom of an article page.
+ *
+ * Same-tag articles first, topped up from the other tags when a tag has fewer
+ * than `count` siblings.
+ *
+ * Within each pool the starting point rotates by the article's position *within
+ * its own tag* (not its index in the full list, which bunches up once the list
+ * is filtered). That keeps the even inbound-link distribution the previous
+ * index-adjacency logic was built for — every article is currently linked from
+ * exactly three others, no orphans — while making the picks topical.
+ */
+export function relatedArticles(slug: string, count = 3): Article[] {
+  const current = articles.find(a => a.slug === slug)
+  if (!current) return []
+
+  const tagPeers = articles.filter(a => a.tag === current.tag)
+  const posInTag = tagPeers.findIndex(a => a.slug === slug)
+
+  const sameTag = tagPeers.filter(a => a.slug !== slug)
+  const otherTags = articles.filter(a => a.slug !== slug && a.tag !== current.tag)
+
+  const picked: Article[] = []
+  for (const pool of [sameTag, otherTags]) {
+    if (picked.length >= count || pool.length === 0) continue
+    const start = posInTag % pool.length
+    for (let i = 0; i < pool.length && picked.length < count; i++) {
+      picked.push(pool[(start + i) % pool.length])
+    }
+  }
+  return picked.slice(0, count)
+}

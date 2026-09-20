@@ -1,5 +1,9 @@
 // English article bodies, shared by the English and localized blog routes.
-export const articleContentEN: Record<string, string[]> = {
+// Bodies are ArticleBody (see lib/article-blocks.ts): a bare string is a
+// paragraph, so existing plain-text content is already valid rich content.
+import type { ArticleBody } from '@/lib/article-blocks'
+
+export const articleContentEN: Record<string, ArticleBody> = {
   'why-adhd-brains-struggle-with-planning': [
     'If you have ADHD, planning probably feels like trying to hold water in your hands. You start with good intentions — a fresh planner, a new system, an optimistic Monday morning — and somehow, by Tuesday, it\'s already fallen apart. This isn\'t a character flaw. It\'s neuroscience.',
     'ADHD affects the prefrontal cortex, the part of the brain responsible for executive function — planning, prioritizing, time management, and starting tasks. When this system doesn\'t work the way neurotypical systems do, traditional planning methods don\'t just fail to help. They actively make things worse.',
