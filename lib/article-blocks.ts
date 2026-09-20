@@ -91,10 +91,21 @@ export function localiseHref(href: string, lang: string): string {
   return `/${lang}${href}`
 }
 
+/**
+ * Strip inline markup, keeping the visible words. Used wherever markup would be
+ * wrong but the text is still needed — notably FAQPage JSON-LD, where Google
+ * wants the answer as readable text, not as `[label](/blog/slug)`.
+ *
+ * Built on parseInline so it can never drift from what the renderer displays.
+ */
+export function inlineToPlainText(text: string): string {
+  return parseInline(text).map(t => t.text).join('')
+}
+
 /** Plain-text form of a body — used for reading time, excerpts and word counts. */
 export function blocksToPlainText(body: ArticleBody): string {
   return toBlocks(body)
     .map(b => (b.type === 'ul' || b.type === 'ol' ? b.items.join(' ') : b.text))
+    .map(inlineToPlainText)
     .join(' ')
-    .replace(INLINE_RE, (_m, linkText, _href, bold, italic) => linkText ?? bold ?? italic ?? '')
 }
