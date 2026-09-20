@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Lang } from '@/lib/i18n'
 import { parseInline, localiseHref } from '@/lib/article-blocks'
+import { isArticleHrefPublished } from '@/lib/articles'
 
 /**
  * Renders one string of inline article markup: **bold**, *italic*, and
@@ -24,6 +25,13 @@ export default function RichText({ text, lang }: { text: string; lang: Lang }) {
             // locale prefix; an http(s) URL opens in a new tab; mailto:/tel:
             // is a plain anchor — a new tab for a mail client makes no sense.
             if (tok.href.startsWith('/')) {
+              // A forward link to an article that is not published yet renders
+              // as plain text, so a live page never points at a scheduled one.
+              // It becomes a real link on the target's date, via the same ISR
+              // revalidation that reveals the article itself.
+              if (!isArticleHrefPublished(tok.href)) {
+                return <span key={i}>{tok.text}</span>
+              }
               return (
                 <Link key={i} href={localiseHref(tok.href, lang)} style={linkStyle}>
                   {tok.text}

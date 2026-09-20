@@ -489,6 +489,30 @@ export function publishedArticles(now: number = Date.now()): Article[] {
   return articles.filter(a => isPublished(a.date, now))
 }
 
+const ARTICLE_HREF_RE = /^\/blog\/([a-z0-9-]+)$/
+
+/**
+ * Whether a link target is safe to render as a real link right now.
+ *
+ * In-body prose links are authored as `/blog/<slug>` and point at sibling
+ * articles, some of which are scheduled for a later date. A live article
+ * linking to one of those would send readers to a page that is deliberately
+ * not published yet, and would leak its existence and title. Such links render
+ * as plain text until the target is due.
+ *
+ * Anything that is not an article link — an external URL, mailto:, /shop — and
+ * any slug not in the catalogue is left alone: this gates scheduled articles,
+ * it is not a general link checker, and silently swallowing an unknown link
+ * would hide a typo rather than surface it.
+ */
+export function isArticleHrefPublished(href: string, now: number = Date.now()): boolean {
+  const m = ARTICLE_HREF_RE.exec(href)
+  if (!m) return true
+  const target = articles.find(a => a.slug === m[1])
+  if (!target) return true
+  return isPublished(target.date, now)
+}
+
 /**
  * Related articles for the bottom of an article page.
  *
