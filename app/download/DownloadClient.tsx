@@ -88,7 +88,7 @@ export default function DownloadClient() {
         {/* Language selector */}
         {langs.length > 1 && (
           <div style={{ marginBottom: 24 }}>
-            <p style={{ fontSize: 12, color: '#9B8F88', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Language</p>
+            <p style={{ fontSize: 12, color: '#776B64', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Language</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {langs.map(lang => (
                 <button

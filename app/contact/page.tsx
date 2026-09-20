@@ -13,7 +13,7 @@ const EMAIL = CONTACT_EMAIL
 const S = {
   h2: { fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', margin: '36px 0 12px' } as React.CSSProperties,
   p: { fontSize: 14.5, color: '#6B5F58', lineHeight: 1.8, marginBottom: 14 } as React.CSSProperties,
-  a: { color: '#6E51BD' } as React.CSSProperties,
+  a: { color: '#6E51BD', textDecoration: 'underline', textUnderlineOffset: '2px' } as React.CSSProperties,
 }
 
 export default function ContactPage() {
@@ -21,7 +21,7 @@ export default function ContactPage() {
     <div style={{ background: 'var(--cream)', padding: '64px 24px 96px' }}>
       <div style={{ maxWidth: 680, margin: '0 auto' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(30px, 5vw, 42px)', color: '#2D2926', marginBottom: 8 }}>Contact</h1>
-        <p style={{ fontSize: 13, color: '#9B8F88', marginBottom: 32 }}>A real person reads these. Usually within a couple of days.</p>
+        <p style={{ fontSize: 13, color: '#776B64', marginBottom: 32 }}>A real person reads these. Usually within a couple of days.</p>
 
         <div style={{
           background: '#E8DEFF', border: '1.5px solid #D4C5F9', borderRadius: 20,

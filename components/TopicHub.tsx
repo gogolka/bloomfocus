@@ -74,14 +74,14 @@ export default function TopicHub({ lang, topicSlug }: { lang: Lang; topicSlug: s
         <section style={{ padding: '64px 24px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: -60, left: -60, width: 300, height: 300, borderRadius: '50%', background: `radial-gradient(circle, ${topic.color} 0%, transparent 65%)`, opacity: 0.55, pointerEvents: 'none' }} />
           <div style={{ maxWidth: 680, margin: '0 auto', position: 'relative' }}>
-            <Link href={`${base}/blog`} style={{ textDecoration: 'none', fontSize: 13, color: '#9B8F88', display: 'inline-block', marginBottom: 20 }}>
+            <Link href={`${base}/blog`} style={{ textDecoration: 'none', fontSize: 13, color: '#776B64', display: 'inline-block', marginBottom: 20 }}>
               {c.back}
             </Link>
             <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 42px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 16 }}>
               {label}
             </h1>
             <p style={{ fontSize: 15, color: '#6B5F58', lineHeight: 1.75, textAlign: 'left' }}>{intro}</p>
-            <div style={{ fontSize: 13, color: '#9B8F88', marginTop: 16 }}>
+            <div style={{ fontSize: 13, color: '#776B64', marginTop: 16 }}>
               {list.length === 1 ? c.one : c.many(list.length)}
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function TopicHub({ lang, topicSlug }: { lang: Lang; topicSlug: s
                   <div className="hover-card-sm" style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '28px', display: 'flex', gap: 24, alignItems: 'flex-start' }}>
                     <div style={{ fontSize: 40, flexShrink: 0 }}>{article.emoji}</div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 12, color: '#9B8F88', marginBottom: 10 }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
+                      <div style={{ fontSize: 12, color: '#776B64', marginBottom: 10 }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
                       <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', lineHeight: 1.3, marginBottom: 10 }}>{blogTitle(article.slug, lang, article.title)}</h2>
                       <p style={{ fontSize: 14, color: '#6B5F58', lineHeight: 1.6 }}>{blogExcerpt(article.slug, lang, article.excerpt)}</p>
                     </div>

@@ -84,7 +84,7 @@ export default function SuccessContent() {
                 </a>
               )}
               <div style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 16, padding: '20px 24px', marginBottom: 24 }}>
-                <p style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.6 }}>
+                <p style={{ fontSize: 13, color: '#776B64', lineHeight: 1.6 }}>
                   📧 A download link was also sent to your email.<br />
                   ⏰ The link is valid for 24 hours (3 downloads max).<br />
                   💬 Need help? Email us at {CONTACT_EMAIL}

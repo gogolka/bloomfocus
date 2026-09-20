@@ -54,7 +54,7 @@ function getScores(answers: Record<number, number>) {
 const C = {
   bg:"#FAFAF8", card:"#FFFFFF",
   purple:"#B8A4E8", purpleDark:"#7B5FCC", purpleLight:"#F0EBFF",
-  text:"#1A1814", mid:"#6B6058", soft:"#9B8F88", border:"#E8E4DC",
+  text:"#1A1814", mid:"#6B6058", soft:"#776B64", border:"#E8E4DC",
 };
 
 export default function ADHDQuiz({ lang = "en" as Lang }: { lang?: Lang }) {

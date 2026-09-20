@@ -25,9 +25,9 @@ const ACTION_META = [
 ]
 // Blog previews link to the English articles for now (blog is translated later).
 const blogPreviews = [
-  { slug: 'why-adhd-brains-struggle-with-planning', title: 'Why ADHD Brains Struggle with Planning (And What Actually Helps)', date: 'June 2026', tag: 'Understanding ADHD' },
-  { slug: 'dopamine-menu-guide', title: 'What Is a Dopamine Menu and How to Make One That Works', date: 'June 2026', tag: 'Tools & Tips' },
-  { slug: 'time-blindness-adhd', title: 'Time Blindness: Why You Can\'t Feel Time Passing', date: 'June 2026', tag: 'Understanding ADHD' },
+  { slug: 'why-adhd-brains-struggle-with-planning', title: 'Why ADHD Brains Struggle with Planning (And What Actually Helps)', date: 'June 2026', tag: 'Focus & Executive Function' },
+  { slug: 'dopamine-menu-guide', title: 'What Is a Dopamine Menu and How to Make One That Works', date: 'June 2026', tag: 'Tools & Systems' },
+  { slug: 'time-blindness-adhd', title: 'Time Blindness: Why You Can\'t Feel Time Passing', date: 'June 2026', tag: 'Focus & Executive Function' },
 ]
 
 export default function HomeContent({ lang }: { lang: Lang }) {
@@ -88,7 +88,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
         <div className="reveal" style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.painEyebrow}</div>
+            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.painEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926', lineHeight: 1.2 }}>
               {t.painPre}<em style={{ color: '#B8A4E8' }}>{t.painEm}</em>
             </h2>
@@ -113,7 +113,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px' }}>
         <div className="reveal" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.productsEyebrow}</div>
+            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.productsEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
               {t.productsPre}<em style={{ color: '#B8A4E8' }}>{t.productsEm}</em>
             </h2>
@@ -141,7 +141,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
         <div className="reveal" style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.howEyebrow}</div>
+            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.howEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
               {t.howPre}<em style={{ color: '#B8A4E8' }}>{t.howEm}</em>
             </h2>

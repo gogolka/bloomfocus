@@ -18,7 +18,7 @@ export default function PrivacyContent({ lang }: { lang: Lang }) {
     <div style={{ background: 'var(--cream)', padding: '64px 24px 96px' }}>
       <div style={{ maxWidth: 680, margin: '0 auto' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(30px, 5vw, 42px)', color: '#2D2926', marginBottom: 8 }}>{t.h1}</h1>
-        <p style={{ fontSize: 13, color: '#9B8F88', marginBottom: 32 }}>{t.updated}</p>
+        <p style={{ fontSize: 13, color: '#776B64', marginBottom: 32 }}>{t.updated}</p>
 
         <p style={S.p}>{t.intro}</p>
 
