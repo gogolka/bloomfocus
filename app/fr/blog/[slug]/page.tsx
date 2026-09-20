@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
 import { blogTitle, blogExcerpt } from '@/lib/articles-i18n'
@@ -59,10 +58,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   return (
     <>
       {jsonLd && (
-        <Script id="article-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       )}
       {breadcrumbLd && (
-        <Script id="breadcrumb-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }} />
       )}
       <BlogArticle lang="fr" slug={params.slug} />
     </>
