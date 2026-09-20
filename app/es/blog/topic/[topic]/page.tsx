@@ -5,7 +5,7 @@ import { topics, topicBySlug, topicLabel, topicMeta, MIN_ARTICLES_FOR_INDEXING, 
 import { NOINDEX_FOLLOW } from '@/lib/publish-status'
 import { LOCALES } from '@/lib/i18n'
 
-const LANG = 'en' as const
+const LANG = 'es' as const
 
 // ISR: the article count changes as the publishing schedule fills a topic, and
 // with it whether this hub is indexable. Same interval as the blog index.

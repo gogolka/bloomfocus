@@ -26,12 +26,10 @@ export default function BlogList({ lang }: { lang: Lang }) {
       </section>
 
       <section style={{ padding: '48px 24px 80px', maxWidth: 900, margin: '0 auto' }}>
-        {/* Hubs exist in English only for now, so the nav is rendered there. */}
-        {lang === 'en' && (
-          <div style={{ marginBottom: 32 }}>
-            <TopicNav />
-          </div>
-        )}
+        {/* Browse-by-topic, in every locale — each hub exists per language. */}
+        <div style={{ marginBottom: 32 }}>
+          <TopicNav lang={lang} />
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {articles.map((article, i) => (
             <Link key={i} href={`${base}/blog/${article.slug}`} style={{ textDecoration: 'none' }}>
