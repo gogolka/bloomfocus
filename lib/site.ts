@@ -11,3 +11,6 @@
  * Changing it here changes it everywhere it is shown to a visitor.
  */
 export const CONTACT_EMAIL = 'hello@bloomfocus.org'
+
+/** Canonical origin, used for canonical URLs, hreflang and the sitemap. */
+export const SITE_URL = 'https://bloomfocus.org'

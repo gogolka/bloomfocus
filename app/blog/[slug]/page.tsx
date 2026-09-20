@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
+import { articleAlternateLanguages, servedLanguage } from '@/lib/articles-i18n'
 import { articleFAQs } from '@/lib/article-faqs'
 import { inlineToPlainText } from '@/lib/article-blocks'
 
@@ -12,12 +13,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     description: article.excerpt,
     alternates: {
       canonical: `https://bloomfocus.org/blog/${params.slug}`,
-      languages: {
-        en: `https://bloomfocus.org/blog/${params.slug}`,
-        de: `https://bloomfocus.org/de/blog/${params.slug}`,
-        fr: `https://bloomfocus.org/fr/blog/${params.slug}`,
-        es: `https://bloomfocus.org/es/blog/${params.slug}`,
-      },
+      // Only locales with a real translation — a fallback-to-English
+      // URL must not be advertised as this article in that language.
+      languages: articleAlternateLanguages(params.slug),
     },
     openGraph: { title: article.title, description: article.excerpt, type: 'article', publishedTime: new Date(article.date).toISOString() },
     // Without this the root layout's site-wide card is inherited on every article.
@@ -59,7 +57,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     dateModified: new Date(article.date).toISOString(),
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://bloomfocus.org/blog/${params.slug}` },
     url: `https://bloomfocus.org/blog/${params.slug}`,
-    inLanguage: 'en',
+    inLanguage: servedLanguage(params.slug, 'en'),
   } : null
 
   const breadcrumbLd = article ? {

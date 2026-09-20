@@ -1,4 +1,5 @@
-import type { Lang } from '@/lib/i18n'
+import { LOCALES, type Lang } from '@/lib/i18n'
+import { SITE_URL } from '@/lib/site'
 import { articleContentEN } from '@/lib/article-content'
 import type { ArticleBody } from '@/lib/article-blocks'
 
@@ -1076,4 +1077,51 @@ const NEW7_ES: Record<string, ArticleBody> = {
 }
 for (const [slug, paras] of Object.entries(NEW7_ES)) {
   articleBody[slug] = { ...(articleBody[slug] || {}), es: paras }
+}
+
+// ---------------------------------------------------------------------------
+// Translation coverage
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether this article has a real translated body for `lang`.
+ *
+ * blogBody() falls back to the English body when a translation is missing, which
+ * keeps the page readable but means a /de/ URL can serve English text. Anything
+ * that *claims* a translation exists — hreflang, the sitemap, JSON-LD
+ * inLanguage — has to ask this instead, or it tells crawlers the page is German
+ * when it is not.
+ */
+export function hasTranslation(slug: string, lang: Lang): boolean {
+  if (lang === 'en') return true
+  const body = articleBody[slug]?.[lang]
+  return Array.isArray(body) && body.length > 0
+}
+
+/** The locales this article is genuinely published in, English always included. */
+export function translatedLocales(slug: string): Lang[] {
+  return LOCALES.filter(l => hasTranslation(slug, l))
+}
+
+export function articleUrl(slug: string, lang: Lang): string {
+  return lang === 'en' ? `${SITE_URL}/blog/${slug}` : `${SITE_URL}/${lang}/blog/${slug}`
+}
+
+/**
+ * hreflang alternates for an article — only the locales it actually exists in.
+ * Returns undefined when English is the only one, since a lone self-referencing
+ * hreflang says nothing.
+ */
+export function articleAlternateLanguages(slug: string): Record<string, string> | undefined {
+  const locales = translatedLocales(slug)
+  if (locales.length < 2) return undefined
+  const langs: Record<string, string> = {}
+  for (const l of locales) langs[l] = articleUrl(slug, l)
+  langs['x-default'] = articleUrl(slug, 'en')
+  return langs
+}
+
+/** The language actually served at this locale's URL, after body fallback. */
+export function servedLanguage(slug: string, lang: Lang): Lang {
+  return hasTranslation(slug, lang) ? lang : 'en'
 }

@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { articles } from '@/lib/articles'
+import { translatedLocales } from '@/lib/articles-i18n'
 
 const BASE = 'https://bloomfocus.org'
 const LOCALES = ['en', 'de', 'fr', 'es'] as const
@@ -39,15 +40,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   )
 
+  // Only the locales an article is genuinely translated into. A locale URL that
+  // falls back to English text is still reachable directly, but listing it here
+  // — or naming it in hreflang — would tell Google we publish the same article
+  // four times in four languages when we publish it once.
   const blogEntries: MetadataRoute.Sitemap = articles.flatMap(article => {
     const articleDate = new Date(article.date)
     const path = `/blog/${article.slug}`
-    return LOCALES.map(locale => ({
+    const locales = translatedLocales(article.slug)
+    const languages = locales.length > 1
+      ? Object.fromEntries([
+          ...locales.map(l => [l, urlFor(l, path)] as const),
+          ['x-default', urlFor('en', path)] as const,
+        ])
+      : undefined
+    return locales.map(locale => ({
       url: urlFor(locale, path),
       lastModified: articleDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
-      alternates: { languages: altLanguages(path) },
+      ...(languages ? { alternates: { languages } } : {}),
     }))
   })
 
