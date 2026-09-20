@@ -134,7 +134,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#2D2926', marginBottom: 6 }}>
                   {t.preparing}
                 </div>
-                <div style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.5 }}>
+                <div style={{ fontSize: 13, color: '#776B64', lineHeight: 1.5 }}>
                   {t.preparingA}<br />{t.preparingB}
                 </div>
                 <style>{`@keyframes bloomspin { to { transform: rotate(360deg); } }`}</style>
@@ -147,11 +147,11 @@ export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 4 }}>
                   {productTitle}
                 </div>
-                <div style={{ fontSize: 13, color: '#9B8F88' }}>{t.enterEmail}</div>
+                <div style={{ fontSize: 13, color: '#776B64' }}>{t.enterEmail}</div>
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#9B8F88', lineHeight: 1 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#776B64', lineHeight: 1 }}
               >✕</button>
             </div>
 
@@ -252,7 +252,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 
               {t.payNow}
             </button>
 
-            <p style={{ fontSize: 11, color: '#9B8F88', textAlign: 'center', marginTop: 14, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 11, color: '#776B64', textAlign: 'center', marginTop: 14, lineHeight: 1.5 }}>
               {t.secureA}<br />
               {t.secureB}
             </p>

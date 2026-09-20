@@ -24,7 +24,7 @@ const config: Config = {
         sky: '#D4EEFF',
         'text-dark': '#2D2926',
         'text-mid': '#6B5F58',
-        'text-soft': '#9B8F88',
+        'text-soft': '#776B64', // AA on light surfaces; the dark footer keeps #9B8F88
         border: 'rgba(45,41,38,0.08)',
       },
       fontFamily: {

@@ -16,7 +16,7 @@ export default function TermsPage() {
     <div style={{ background: 'var(--cream)', padding: '64px 24px 96px' }}>
       <div style={{ maxWidth: 680, margin: '0 auto' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(30px, 5vw, 42px)', color: '#2D2926', marginBottom: 8 }}>Terms of Service</h1>
-        <p style={{ fontSize: 13, color: '#9B8F88', marginBottom: 32 }}>Last updated: June 2026</p>
+        <p style={{ fontSize: 13, color: '#776B64', marginBottom: 32 }}>Last updated: June 2026</p>
 
         <p style={S.p}>These terms apply to purchases and use of bloomfocus.org, operated by an individual entrepreneur registered in Ukraine ("we", "us"). By buying a product or using the app, you agree to these terms.</p>
 
@@ -24,7 +24,7 @@ export default function TermsPage() {
         <p style={S.p}>All planners, workbooks and posters are digital PDF files. Nothing physical is shipped. Prices are shown in USD; your bank may apply its own conversion rate if your card is in another currency.</p>
 
         <h2 style={S.h2}>Delivery</h2>
-        <p style={S.p}>Delivery is instant: after successful payment, a download link appears on the confirmation page and is also sent to your email. Download links are valid for 7 days. If your link expires or the email doesn't arrive, contact us at <a href="mailto:hello@bloomfocus.org" style={{ color: '#7B5FCC' }}>hello@bloomfocus.org</a> and we'll send a fresh one — you don't lose access to what you bought.</p>
+        <p style={S.p}>Delivery is instant: after successful payment, a download link appears on the confirmation page and is also sent to your email. Download links are valid for 7 days. If your link expires or the email doesn't arrive, contact us at <a href="mailto:hello@bloomfocus.org" style={{ color: '#6E51BD', textDecoration: 'underline', textUnderlineOffset: '2px' }}>hello@bloomfocus.org</a> and we'll send a fresh one — you don't lose access to what you bought.</p>
 
         <h2 style={S.h2}>Refunds</h2>
         <p style={S.p}>Because digital files cannot be "returned", all sales are generally final once the file has been downloaded. That said, we're humans first: if you bought the wrong product by mistake, were charged twice, or the file is broken — email us within 14 days and we'll make it right with a replacement or a refund.</p>
@@ -45,7 +45,7 @@ export default function TermsPage() {
         <p style={S.p}>We may update these terms as the product evolves; the current version always lives at this page. Material changes to paid services will be communicated by email.</p>
 
         <h2 style={S.h2}>Contact</h2>
-        <p style={S.p}>Questions: <a href="mailto:hello@bloomfocus.org" style={{ color: '#7B5FCC' }}>hello@bloomfocus.org</a>. Full legal details of the business are available on request.</p>
+        <p style={S.p}>Questions: <a href="mailto:hello@bloomfocus.org" style={{ color: '#6E51BD', textDecoration: 'underline', textUnderlineOffset: '2px' }}>hello@bloomfocus.org</a>. Full legal details of the business are available on request.</p>
       </div>
     </div>
   )

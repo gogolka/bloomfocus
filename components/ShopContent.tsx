@@ -28,7 +28,7 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '64px 24px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,222,255,0.6) 0%, transparent 65%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 600, margin: '0 auto', position: 'relative' }}>
-          <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{c.eyebrow}</div>
+          <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{c.eyebrow}</div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 44px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 16 }}>
             {c.h1pre}<em style={{ color: '#B8A4E8' }}>{c.h1em}</em>
           </h1>
@@ -39,7 +39,7 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
 
       <section style={{ padding: '48px 24px 80px', maxWidth: 1100, margin: '0 auto' }}>
         {products.length === 0 && (
-          <p style={{ textAlign: 'center', color: '#9B8F88' }}>{c.loading}</p>
+          <p style={{ textAlign: 'center', color: '#776B64' }}>{c.loading}</p>
         )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
           {products.map((p: any) => {

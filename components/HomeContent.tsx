@@ -88,7 +88,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
         <div className="reveal" style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.painEyebrow}</div>
+            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.painEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926', lineHeight: 1.2 }}>
               {t.painPre}<em style={{ color: '#B8A4E8' }}>{t.painEm}</em>
             </h2>
@@ -113,7 +113,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px' }}>
         <div className="reveal" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.productsEyebrow}</div>
+            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.productsEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
               {t.productsPre}<em style={{ color: '#B8A4E8' }}>{t.productsEm}</em>
             </h2>
@@ -141,7 +141,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
       <section style={{ padding: '80px 24px', background: '#FEFCFA' }}>
         <div className="reveal" style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{t.howEyebrow}</div>
+            <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.howEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
               {t.howPre}<em style={{ color: '#B8A4E8' }}>{t.howEm}</em>
             </h2>

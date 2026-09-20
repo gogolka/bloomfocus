@@ -21,7 +21,11 @@
   --sky: #D4EEFF;
   --text-dark: #2D2926;
   --text-mid: #6B5F58;
-  --text-soft: #9B8F88;
+  /* Muted text on light surfaces. The old #9B8F88 was 2.99:1 on cream —
+     below AA. On the dark footer the lighter value is the correct one
+     (4.58:1 there, while this darker one would drop to 2.79:1), so the
+     footer keeps #9B8F88 inline rather than using this token. */
+  --text-soft: #776B64;
   --border: rgba(45,41,38,0.08);
 }
 

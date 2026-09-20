@@ -23,7 +23,7 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
       <section style={{ padding: '64px 24px 48px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,222,255,0.5) 0%, transparent 65%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative' }}>
-          <Link href={`${base}/blog`} style={{ textDecoration: 'none', fontSize: 13, color: '#9B8F88', display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
+          <Link href={`${base}/blog`} style={{ textDecoration: 'none', fontSize: 13, color: '#776B64', display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
             {c.backToBlog}
           </Link>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
@@ -41,7 +41,7 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
                 ? <Link href={`/blog/topic/${topic.slug}`} style={{ textDecoration: 'none' }}>{pill}</Link>
                 : pill
             })()}
-            <div style={{ fontSize: 13, color: '#9B8F88' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
+            <div style={{ fontSize: 13, color: '#776B64' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
           </div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 40px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 20 }}>
             {blogTitle(slug, lang, article.title)}
@@ -109,7 +109,7 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
                   <span style={{ fontSize: 28 }}>{a.emoji}</span>
                   <div>
                     <div style={{ fontFamily: 'Georgia, serif', fontSize: 15, color: '#2D2926', marginBottom: 4 }}>{blogTitle(a.slug, lang, a.title)}</div>
-                    <div style={{ fontSize: 12, color: '#9B8F88' }}>{readTimeLabel(lang, a.readTime)}</div>
+                    <div style={{ fontSize: 12, color: '#776B64' }}>{readTimeLabel(lang, a.readTime)}</div>
                   </div>
                 </div>
               </Link>

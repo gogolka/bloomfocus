@@ -58,7 +58,7 @@ export default function DownloadAppButton({ variant = 'pill' }: { variant?: 'pil
           <div style={{ background: '#FEFCFA', borderRadius: 24, padding: '32px 28px', maxWidth: 380, width: '100%', boxShadow: '0 20px 60px rgba(45,41,38,0.25)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926' }}>Install bloom focus</div>
-              <button onClick={() => setShowHelp(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#9B8F88', lineHeight: 1 }}>✕</button>
+              <button onClick={() => setShowHelp(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#776B64', lineHeight: 1 }}>✕</button>
             </div>
 
             {isIOS ? (

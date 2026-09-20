@@ -80,7 +80,7 @@ export default function NewsletterSignup({ compact = false, lang = 'en' as Lang 
             {status === 'loading' ? t.subscribing : t.subscribe}
           </button>
           {status === 'error' && <div style={{ fontSize: 13, color: '#C0627A', marginTop: 12 }}>{msg}</div>}
-          <p style={{ fontSize: 12, color: '#9B8F88', marginTop: 16, marginBottom: 0 }}>{t.noSpam}</p>
+          <p style={{ fontSize: 12, color: '#776B64', marginTop: 16, marginBottom: 0 }}>{t.noSpam}</p>
         </>
       )}
     </section>

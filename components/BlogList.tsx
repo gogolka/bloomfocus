@@ -16,7 +16,7 @@ export default function BlogList({ lang }: { lang: Lang }) {
       <section style={{ padding: '64px 24px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -60, left: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,232,212,0.5) 0%, transparent 65%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 600, margin: '0 auto', position: 'relative' }}>
-          <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 12 }}>{c.eyebrow}</div>
+          <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{c.eyebrow}</div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 44px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 16 }}>
             {c.h1pre}<em style={{ color: '#B8A4E8' }}>{c.h1em}</em>
           </h1>
@@ -40,7 +40,7 @@ export default function BlogList({ lang }: { lang: Lang }) {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
                     <TopicPill article={article} lang={lang} />
-                    <div style={{ fontSize: 12, color: '#9B8F88' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
+                    <div style={{ fontSize: 12, color: '#776B64' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
                   </div>
                   <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', lineHeight: 1.3, marginBottom: 10 }}>{blogTitle(article.slug, lang, article.title)}</h2>
                   <p style={{ fontSize: 14, color: '#6B5F58', lineHeight: 1.6 }}>{blogExcerpt(article.slug, lang, article.excerpt)}</p>
