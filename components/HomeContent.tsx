@@ -44,7 +44,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
         <div style={{ position: 'absolute', top: 100, left: '15%', width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle, rgba(212,232,212,0.4) 0%, transparent 70%)', pointerEvents: 'none' }} />
         {/* Floating stickers — language-neutral, desktop only */}
         <div className="hero-sticker bf-float" style={{ top: '22%', left: '9%', ['--r' as any]: '-6deg' }}>
-          <span style={{ width: 18, height: 18, borderRadius: 6, background: '#B8A4E8', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 11 }}>✓</span>
+          <span style={{ width: 18, height: 18, borderRadius: 6, background: '#7B5FCC', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 11 }}>✓</span>
           <span style={{ width: 72, height: 7, borderRadius: 100, background: '#E8DEFF', display: 'inline-block' }} />
         </div>
         <div className="hero-sticker bf-float bf-delay-1" style={{ top: '48%', left: '13%', ['--r' as any]: '4deg', fontWeight: 600 }}>
@@ -68,7 +68,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
             {t.heroSub}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href={`${base}/shop`} className="btn-primary" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600, boxShadow: '0 4px 20px rgba(184,164,232,0.35)', display: 'inline-block' }}>
+            <Link href={`${base}/shop`} className="btn-primary" style={{ textDecoration: 'none', background: '#7B5FCC', color: 'white', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600, boxShadow: '0 4px 20px rgba(184,164,232,0.35)', display: 'inline-block' }}>
               {t.ctaShop}
             </Link>
             <Link href={`${base}/blog`} className="btn-outline" style={{ textDecoration: 'none', background: 'transparent', color: '#6B5F58', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 500, border: '1.5px solid rgba(45,41,38,0.12)', display: 'inline-block' }}>
@@ -180,7 +180,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
                   </div>
                 ))}
               </div>
-              <Link href="/app" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600, display: 'inline-block', boxShadow: '0 4px 20px rgba(184,164,232,0.35)' }}>
+              <Link href="/app" style={{ textDecoration: 'none', background: '#7B5FCC', color: 'white', padding: '14px 28px', borderRadius: 100, fontSize: 15, fontWeight: 600, display: 'inline-block', boxShadow: '0 4px 20px rgba(184,164,232,0.35)' }}>
                 {t.tryApp}
               </Link>
             </div>
@@ -263,7 +263,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
           <p style={{ fontSize: 15, color: '#9B8F88', lineHeight: 1.7, marginBottom: 36 }}>
             {t.ctaSub}
           </p>
-          <Link href={`${base}/shop`} className="btn-primary" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '15px 32px', borderRadius: 100, fontSize: 15, fontWeight: 600, display: 'inline-block', boxShadow: '0 4px 24px rgba(184,164,232,0.4)' }}>
+          <Link href={`${base}/shop`} className="btn-primary" style={{ textDecoration: 'none', background: '#7B5FCC', color: 'white', padding: '15px 32px', borderRadius: 100, fontSize: 15, fontWeight: 600, display: 'inline-block', boxShadow: '0 4px 24px rgba(184,164,232,0.4)' }}>
             {t.ctaButton}
           </Link>
         </div>

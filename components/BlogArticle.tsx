@@ -48,7 +48,7 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
             {c.ctaSub}
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href={`${base}/shop`} style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>
+            <Link href={`${base}/shop`} style={{ textDecoration: 'none', background: '#7B5FCC', color: 'white', padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>
               {c.ctaShop}
             </Link>
             <Link href={`${base}/quiz`} style={{ textDecoration: 'none', background: 'white', color: '#7B5FCC', border: '1.5px solid #D4C5F9', padding: '12px 28px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>

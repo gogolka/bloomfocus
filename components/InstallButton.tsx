@@ -36,7 +36,7 @@ export default function InstallButton() {
 
   if (installed || !deferred) return null
   return (
-    <button onClick={install} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 100, padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", whiteSpace: 'nowrap' }}>
+    <button onClick={install} style={{ background: '#7B5FCC', color: 'white', border: 'none', borderRadius: 100, padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", whiteSpace: 'nowrap' }}>
       Install app ⬇
     </button>
   )

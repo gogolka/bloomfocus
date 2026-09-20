@@ -78,7 +78,7 @@ export default function SuccessContent() {
                 click the button below to download.
               </p>
               {downloadToken && (
-                <a href={`/api/download?token=${downloadToken}`} style={{ display: 'inline-block', background: '#B8A4E8', color: 'white', padding: '16px 32px', borderRadius: 100, fontSize: 16, fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 20px rgba(184,164,232,0.35)', marginBottom: 24 }}>
+                <a href={`/api/download?token=${downloadToken}`} style={{ display: 'inline-block', background: '#7B5FCC', color: 'white', padding: '16px 32px', borderRadius: 100, fontSize: 16, fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 20px rgba(184,164,232,0.35)', marginBottom: 24 }}>
                   Download now →
                 </a>
               )}
@@ -101,7 +101,7 @@ export default function SuccessContent() {
             <p style={{ fontSize: 15, color: '#6B5F58', lineHeight: 1.7, marginBottom: 24 }}>
               Your payment could not be completed. You have not been charged.
             </p>
-            <Link href="/shop" style={{ textDecoration: 'none', background: '#B8A4E8', color: 'white', padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>
+            <Link href="/shop" style={{ textDecoration: 'none', background: '#7B5FCC', color: 'white', padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block' }}>
               Try again →
             </Link>
           </div>

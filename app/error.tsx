@@ -48,7 +48,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
             onClick={reset}
-            style={{ background: '#B8A4E8', color: 'white', border: 'none', padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}
+            style={{ background: '#7B5FCC', color: 'white', border: 'none', padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}
           >
             {t.retry}
           </button>

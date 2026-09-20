@@ -22,6 +22,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       },
     },
     openGraph: { title, description, type: 'article', publishedTime: new Date(article.date).toISOString() },
+    // Without this the root layout's site-wide card is inherited on every article.
+    twitter: { card: 'summary_large_image', title, description },
   }
 }
 

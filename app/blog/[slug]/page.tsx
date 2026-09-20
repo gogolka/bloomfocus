@@ -19,6 +19,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       },
     },
     openGraph: { title: article.title, description: article.excerpt, type: 'article', publishedTime: new Date(article.date).toISOString() },
+    // Without this the root layout's site-wide card is inherited on every article.
+    // `images` is omitted on purpose: Next.js then reuses the generated
+    // opengraph-image for the Twitter card too, so there is one source of truth.
+    twitter: { card: 'summary_large_image', title: article.title, description: article.excerpt },
   }
 }
 

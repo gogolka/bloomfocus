@@ -3,6 +3,9 @@ import { DM_Sans } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import ConsentBanner from '@/components/ConsentBanner'
+import Analytics from '@/components/Analytics'
+import { CONSENT_MODE_BOOTSTRAP } from '@/lib/consent'
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -64,6 +67,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={dmSans.variable}>
+      <head>
+        {/*
+          Google Consent Mode v2 defaults. Must run before any Google tag, so it
+          lives in <head> and is inlined rather than fetched. Everything starts
+          denied; ConsentBanner upgrades it only once the visitor opts in.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: CONSENT_MODE_BOOTSTRAP }} />
+      </head>
       <body className={dmSans.className}>
         <script
           type="application/ld+json"
@@ -83,6 +94,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <ConsentBanner />
+        <Analytics />
       </body>
     </html>
   )

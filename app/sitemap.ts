@@ -51,9 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   })
 
+  // English-only pages: About/Contact and the legal pages have no localized routes.
   const legalEntries: MetadataRoute.Sitemap = [
-    { url: 'https://bloomfocus.org/privacy', lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-    { url: 'https://bloomfocus.org/terms', lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ]
 
   return [...staticEntries, ...blogEntries, ...legalEntries]

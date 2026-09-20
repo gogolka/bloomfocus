@@ -396,6 +396,8 @@ export interface ChromeDict {
   explore: string
   shopAll: string
   adhdBlog: string
+  about: string
+  contact: string
   connect: string
   rights: string
 }
@@ -404,25 +406,29 @@ export const chrome: Record<Lang, ChromeDict> = {
   en: {
     navApp: `App`, navTest: `ADHD Test`, navShop: `Shop`, navBlog: `Blog`, shopNow: `Shop now ✨`,
     tagline: `Planning tools designed for ADHD brains. Warm, gentle, and actually helpful.`,
-    explore: `Explore`, shopAll: `Shop all products`, adhdBlog: `ADHD blog`, connect: `Connect`,
+    explore: `Explore`, shopAll: `Shop all products`, adhdBlog: `ADHD blog`,
+    about: `About`, contact: `Contact`, connect: `Connect`,
     rights: `© 2026 bloom focus. All rights reserved.`,
   },
   de: {
     navApp: `App`, navTest: `ADHS-Test`, navShop: `Shop`, navBlog: `Blog`, shopNow: `Zum Shop ✨`,
     tagline: `Planungstools für ADHS-Gehirne. Warm, sanft und wirklich hilfreich.`,
-    explore: `Entdecken`, shopAll: `Alle Produkte`, adhdBlog: `ADHS-Blog`, connect: `Kontakt`,
+    explore: `Entdecken`, shopAll: `Alle Produkte`, adhdBlog: `ADHS-Blog`,
+    about: `Über bloom focus`, contact: `Kontakt`, connect: `Kontakt`,
     rights: `© 2026 bloom focus. Alle Rechte vorbehalten.`,
   },
   fr: {
     navApp: `Appli`, navTest: `Test TDAH`, navShop: `Boutique`, navBlog: `Blog`, shopNow: `Boutique ✨`,
     tagline: `Des outils d'organisation pensés pour les cerveaux TDAH. Chaleureux, doux et vraiment utiles.`,
-    explore: `Explorer`, shopAll: `Tous les produits`, adhdBlog: `Blog TDAH`, connect: `Contact`,
+    explore: `Explorer`, shopAll: `Tous les produits`, adhdBlog: `Blog TDAH`,
+    about: `À propos`, contact: `Contact`, connect: `Contact`,
     rights: `© 2026 bloom focus. Tous droits réservés.`,
   },
   es: {
     navApp: `App`, navTest: `Test TDAH`, navShop: `Tienda`, navBlog: `Blog`, shopNow: `Comprar ✨`,
     tagline: `Herramientas de planificación para cerebros con TDAH. Cálidas, suaves y de verdad útiles.`,
-    explore: `Explorar`, shopAll: `Todos los productos`, adhdBlog: `Blog TDAH`, connect: `Contacto`,
+    explore: `Explorar`, shopAll: `Todos los productos`, adhdBlog: `Blog TDAH`,
+    about: `Acerca de`, contact: `Contacto`, connect: `Contacto`,
     rights: `© 2026 bloom focus. Todos los derechos reservados.`,
   },
 }

@@ -127,12 +127,12 @@ export default function Navbar() {
           <LangDropdown />
           <DownloadAppButton />
           <Link href={shopPath} style={{
-            textDecoration: 'none', background: '#B8A4E8', color: 'white',
+            textDecoration: 'none', background: '#7B5FCC', color: 'white',
             padding: '9px 20px', borderRadius: 100, fontSize: 13, fontWeight: 600,
             transition: 'all 0.2s',
           }}
             onMouseEnter={e => { e.currentTarget.style.background = '#a08fd6'; e.currentTarget.style.transform = 'translateY(-1px)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#B8A4E8'; e.currentTarget.style.transform = 'translateY(0)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#7B5FCC'; e.currentTarget.style.transform = 'translateY(0)' }}
           >
             {c.shopNow}
           </Link>
@@ -155,7 +155,7 @@ export default function Navbar() {
           <DownloadAppButton variant="block" />
           <LangDropdown mobile />
           <Link href={shopPath} onClick={() => setOpen(false)} style={{
-            textDecoration: 'none', background: '#B8A4E8', color: 'white',
+            textDecoration: 'none', background: '#7B5FCC', color: 'white',
             padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, textAlign: 'center',
           }}>
             {c.shopNow}

@@ -4,6 +4,7 @@ export const runtime = 'edge'
 export const size = ogSize
 export const contentType = ogContentType
 
-export default function ArticleOgImage({ params }: { params: { slug: string } }) {
+// Without this file the article pages fall back to the site-wide Twitter image.
+export default function ArticleTwitterImage({ params }: { params: { slug: string } }) {
   return renderArticleOgImage(params.slug, 'en')
 }

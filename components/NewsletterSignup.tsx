@@ -41,7 +41,7 @@ export default function NewsletterSignup({ compact = false, lang = 'en' as Lang 
                 placeholder={t.emailPlaceholder}
                 style={{ flex: '1 1 160px', minWidth: 0, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 8, padding: '9px 12px', fontSize: 13, color: '#FEFCFA', outline: 'none', fontFamily: "'DM Sans', sans-serif" }}
               />
-              <button onClick={submit} disabled={status === 'loading'} style={{ background: '#B8A4E8', color: 'white', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 13, fontWeight: 600, cursor: status === 'loading' ? 'default' : 'pointer', whiteSpace: 'nowrap' }}>
+              <button onClick={submit} disabled={status === 'loading'} style={{ background: '#7B5FCC', color: 'white', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 13, fontWeight: 600, cursor: status === 'loading' ? 'default' : 'pointer', whiteSpace: 'nowrap' }}>
                 {status === 'loading' ? '…' : t.subscribe}
               </button>
             </div>

@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import NewsletterSignup from './NewsletterSignup'
+import CookieSettingsLink from './CookieSettingsLink'
 import { chrome, langFromPath } from '@/lib/i18n'
 
 export default function Footer() {
@@ -29,6 +30,9 @@ export default function Footer() {
             {[
               { href: lang === 'en' ? '/shop' : `/${lang}/shop`, label: c.shopAll },
               { href: lang === 'en' ? '/blog' : `/${lang}/blog`, label: c.adhdBlog },
+              // About/Contact exist as English pages only, so they are not locale-prefixed.
+              { href: '/about', label: c.about },
+              { href: '/contact', label: c.contact },
             ].map(l => (
               <div key={l.href} style={{ marginBottom: 10 }}>
                 <Link href={l.href} style={{ textDecoration: 'none', fontSize: 14, color: '#FEFCFA', opacity: 0.8 }}>{l.label}</Link>
@@ -39,7 +43,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <div style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 16 }}>{c.connect}</div>
-            <div style={{ fontSize: 14, color: '#FEFCFA', opacity: 0.8, marginBottom: 10 }}>hello.bloomfocus@gmail.com</div>
+            <a href="mailto:hello.bloomfocus@gmail.com" style={{ display: 'block', fontSize: 14, color: '#FEFCFA', opacity: 0.8, marginBottom: 10, textDecoration: 'none', wordBreak: 'break-word' }}>hello.bloomfocus@gmail.com</a>
             <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
               {[
                 { label: 'Etsy', href: 'https://bloomfocusshop.etsy.com' },
@@ -62,6 +66,7 @@ export default function Footer() {
           <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
             <Link href="/privacy" style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>Privacy</Link>
             <Link href="/terms" style={{ textDecoration: 'none', fontSize: 12, color: '#9B8F88' }}>Terms</Link>
+            <CookieSettingsLink />
             <div style={{ height: 3, width: 120, background: 'linear-gradient(90deg, #B8A4E8, #FFBFA8, #B8D4B8)', borderRadius: 100 }} />
           </div>
         </div>

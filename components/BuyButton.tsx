@@ -243,7 +243,7 @@ export default function BuyButton({ productSlug, productTitle, priceUsd, lang = 
               onClick={handleBuy}
               disabled={loading}
               style={{
-                width: '100%', background: loading ? '#D4C5F9' : '#B8A4E8', color: 'white',
+                width: '100%', background: loading ? '#D4C5F9' : '#7B5FCC', color: 'white',
                 border: 'none', borderRadius: 100, padding: '14px', fontSize: 15,
                 fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s',

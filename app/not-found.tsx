@@ -37,7 +37,7 @@ export default function NotFound() {
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 28, color: '#2D2926', marginBottom: 12 }}>{t.title}</h1>
         <p style={{ fontSize: 14, color: '#6B5F58', lineHeight: 1.6, marginBottom: 28 }}>{t.text}</p>
         <Link href={lang === 'en' ? '/' : `/${lang}`} style={{
-          textDecoration: 'none', background: '#B8A4E8', color: 'white',
+          textDecoration: 'none', background: '#7B5FCC', color: 'white',
           padding: '12px 24px', borderRadius: 100, fontSize: 14, fontWeight: 600, display: 'inline-block',
         }}>
           {t.home}
