@@ -130,8 +130,10 @@ function Block({ block, lang }: { block: ArticleBlock; lang: Lang }) {
     case 'ul':
     case 'ol': {
       const List = block.type === 'ul' ? 'ul' : 'ol'
+      // listStyleType is explicit because Tailwind's preflight sets
+      // `ol,ul{list-style:none}` — without it the markers disappear.
       return (
-        <List style={{ fontSize: 16, color: '#2D2926', lineHeight: 1.85, marginBottom: 24, paddingLeft: 26 }}>
+        <List style={{ fontSize: 16, color: '#2D2926', lineHeight: 1.85, marginBottom: 24, paddingLeft: 26, listStyleType: block.type === 'ul' ? 'disc' : 'decimal' }}>
           {block.items.map((item, i) => (
             <li key={i} style={{ marginBottom: 8 }}>
               <RichText text={item} lang={lang} />

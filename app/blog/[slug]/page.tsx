@@ -57,6 +57,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     dateModified: new Date(article.date).toISOString(),
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://bloomfocus.org/blog/${params.slug}` },
     url: `https://bloomfocus.org/blog/${params.slug}`,
+    // Article schema wants an image; point at this locale's generated
+    // Open Graph card so the rich result has one.
+    image: {
+      '@type': 'ImageObject',
+      url: `https://bloomfocus.org/blog/${params.slug}/opengraph-image`,
+      width: 1200,
+      height: 630,
+    },
     inLanguage: servedLanguage(params.slug, 'en'),
   } : null
 

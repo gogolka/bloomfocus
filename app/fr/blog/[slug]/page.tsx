@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
-import { blogTitle, blogExcerpt, articleAlternateLanguages, servedLanguage } from '@/lib/articles-i18n'
+import { blogTitle, blogExcerpt, articleAlternateLanguages, servedLanguage, hasTranslation } from '@/lib/articles-i18n'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const article = articles.find(a => a.slug === params.slug)
@@ -20,6 +20,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: { title, description, type: 'article', publishedTime: new Date(article.date).toISOString() },
     // Without this the root layout's site-wide card is inherited on every article.
     twitter: { card: 'summary_large_image', title, description },
+    // An article with no translation still renders here, but it serves the
+    // English body under a localized URL. Keep it reachable and crawlable,
+    // just not indexable as a separate page — otherwise it competes with the
+    // English original as duplicate content. follow stays on so the links out
+    // of it are still discovered. Same source of truth as sitemap and hreflang:
+    // add a real translation and the page becomes indexable automatically.
+    robots: hasTranslation(params.slug, 'fr') ? undefined : { index: false, follow: true },
   }
 }
 
@@ -42,6 +49,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     dateModified: new Date(article.date).toISOString(),
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://bloomfocus.org/fr/blog/${params.slug}` },
     url: `https://bloomfocus.org/fr/blog/${params.slug}`,
+    // Article schema wants an image; point at this locale's generated
+    // Open Graph card so the rich result has one.
+    image: {
+      '@type': 'ImageObject',
+      url: `https://bloomfocus.org/fr/blog/${params.slug}/opengraph-image`,
+      width: 1200,
+      height: 630,
+    },
     inLanguage: servedLanguage(params.slug, 'fr'),
   } : null
 
