@@ -25,9 +25,9 @@ const ACTION_META = [
 ]
 // Blog previews link to the English articles for now (blog is translated later).
 const blogPreviews = [
-  { slug: 'why-adhd-brains-struggle-with-planning', title: 'Why ADHD Brains Struggle with Planning (And What Actually Helps)', date: 'June 2026', tag: 'Understanding ADHD' },
-  { slug: 'dopamine-menu-guide', title: 'What Is a Dopamine Menu and How to Make One That Works', date: 'June 2026', tag: 'Tools & Tips' },
-  { slug: 'time-blindness-adhd', title: 'Time Blindness: Why You Can\'t Feel Time Passing', date: 'June 2026', tag: 'Understanding ADHD' },
+  { slug: 'why-adhd-brains-struggle-with-planning', title: 'Why ADHD Brains Struggle with Planning (And What Actually Helps)', date: 'June 2026', tag: 'Focus & Executive Function' },
+  { slug: 'dopamine-menu-guide', title: 'What Is a Dopamine Menu and How to Make One That Works', date: 'June 2026', tag: 'Tools & Systems' },
+  { slug: 'time-blindness-adhd', title: 'Time Blindness: Why You Can\'t Feel Time Passing', date: 'June 2026', tag: 'Focus & Executive Function' },
 ]
 
 export default function HomeContent({ lang }: { lang: Lang }) {

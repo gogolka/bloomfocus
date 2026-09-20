@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 import { publishedArticles } from '@/lib/articles'
 import { translatedLocales } from '@/lib/articles-i18n'
+import { publishedArticlesInTopic } from '@/lib/articles'
+import { topics, MIN_ARTICLES_FOR_INDEXING } from '@/lib/topics'
 
 const BASE = 'https://bloomfocus.org'
 const LOCALES = ['en', 'de', 'fr', 'es'] as const
@@ -68,6 +70,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   })
 
+  // Topic hubs, English-only for now. A hub below the indexing threshold is
+  // marked noindex, so listing it here would advertise a page we are asking
+  // search engines to skip.
+  const topicEntries: MetadataRoute.Sitemap = topics
+    .filter(t => publishedArticlesInTopic(t.slug).length >= MIN_ARTICLES_FOR_INDEXING)
+    .map(t => ({
+      url: `${BASE}/blog/topic/${t.slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
+
   // The Privacy Policy is translated, so it gets one entry per locale with
   // hreflang alternates. About/Contact/Terms are still English-only.
   const privacyEntries: MetadataRoute.Sitemap = LOCALES.map(locale => ({
@@ -84,5 +98,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ]
 
-  return [...staticEntries, ...blogEntries, ...privacyEntries, ...legalEntries]
+  return [...staticEntries, ...topicEntries, ...blogEntries, ...privacyEntries, ...legalEntries]
 }

@@ -48,12 +48,6 @@ export const blogChrome: Record<Lang, BlogChromeDict> = {
 }
 
 // English blog tag -> localized
-export const blogTagMap: Record<Lang, Record<string, string>> = {
-  en: {},
-  de: { 'Understanding ADHD': `ADHS verstehen`, 'Tools & Tips': `Tools & Tipps` },
-  fr: { 'Understanding ADHD': `Comprendre le TDAH`, 'Tools & Tips': `Outils & astuces` },
-  es: { 'Understanding ADHD': `Entender el TDAH`, 'Tools & Tips': `Herramientas y consejos` },
-}
 
 // Localized title + excerpt per slug (en comes from lib/articles).
 export const articleMeta: Record<string, Partial<Record<Lang, { title: string; excerpt: string }>>> = {
@@ -293,10 +287,7 @@ export function blogExcerpt(slug: string, lang: Lang, enExcerpt: string) {
   if (lang === 'en') return enExcerpt
   return articleMeta[slug]?.[lang]?.excerpt || enExcerpt
 }
-export function blogTag(enTag: string, lang: Lang) {
-  if (lang === 'en') return enTag
-  return blogTagMap[lang][enTag] || enTag
-}
+
 export function blogBody(slug: string, lang: Lang): ArticleBody {
   if (lang !== 'en') {
     const t = articleBody[slug]?.[lang]

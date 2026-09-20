@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { articles, relatedArticles } from '@/lib/articles'
+import { articles, relatedArticles, topicOf } from '@/lib/articles'
 import { articleFAQs } from '@/lib/article-faqs'
 import { articleSources } from '@/lib/article-sources'
 import type { Lang } from '@/lib/i18n'
-import { blogChrome, blogTitle, blogExcerpt, blogTag, blogBody, readTimeLabel } from '@/lib/articles-i18n'
+import { blogChrome, blogTitle, blogExcerpt, blogBody, readTimeLabel } from '@/lib/articles-i18n'
+import { topicLabel } from '@/lib/topics'
 import { toBlocks, type ArticleBlock } from '@/lib/article-blocks'
 import RichText from './RichText'
 
@@ -26,9 +27,20 @@ export default function BlogArticle({ lang, slug }: { lang: Lang; slug: string }
             {c.backToBlog}
           </Link>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
-            <div style={{ background: article.tagColor, borderRadius: 100, padding: '4px 14px', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: article.tagTextColor }}>
-              {blogTag(article.tag, lang)}
-            </div>
+            {(() => {
+              const topic = topicOf(article)
+              const pill = (
+                <div style={{ background: topic.color, borderRadius: 100, padding: '4px 14px', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: topic.textColor }}>
+                  {topicLabel(topic.slug, lang)}
+                </div>
+              )
+              // Hub pages are English-only for now, so only the English pill
+              // links out — sending a German reader to an English hub is worse
+              // than leaving the pill as a label.
+              return lang === 'en'
+                ? <Link href={`/blog/topic/${topic.slug}`} style={{ textDecoration: 'none' }}>{pill}</Link>
+                : pill
+            })()}
             <div style={{ fontSize: 13, color: '#9B8F88' }}>{article.date} · {readTimeLabel(lang, article.readTime)}</div>
           </div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 40px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 20 }}>

@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
 import { articles } from '@/lib/articles'
-import { blogTitle, blogTag } from '@/lib/articles-i18n'
+import { blogTitle } from '@/lib/articles-i18n'
+import { topicBySlug, topicLabel } from '@/lib/topics'
 import type { Lang } from '@/lib/i18n'
 
 export const ogSize = { width: 1200, height: 630 }
@@ -24,7 +25,8 @@ export function renderArticleOgImage(slug: string, lang: Lang) {
   const article = articles.find(a => a.slug === slug)
   const title = article ? blogTitle(slug, lang, article.title) : FALLBACK_TITLE[lang]
   const emoji = article?.emoji || '🧠'
-  const tag = article ? blogTag(article.tag, lang) : null
+  const topic = article ? topicBySlug(article.topic) : undefined
+  const tag = topic ? topicLabel(topic.slug, lang) : null
 
   return new ImageResponse(
     (
@@ -66,9 +68,9 @@ export function renderArticleOgImage(slug: string, lang: Lang) {
         {/* Tag pill */}
         {tag && (
           <div style={{
-            marginTop: 32, background: article?.tagColor || '#E8DEFF',
+            marginTop: 32, background: topic?.color || '#E8DEFF',
             borderRadius: 100, padding: '8px 24px',
-            fontSize: 16, color: article?.tagTextColor || '#7B5FCC',
+            fontSize: 16, color: topic?.textColor || '#5F46A0',
             letterSpacing: '0.08em', display: 'flex',
           }}>
             {tag}

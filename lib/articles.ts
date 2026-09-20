@@ -1,4 +1,5 @@
 import { isPublished } from '@/lib/publish-status'
+import { topicBySlug, type Topic, type TopicSlug } from '@/lib/topics'
 
 export const articles = [
   {
@@ -7,9 +8,7 @@ export const articles = [
     excerpt: 'Planning feels impossible — not because you\'re lazy, but because your brain is wired differently. Here\'s the science, and what you can do about it.',
     date: 'June 8, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🧠',
   },
   {
@@ -18,9 +17,7 @@ export const articles = [
     excerpt: 'A dopamine menu is one of the most effective ADHD tools — and it\'s surprisingly simple. Here\'s how to build yours.',
     date: 'June 8, 2026',
     readTime: '5 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#FFD6C4',
-    tagTextColor: '#E8956A',
+    topic: 'tools-and-systems',
     emoji: '🍬',
   },
   {
@@ -29,9 +26,7 @@ export const articles = [
     excerpt: 'Time blindness is one of the most misunderstood ADHD symptoms. It\'s not about being irresponsible — it\'s neurological.',
     date: 'June 8, 2026',
     readTime: '7 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '⏰',
   },
   {
@@ -40,9 +35,7 @@ export const articles = [
     excerpt: 'Most habit advice fails ADHD brains. Here\'s a gentler approach that works with how your brain actually functions.',
     date: 'June 8, 2026',
     readTime: '5 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#D4E8D4',
-    tagTextColor: '#5BA85B',
+    topic: 'tools-and-systems',
     emoji: '🌱',
   },
   {
@@ -51,9 +44,7 @@ export const articles = [
     excerpt: 'Wondering if you have ADHD? Here are the signs adults actually experience, how the inattentive and hyperactive types differ, and the steps to take if it resonates.',
     date: 'June 11, 2026',
     readTime: '7 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '🧠',
   },
   {
@@ -62,9 +53,7 @@ export const articles = [
     excerpt: 'You know exactly what to do, you want to do it, and you still can\'t move. That\'s ADHD paralysis. Here\'s why it happens and gentle ways to break the freeze.',
     date: 'June 11, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🧊',
   },
   {
@@ -73,9 +62,7 @@ export const articles = [
     excerpt: 'Most planners are built for neurotypical brains, which is why they collect dust by week two. Here\'s what an ADHD-friendly planner actually needs to have.',
     date: 'June 10, 2026',
     readTime: '6 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#FFD6C4',
-    tagTextColor: '#E8956A',
+    topic: 'tools-and-systems',
     emoji: '📔',
   },
   {
@@ -84,9 +71,7 @@ export const articles = [
     excerpt: 'ADHD in women is chronically underdiagnosed because it often looks like anxiety, perfectionism, or just being "scattered." Here are the signs that get overlooked.',
     date: 'June 10, 2026',
     readTime: '7 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '🌷',
   },
   {
@@ -95,9 +80,7 @@ export const articles = [
     excerpt: `If one small criticism can ruin your whole day, you're not too sensitive — you might be feeling RSD, one of the most painful and least-known parts of ADHD.`,
     date: `June 12, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `💔`,
   },
   {
@@ -106,9 +89,7 @@ export const articles = [
     excerpt: `Racing thoughts at midnight, a second wind right when you should sleep, mornings that feel impossible — ADHD and sleep struggles go hand in hand. Here's why, and what helps.`,
     date: `June 12, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'daily-life',
     emoji: `😴`,
   },
   {
@@ -117,9 +98,7 @@ export const articles = [
     excerpt: `Why is it so much easier to work when someone else is in the room? Body doubling turns that into a strategy — one of the most reliable ADHD focus tools there is.`,
     date: `June 13, 2026`,
     readTime: `6 min read`,
-    tag: `Tools & Tips`,
-    tagColor: `#D4E8D4`,
-    tagTextColor: `#5BA85B`,
+    topic: 'tools-and-systems',
     emoji: `👯`,
   },
   {
@@ -128,9 +107,7 @@ export const articles = [
     excerpt: `ADHD burnout isn't ordinary tiredness — it's the collapse that comes after months of masking and overcompensating. Here's how to spot it and gently recover.`,
     date: `June 13, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `🔋`,
   },
   {
@@ -139,9 +116,7 @@ export const articles = [
     excerpt: `If cleaning feels impossible until it becomes a crisis, you're not lazy — your brain just needs a different approach. Here's how to clean with an ADHD brain, step by gentle step.`,
     date: `June 14, 2026`,
     readTime: `6 min read`,
-    tag: `Tools & Tips`,
-    tagColor: `#FFD6C4`,
-    tagTextColor: `#E8956A`,
+    topic: 'daily-life',
     emoji: `🧹`,
   },
   {
@@ -150,9 +125,7 @@ export const articles = [
     excerpt: `When feelings arrive too fast, hit too hard, and last too long — that's not oversensitivity, that's ADHD. Here's the neurology behind it and what actually helps.`,
     date: `June 14, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `🌊`,
   },
   {
@@ -161,9 +134,7 @@ export const articles = [
     excerpt: `Hyperfocus is the paradoxical flip side of ADHD distractibility — hours of involuntary absorption you can't control. Here's why it happens and how to work with it.`,
     date: `June 14, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'focus-and-executive-function',
     emoji: `🔬`,
   },
   {
@@ -172,9 +143,7 @@ export const articles = [
     excerpt: `Executive dysfunction is the core of ADHD — not laziness, not bad will. Here's what happens in the brain and why some days are so much harder than others.`,
     date: `June 14, 2026`,
     readTime: `8 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'focus-and-executive-function',
     emoji: `🧠`,
   },
   {
@@ -183,9 +152,7 @@ export const articles = [
     excerpt: `ADHD and anxiety disorders co-occur in roughly half of adults with ADHD — but why? Here's the neurological link and how to tell what's causing what.`,
     date: `June 14, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'emotions-and-burnout',
     emoji: `💙`,
   },
   {
@@ -194,9 +161,7 @@ export const articles = [
     excerpt: `Many people with ADHD are extraordinarily sensitive to sounds, light, textures or crowds. It's not drama — it's neurology. Here's what's behind it.`,
     date: `June 14, 2026`,
     readTime: `7 min read`,
-    tag: `Understanding ADHD`,
-    tagColor: `#E8DEFF`,
-    tagTextColor: `#7B5FCC`,
+    topic: 'co-occurring-and-sensory',
     emoji: `✨`,
   },
   {
@@ -205,9 +170,7 @@ export const articles = [
     excerpt: `Late fees, forgotten subscriptions, replacing things you already own. The ADHD tax is real, it's expensive — and it's not a character flaw.`,
     date: 'July 6, 2026',
     readTime: '6 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#FFD6C4',
-    tagTextColor: '#C07A3E',
+    topic: 'daily-life',
     emoji: '💸',
   },
   {
@@ -216,9 +179,7 @@ export const articles = [
     excerpt: `One appointment in the afternoon, and the entire day is gone. If this sounds familiar, you're experiencing waiting mode — and no, you're not being dramatic.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '⏳',
   },
   {
@@ -227,9 +188,7 @@ export const articles = [
     excerpt: `That pile of stuff on the chair. The box of random things. The bag you haven't unpacked. Doom piles have a logic — and once you see it, you can work with it.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#FFD6C4',
-    tagTextColor: '#C07A3E',
+    topic: 'daily-life',
     emoji: '📦',
   },
   {
@@ -238,9 +197,7 @@ export const articles = [
     excerpt: `Food forgotten in the fridge. Friends you love but never text. Projects that vanish the moment you close the tab. Here's why — and what helps.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🫥',
   },
   {
@@ -249,9 +206,7 @@ export const articles = [
     excerpt: `You read the message. You meant to reply. It's been eleven days. The ADHD texting spiral, explained with zero judgment.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'daily-life',
     emoji: '📱',
   },
   {
@@ -260,9 +215,7 @@ export const articles = [
     excerpt: `School was easy, so nobody looked closer. Then life stopped being a classroom — and everything fell apart. This story is more common than you think.`,
     date: 'July 6, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '🎓',
   },
   {
@@ -271,9 +224,7 @@ export const articles = [
     excerpt: `Smiling through the chaos, mimicking "normal," apologizing constantly. Masking works — until the bill arrives. Here's what it costs and how to put it down.`,
     date: 'July 6, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'emotions-and-burnout',
     emoji: '🎭',
   },
   {
@@ -282,9 +233,7 @@ export const articles = [
     excerpt: `You're exhausted. You know tomorrow will hurt. And yet at 1 AM you're still scrolling — on purpose. There's a reason, and it's not lack of discipline.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'daily-life',
     emoji: '🌙',
   },
   {
@@ -293,9 +242,7 @@ export const articles = [
     excerpt: `The shower you avoided for hours and then didn't want to leave. The game you can't quit. The door you can't walk out of. It's all the same thing.`,
     date: 'July 6, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'focus-and-executive-function',
     emoji: '🚪',
   },
   {
@@ -304,9 +251,7 @@ export const articles = [
     excerpt: `The guitar. The yarn. The roller skates. The language app. You weren't flaky — your brain was doing exactly what it's built to do. A kinder way to look at the graveyard.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'daily-life',
     emoji: '🎨',
   },
   {
@@ -315,9 +260,7 @@ export const articles = [
     excerpt: `Skipping meals without noticing, then inhaling snacks at midnight. Eating the same meal for weeks. Cooking feeling impossible. None of this is a willpower problem.`,
     date: 'July 6, 2026',
     readTime: '6 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#FFD6C4',
-    tagTextColor: '#C07A3E',
+    topic: 'daily-life',
     emoji: '🍜',
   },
   {
@@ -326,9 +269,7 @@ export const articles = [
     excerpt: `Forty minutes of scrolling the menu, then you rewatch the same show anyway. Decisions drain ADHD brains faster — here's how to spend fewer of them.`,
     date: 'July 6, 2026',
     readTime: '5 min read',
-    tag: 'Tools & Tips',
-    tagColor: '#FFD6C4',
-    tagTextColor: '#C07A3E',
+    topic: 'focus-and-executive-function',
     emoji: '🤯',
   },
   {
@@ -337,9 +278,7 @@ export const articles = [
     excerpt: 'What is ADHD, really? A straightforward look at what\'s actually going on in the brain — no jargon, no stereotypes, no shame.',
     date: 'September 19, 2026',
     readTime: '9 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🧠',
   },
   {
@@ -348,9 +287,7 @@ export const articles = [
     excerpt: 'ADHD symptoms rarely look like the textbook description. Here\'s what they actually look like in real life — in adults, not just kids.',
     date: 'September 21, 2026',
     readTime: '7 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🔍',
   },
   {
@@ -359,9 +296,7 @@ export const articles = [
     excerpt: 'What actually happens during an ADHD diagnosis or assessment — who does it, how long it takes, and what to expect at each step.',
     date: 'September 23, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '📋',
   },
   {
@@ -370,9 +305,7 @@ export const articles = [
     excerpt: 'A clear, non-clinical overview of how ADHD medication works and the main types available — not a substitute for medical advice.',
     date: 'September 25, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '💊',
   },
   {
@@ -381,9 +314,7 @@ export const articles = [
     excerpt: 'ADHD and autism overlap far more often than people realize. Here\'s what AuDHD actually looks like, and why it\'s so easy to miss.',
     date: 'September 27, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'co-occurring-and-sensory',
     emoji: '🔗',
   },
   {
@@ -392,9 +323,7 @@ export const articles = [
     excerpt: 'Adult ADHD rarely looks like the childhood version. Here\'s what it actually looks like once you\'re the one paying the bills and running your own life.',
     date: 'September 29, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '💼',
   },
   {
@@ -403,9 +332,7 @@ export const articles = [
     excerpt: 'Inattentive, hyperactive-impulsive, or combined — the three types of ADHD look genuinely different. Here\'s how to tell which fits you.',
     date: 'October 1, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🧩',
   },
   {
@@ -414,9 +341,7 @@ export const articles = [
     excerpt: 'Is ADHD curable? Not in the way people usually mean by that question — and understanding why actually changes what "getting better" looks like.',
     date: 'October 3, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '🔍',
   },
   {
@@ -425,9 +350,7 @@ export const articles = [
     excerpt: 'Is ADHD hereditary or genetic? Yes, more than almost any other condition of its kind — here\'s what that actually means for families.',
     date: 'October 5, 2026',
     readTime: '5 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🧬',
   },
   {
@@ -436,9 +359,7 @@ export const articles = [
     excerpt: 'What ADHD in children actually looks like beyond the "can\'t sit still" stereotype, and practical ways parents and teachers can help.',
     date: 'October 7, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'who-has-adhd',
     emoji: '🎒',
   },
   {
@@ -447,9 +368,7 @@ export const articles = [
     excerpt: 'High-functioning ADHD isn\'t a clinical category — it\'s a survival strategy. Here\'s what it actually costs, and why it often gets missed for years.',
     date: 'October 9, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'adhd-basics',
     emoji: '🎭',
   },
   {
@@ -458,9 +377,7 @@ export const articles = [
     excerpt: 'ADHD and OCD can look surprisingly similar from the outside, and sometimes show up in the same person. Here\'s how to tell them apart.',
     date: 'October 11, 2026',
     readTime: '6 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'co-occurring-and-sensory',
     emoji: '🔁',
   },
   {
@@ -469,9 +386,7 @@ export const articles = [
     excerpt: 'Right to Choose can shorten an ADHD assessment wait in the UK — but 2026 demand has changed what to actually expect. Here\'s the current picture.',
     date: 'October 13, 2026',
     readTime: '7 min read',
-    tag: 'Understanding ADHD',
-    tagColor: '#E8DEFF',
-    tagTextColor: '#7B5FCC',
+    topic: 'diagnosis-and-treatment',
     emoji: '🇬🇧',
   },
 ]
@@ -514,44 +429,99 @@ export function isArticleHrefPublished(href: string, now: number = Date.now()): 
 }
 
 /**
+ * The topic an article belongs to.
+ *
+ * Throws on an unknown slug rather than falling back. This is a developer typo,
+ * not content data — unlike an unparseable publish date, silently degrading
+ * here would hide a broken hub link behind a plausible-looking page.
+ */
+export function topicOf(article: Article): Topic {
+  const topic = topicBySlug(article.topic)
+  if (!topic) throw new Error(`Unknown topic "${article.topic}" on article "${article.slug}"`)
+  return topic
+}
+
+/** Published articles in a topic, in catalogue order. */
+export function publishedArticlesInTopic(topicSlug: TopicSlug | string, now: number = Date.now()): Article[] {
+  return publishedArticles(now).filter(a => a.topic === topicSlug)
+}
+
+/**
  * Related articles for the bottom of an article page.
  *
- * Same-tag articles first, topped up from the other tags when a tag has fewer
- * than `count` siblings.
+ * Same-topic first, topped up from other topics. Two properties matter and pull
+ * against each other: suggestions should be topically relevant, and every
+ * article should receive a roughly equal number of inbound links so none is
+ * orphaned.
  *
- * Within each pool the starting point rotates by the article's position *within
- * its own tag* (not its index in the full list, which bunches up once the list
- * is filtered). That keeps the even inbound-link distribution the previous
- * index-adjacency logic was built for — every article is currently linked from
- * exactly three others, no orphans — while making the picks topical.
+ * Splitting the old two tags into eight topics broke the plain rotation that
+ * used to balance this: small topics all started their fallback at the same
+ * point in the same list, so three articles ended up with no inbound links at
+ * all while others collected eight. Same-topic picks still rotate, but the
+ * fallback now goes to whichever eligible article currently has the fewest
+ * inbound links, with catalogue order as the tie-break. That restores the
+ * balance (2-4 inbound each, no orphans) and keeps 86% of suggestions on topic.
+ *
+ * The whole assignment is computed at once because a single article's fallback
+ * depends on what every other article has already taken. It is deterministic,
+ * so every page and every build agrees.
  */
-export function relatedArticles(slug: string, count = 3): Article[] {
-  const current = articles.find(a => a.slug === slug)
-  if (!current) return []
+function buildRelatedMap(live: Article[], count: number): Map<string, Article[]> {
+  const inbound = new Map(live.map(a => [a.slug, 0]))
+  const bump = (slug: string) => inbound.set(slug, (inbound.get(slug) ?? 0) + 1)
+  const order = new Map(articles.map((a, i) => [a.slug, i]))
+  const result = new Map<string, Article[]>()
 
-  // Suggest only live articles. `current` itself is looked up in the full list,
-  // so an unpublished article reached by direct URL still gets suggestions.
-  const live = publishedArticles()
-  const tagPeers = live.filter(a => a.tag === current.tag)
+  for (const current of live) {
+    const peers = live.filter(a => a.topic === current.topic)
+    const pos = Math.max(0, peers.findIndex(a => a.slug === current.slug))
+    const sameTopic = peers.filter(a => a.slug !== current.slug)
+    const picked: Article[] = []
+    if (sameTopic.length) {
+      const start = pos % sameTopic.length
+      for (let i = 0; i < sameTopic.length && picked.length < count; i++) {
+        picked.push(sameTopic[(start + i) % sameTopic.length])
+      }
+    }
+    picked.forEach(p => bump(p.slug))
+    result.set(current.slug, picked)
+  }
 
-  // An unpublished article is absent from `live`, so findIndex returns -1 —
-  // which would make the rotation below read pool[-1] and crash. Fall back to
-  // its position among all same-tag articles, which is always >= 0.
-  const livePos = tagPeers.findIndex(a => a.slug === slug)
-  const posInTag = livePos >= 0
-    ? livePos
-    : articles.filter(a => a.tag === current.tag).findIndex(a => a.slug === slug)
-
-  const sameTag = tagPeers.filter(a => a.slug !== slug)
-  const otherTags = live.filter(a => a.slug !== slug && a.tag !== current.tag)
-
-  const picked: Article[] = []
-  for (const pool of [sameTag, otherTags]) {
-    if (picked.length >= count || pool.length === 0) continue
-    const start = posInTag % pool.length
-    for (let i = 0; i < pool.length && picked.length < count; i++) {
-      picked.push(pool[(start + i) % pool.length])
+  for (const current of live) {
+    const picked = result.get(current.slug)!
+    while (picked.length < count) {
+      const taken = new Set(picked.map(p => p.slug))
+      const candidates = live.filter(a =>
+        a.slug !== current.slug && a.topic !== current.topic && !taken.has(a.slug))
+      if (!candidates.length) break
+      candidates.sort((x, y) =>
+        (inbound.get(x.slug)! - inbound.get(y.slug)!) ||
+        (order.get(x.slug)! - order.get(y.slug)!))
+      picked.push(candidates[0])
+      bump(candidates[0].slug)
     }
   }
-  return picked.slice(0, count)
+  return result
+}
+
+let relatedCache: { key: string; count: number; map: Map<string, Article[]> } | null = null
+
+export function relatedArticles(slug: string, count = 3): Article[] {
+  const live = publishedArticles()
+  // The assignment depends only on which articles are live, so it is rebuilt
+  // when the publishing schedule moves and reused across pages otherwise.
+  const key = live.map(a => a.slug).join(',')
+  if (!relatedCache || relatedCache.key !== key || relatedCache.count !== count) {
+    relatedCache = { key, count, map: buildRelatedMap(live, count) }
+  }
+  const hit = relatedCache.map.get(slug)
+  if (hit) return hit
+
+  // An unpublished article reached by direct URL is not in the assignment;
+  // give it same-topic-first suggestions without disturbing the balance.
+  const current = articles.find(a => a.slug === slug)
+  if (!current) return []
+  const sameTopic = live.filter(a => a.topic === current.topic)
+  const others = live.filter(a => a.topic !== current.topic)
+  return [...sameTopic, ...others].slice(0, count)
 }
