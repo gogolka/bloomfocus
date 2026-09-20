@@ -3,6 +3,10 @@
     {
       "path": "/api/subscription-charge",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/revalidate-scheduled",
+      "schedule": "5 0 * * *"
     }
   ]
 }

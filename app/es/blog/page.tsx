@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   },
 }
 
+// ISR: re-evaluate the publish gate without a redeploy. See lib/publish-status.
+export const revalidate = 3600
+
 export default function BlogListPage() {
   return <BlogList lang="es" />
 }

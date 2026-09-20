@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { articles } from '@/lib/articles'
+import { publishedArticles } from '@/lib/articles'
 import { translatedLocales } from '@/lib/articles-i18n'
 
 const BASE = 'https://bloomfocus.org'
@@ -18,6 +18,9 @@ function altLanguages(path: string): Record<string, string> {
   langs['x-default'] = urlFor('en', path)
   return langs
 }
+
+// ISR: re-evaluate the publish gate without a redeploy. See lib/publish-status.
+export const revalidate = 3600
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
@@ -44,7 +47,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // falls back to English text is still reachable directly, but listing it here
   // — or naming it in hreflang — would tell Google we publish the same article
   // four times in four languages when we publish it once.
-  const blogEntries: MetadataRoute.Sitemap = articles.flatMap(article => {
+  // Unpublished articles are absent entirely — never advertise a page that is
+  // deliberately not live yet.
+  const blogEntries: MetadataRoute.Sitemap = publishedArticles().flatMap(article => {
     const articleDate = new Date(article.date)
     const path = `/blog/${article.slug}`
     const locales = translatedLocales(article.slug)

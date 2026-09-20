@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
 import { articleAlternateLanguages, servedLanguage } from '@/lib/articles-i18n'
+import { isPublished, NOINDEX_FOLLOW } from '@/lib/publish-status'
 import { articleFAQs } from '@/lib/article-faqs'
 import { inlineToPlainText } from '@/lib/article-blocks'
 
@@ -22,8 +23,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     // `images` is omitted on purpose: Next.js then reuses the generated
     // opengraph-image for the Twitter card too, so there is one source of truth.
     twitter: { card: 'summary_large_image', title: article.title, description: article.excerpt },
+    // Scheduled but not yet due: reachable by direct URL, but kept out of the
+    // index until its date so it cannot rank before it is meant to exist.
+    robots: isPublished(article.date) ? undefined : NOINDEX_FOLLOW,
   }
 }
+
+// ISR: re-evaluate the publish gate without a redeploy. See lib/publish-status.
+export const revalidate = 3600
 
 export function generateStaticParams() {
   return articles.map(a => ({ slug: a.slug }))

@@ -1,11 +1,13 @@
 import Link from 'next/link'
-import { articles } from '@/lib/articles'
+import { publishedArticles } from '@/lib/articles'
 import type { Lang } from '@/lib/i18n'
 import { blogChrome, blogTitle, blogExcerpt, blogTag, readTimeLabel } from '@/lib/articles-i18n'
 
 export default function BlogList({ lang }: { lang: Lang }) {
   const c = blogChrome[lang]
   const base = lang === 'en' ? '' : `/${lang}`
+  // Future-dated articles are withheld until their date; see lib/publish-status.
+  const articles = publishedArticles()
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>

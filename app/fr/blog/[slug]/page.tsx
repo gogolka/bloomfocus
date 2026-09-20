@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import BlogArticle from '@/components/BlogArticle'
 import { articles } from '@/lib/articles'
 import { blogTitle, blogExcerpt, articleAlternateLanguages, servedLanguage, hasTranslation } from '@/lib/articles-i18n'
+import { isPublished, NOINDEX_FOLLOW } from '@/lib/publish-status'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const article = articles.find(a => a.slug === params.slug)
@@ -26,9 +27,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     // English original as duplicate content. follow stays on so the links out
     // of it are still discovered. Same source of truth as sitemap and hreflang:
     // add a real translation and the page becomes indexable automatically.
-    robots: hasTranslation(params.slug, 'fr') ? undefined : { index: false, follow: true },
+    // Two independent reasons to withhold indexing: no translation for this
+    // locale, or the article's publish date has not arrived yet.
+    robots: hasTranslation(params.slug, 'fr') && isPublished(article.date)
+      ? undefined
+      : NOINDEX_FOLLOW,
   }
 }
+
+// ISR: re-evaluate the publish gate without a redeploy. See lib/publish-status.
+export const revalidate = 3600
 
 export function generateStaticParams() {
   return articles.map(a => ({ slug: a.slug }))

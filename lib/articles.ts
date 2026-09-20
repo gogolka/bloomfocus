@@ -1,3 +1,5 @@
+import { isPublished } from '@/lib/publish-status'
+
 export const articles = [
   {
     slug: 'why-adhd-brains-struggle-with-planning',
@@ -477,6 +479,17 @@ export const articles = [
 export type Article = (typeof articles)[number]
 
 /**
+ * The articles visible to the public right now, in the original order.
+ *
+ * Every listing meant for visitors or crawlers — the blog index, the sitemap,
+ * related articles — goes through this instead of reading `articles` directly,
+ * so a future listing cannot forget the publish check.
+ */
+export function publishedArticles(now: number = Date.now()): Article[] {
+  return articles.filter(a => isPublished(a.date, now))
+}
+
+/**
  * Related articles for the bottom of an article page.
  *
  * Same-tag articles first, topped up from the other tags when a tag has fewer
@@ -492,11 +505,21 @@ export function relatedArticles(slug: string, count = 3): Article[] {
   const current = articles.find(a => a.slug === slug)
   if (!current) return []
 
-  const tagPeers = articles.filter(a => a.tag === current.tag)
-  const posInTag = tagPeers.findIndex(a => a.slug === slug)
+  // Suggest only live articles. `current` itself is looked up in the full list,
+  // so an unpublished article reached by direct URL still gets suggestions.
+  const live = publishedArticles()
+  const tagPeers = live.filter(a => a.tag === current.tag)
+
+  // An unpublished article is absent from `live`, so findIndex returns -1 —
+  // which would make the rotation below read pool[-1] and crash. Fall back to
+  // its position among all same-tag articles, which is always >= 0.
+  const livePos = tagPeers.findIndex(a => a.slug === slug)
+  const posInTag = livePos >= 0
+    ? livePos
+    : articles.filter(a => a.tag === current.tag).findIndex(a => a.slug === slug)
 
   const sameTag = tagPeers.filter(a => a.slug !== slug)
-  const otherTags = articles.filter(a => a.slug !== slug && a.tag !== current.tag)
+  const otherTags = live.filter(a => a.slug !== slug && a.tag !== current.tag)
 
   const picked: Article[] = []
   for (const pool of [sameTag, otherTags]) {
