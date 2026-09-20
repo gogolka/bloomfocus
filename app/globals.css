@@ -8,7 +8,7 @@
   --warm-white: #FEFCFA;
   --lavender: #E8DEFF;
   --lavender-mid: #D4C5F9;
-  --lavender-deep: #B8A4E8;   /* decorative only — 2.2:1 on white, never use behind white text */
+  --lavender-deep: #B8A4E8;   /* decorative only — 2.1:1 on cream, never behind white text or as text on a light surface */
   --lavender-dark: #7B5FCC;   /* CTA background — 4.83:1 on white, WCAG AA */
   --lavender-darker: #6E51BD; /* CTA hover — 5.87:1 on white */
   --peach: #FFD6C4;

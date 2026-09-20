@@ -41,7 +41,7 @@ export default function AdminDashboard({ stats }: { stats: Stats }) {
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
           <div style={{ fontFamily: 'Georgia, serif', fontSize: 28, color: C.text }}>
-            bloom <em style={{ color: '#B8A4E8' }}>focus</em>
+            bloom <em style={{ color: '#7B5FCC' }}>focus</em>
             <span style={{ fontSize: 16, color: C.soft, marginLeft: 10 }}>admin</span>
           </div>
           <div style={{ fontSize: 13, color: C.soft, marginTop: 4 }}>Overview · live data from Supabase</div>

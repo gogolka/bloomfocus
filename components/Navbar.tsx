@@ -107,7 +107,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href={LANG_PATH[cur]} style={{ textDecoration: 'none' }}>
           <span style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', letterSpacing: '-0.5px' }}>
-            bloom <em style={{ color: '#B8A4E8' }}>focus</em>
+            bloom <em style={{ color: '#7B5FCC' }}>focus</em>
           </span>
         </Link>
 

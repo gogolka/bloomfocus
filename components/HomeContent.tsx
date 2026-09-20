@@ -58,11 +58,11 @@ export default function HomeContent({ lang }: { lang: Lang }) {
         </div>
 
         <div style={{ position: 'relative', maxWidth: 680, margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#D4C5F9', border: '1.5px solid #B8A4E8', borderRadius: 100, padding: '5px 16px', fontSize: 11, letterSpacing: '0.18em', color: '#7B5FCC', fontWeight: 700, textTransform: 'uppercase', marginBottom: 28 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#D4C5F9', border: '1.5px solid #B8A4E8', borderRadius: 100, padding: '5px 16px', fontSize: 11, letterSpacing: '0.18em', color: '#5F46A0', fontWeight: 700, textTransform: 'uppercase', marginBottom: 28 }}>
             {t.badge}
           </div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(36px, 6vw, 64px)', color: '#2D2926', lineHeight: 1.1, letterSpacing: '-1.5px', marginBottom: 20 }}>
-            {t.heroPre}<em style={{ color: '#B8A4E8' }}>{t.heroEm}</em>
+            {t.heroPre}<em style={{ color: '#7B5FCC' }}>{t.heroEm}</em>
           </h1>
           <p style={{ fontSize: 17, color: '#6B5F58', lineHeight: 1.7, maxWidth: 500, margin: '0 auto 36px' }}>
             {t.heroSub}
@@ -90,7 +90,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.painEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926', lineHeight: 1.2 }}>
-              {t.painPre}<em style={{ color: '#B8A4E8' }}>{t.painEm}</em>
+              {t.painPre}<em style={{ color: '#7B5FCC' }}>{t.painEm}</em>
             </h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
@@ -115,7 +115,7 @@ export default function HomeContent({ lang }: { lang: Lang }) {
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.productsEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
-              {t.productsPre}<em style={{ color: '#B8A4E8' }}>{t.productsEm}</em>
+              {t.productsPre}<em style={{ color: '#7B5FCC' }}>{t.productsEm}</em>
             </h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
@@ -143,13 +143,13 @@ export default function HomeContent({ lang }: { lang: Lang }) {
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{t.howEyebrow}</div>
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 38px)', color: '#2D2926' }}>
-              {t.howPre}<em style={{ color: '#B8A4E8' }}>{t.howEm}</em>
+              {t.howPre}<em style={{ color: '#7B5FCC' }}>{t.howEm}</em>
             </h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
             {t.steps.map((s, i) => (
               <div key={i} style={{ background: STEP_META[i].color, borderRadius: 20, padding: '28px 24px' }}>
-                <div style={{ fontFamily: 'Georgia, serif', fontSize: 40, color: 'rgba(45,41,38,0.15)', marginBottom: 16 }}>{STEP_META[i].num}</div>
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 40, color: 'rgba(45,41,38,0.6)', marginBottom: 16 }}>{STEP_META[i].num}</div>
                 <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#2D2926', marginBottom: 10 }}>{s.title}</h3>
                 <p style={{ fontSize: 14, color: '#6B5F58', lineHeight: 1.6 }}>{s.desc}</p>
               </div>
@@ -223,9 +223,9 @@ export default function HomeContent({ lang }: { lang: Lang }) {
         <div className="reveal" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40, flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9B8F88', marginBottom: 8 }}>{t.blogEyebrow}</div>
+              <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 8 }}>{t.blogEyebrow}</div>
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(22px, 3vw, 32px)', color: '#2D2926' }}>
-                {t.blogPre}<em style={{ color: '#B8A4E8' }}>{t.blogEm}</em>
+                {t.blogPre}<em style={{ color: '#7B5FCC' }}>{t.blogEm}</em>
               </h2>
             </div>
             <Link href={`${base}/blog`} style={{ textDecoration: 'none', fontSize: 13, color: '#6B5F58', fontWeight: 500 }}>{t.allArticles}</Link>
@@ -234,9 +234,9 @@ export default function HomeContent({ lang }: { lang: Lang }) {
             {blogPreviews.map((post, i) => (
               <Link key={i} href={`${base}/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
                 <div className="hover-card-sm" style={{ background: '#FEFCFA', border: '1px solid rgba(45,41,38,0.08)', borderRadius: 20, padding: '28px 24px', height: '100%' }}>
-                  <div style={{ background: '#E8DEFF', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7B5FCC', display: 'inline-block', marginBottom: 16 }}>{post.tag}</div>
+                  <div style={{ background: '#E8DEFF', borderRadius: 100, padding: '3px 12px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#5F46A0', display: 'inline-block', marginBottom: 16 }}>{post.tag}</div>
                   <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 17, color: '#2D2926', lineHeight: 1.4, marginBottom: 12 }}>{post.title}</h3>
-                  <div style={{ fontSize: 12, color: '#9B8F88' }}>{post.date}</div>
+                  <div style={{ fontSize: 12, color: '#776B64' }}>{post.date}</div>
                 </div>
               </Link>
             ))}

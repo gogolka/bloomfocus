@@ -68,7 +68,7 @@ export default function SuccessContent() {
             <div style={{ position: 'fixed', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,222,255,0.6) 0%, transparent 65%)', pointerEvents: 'none' }} />
             <div style={{ position: 'relative' }}>
               <div style={{ fontSize: 64, marginBottom: 20 }}>🎉</div>
-              <div style={{ background: '#D4C5F9', border: '1.5px solid #B8A4E8', borderRadius: 100, padding: '5px 16px', fontSize: 11, letterSpacing: '0.18em', color: '#7B5FCC', fontWeight: 700, textTransform: 'uppercase', display: 'inline-block', marginBottom: 20 }}>
+              <div style={{ background: '#D4C5F9', border: '1.5px solid #B8A4E8', borderRadius: 100, padding: '5px 16px', fontSize: 11, letterSpacing: '0.18em', color: '#5F46A0', fontWeight: 700, textTransform: 'uppercase', display: 'inline-block', marginBottom: 20 }}>
                 Payment successful
               </div>
               <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 32, color: '#2D2926', lineHeight: 1.2, marginBottom: 12 }}>

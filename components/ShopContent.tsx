@@ -30,7 +30,7 @@ export default async function ShopContent({ lang }: { lang: Lang }) {
         <div style={{ maxWidth: 600, margin: '0 auto', position: 'relative' }}>
           <div style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#776B64', marginBottom: 12 }}>{c.eyebrow}</div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 44px)', color: '#2D2926', lineHeight: 1.2, marginBottom: 16 }}>
-            {c.h1pre}<em style={{ color: '#B8A4E8' }}>{c.h1em}</em>
+            {c.h1pre}<em style={{ color: '#7B5FCC' }}>{c.h1em}</em>
           </h1>
           <p style={{ fontSize: 15, color: '#6B5F58', lineHeight: 1.7 }}>{c.sub}</p>
         </div>

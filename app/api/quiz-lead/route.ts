@@ -190,7 +190,7 @@ function resultEmail(lang: Lang, name: string, label: string, result: string) {
     <div style="max-width: 560px; margin: 0 auto; background: #FEFCFA; border-radius: 20px; padding: 40px; border: 1px solid rgba(45,41,38,0.08);">
       <div style="text-align:center; margin-bottom: 28px;">
         <div style="font-size: 40px; margin-bottom: 12px;">🧠</div>
-        <div style="font-size: 24px; color: #2D2926;">bloom <em style="color:#B8A4E8;">focus</em></div>
+        <div style="font-size: 24px; color: #2D2926;">bloom <em style="color:#7B5FCC;">focus</em></div>
       </div>
       <h1 style="font-size: 22px; color:#2D2926; margin-bottom: 10px;">${e.heading(label)}</h1>
       <p style="font-size: 15px; color:#6B5F58; line-height: 1.7; margin-bottom: 20px;">${e.intro(name)}</p>

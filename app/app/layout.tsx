@@ -74,7 +74,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Top bar */}
         <div style={{ background: 'rgba(255,248,240,0.95)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(45,41,38,0.08)', padding: '0 20px', minHeight: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 0, zIndex: 40 }}>
           <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, color: '#2D2926', flexShrink: 0 }}>
-            bloom <em style={{ color: '#B8A4E8' }}>focus</em>
+            bloom <em style={{ color: '#7B5FCC' }}>focus</em>
             <span style={{ fontSize: 11, color: '#9B8F88', marginLeft: 8 }}>app</span>
           </div>
 
@@ -180,7 +180,7 @@ function AuthScreen({ tr }: { tr: any }) {
       <div style={{ maxWidth: 400, width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>🌸</div>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: 26, color: '#2D2926', marginBottom: 4 }}>bloom <em style={{ color: '#B8A4E8' }}>focus</em></div>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: 26, color: '#2D2926', marginBottom: 4 }}>bloom <em style={{ color: '#7B5FCC' }}>focus</em></div>
           <div style={{ fontSize: 13, color: '#9B8F88' }}>{tr.toolkit}</div>
         </div>
         <div style={{ background: '#FEFCFA', borderRadius: 20, padding: '32px 28px', border: '1px solid rgba(45,41,38,0.08)', boxShadow: '0 4px 24px rgba(45,41,38,0.06)' }}>

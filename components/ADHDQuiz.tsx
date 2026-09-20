@@ -54,6 +54,9 @@ function getScores(answers: Record<number, number>) {
 const C = {
   bg:"#FAFAF8", card:"#FFFFFF",
   purple:"#B8A4E8", purpleDark:"#7B5FCC", purpleLight:"#F0EBFF",
+  // purpleDark is a button background (white on it is fine); as *text* on the
+  // pale purpleLight it only reaches 4.14:1, so small labels use purpleDeep.
+  purpleDeep:"#5F46A0",
   text:"#1A1814", mid:"#6B6058", soft:"#776B64", border:"#E8E4DC",
 };
 
@@ -112,7 +115,7 @@ export default function ADHDQuiz({ lang = "en" as Lang }: { lang?: Lang }) {
           <div style={{background:C.card,borderRadius:20,overflow:"hidden",border:`1px solid ${C.border}`}}>
             <div style={{background:C.purpleLight,padding:"40px 40px 32px",textAlign:"center"}}>
               <div style={{fontSize:48,marginBottom:16}}>🧠</div>
-              <div style={{fontSize:11,fontWeight:700,letterSpacing:".15em",textTransform:"uppercase",color:C.purpleDark,marginBottom:12}}>{t.eyebrow}</div>
+              <div style={{fontSize:11,fontWeight:700,letterSpacing:".15em",textTransform:"uppercase",color:C.purpleDeep,marginBottom:12}}>{t.eyebrow}</div>
               <h1 style={{fontSize:28,fontWeight:700,color:C.text,lineHeight:1.25,marginBottom:12}}>{t.titleA}<br/>{t.titleB}</h1>
               <p style={{fontSize:15,color:C.mid,lineHeight:1.7,maxWidth:420,margin:"0 auto"}}>{t.meta}</p>
             </div>

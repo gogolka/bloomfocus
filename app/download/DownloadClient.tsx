@@ -76,7 +76,7 @@ export default function DownloadClient() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 8 }}>
-            bloom <em style={{ color: '#B8A4E8' }}>focus</em>
+            bloom <em style={{ color: '#7B5FCC' }}>focus</em>
           </div>
           <div style={{ fontSize: 32, marginBottom: 12 }}>✨</div>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: '#2D2926', marginBottom: 8 }}>Your file is ready</h1>

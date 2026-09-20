@@ -18,6 +18,9 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div style={{ fontFamily: 'Georgia, serif', fontSize: 22, marginBottom: 12 }}>
+              {/* The wordmark is #7B5FCC everywhere else, but this footer is
+                  dark: the pale lavender reads at 6.53:1 here, while the
+                  darker purple would fall to 2.99:1. */}
               bloom <em style={{ color: '#B8A4E8' }}>focus</em>
             </div>
             <p style={{ fontSize: 13, color: '#9B8F88', lineHeight: 1.7, maxWidth: 240 }}>
